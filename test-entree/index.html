@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test d'entrée 2026 — CFA La Fabrik</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#2EB3AF;--teal-dk:#1A8A86;--teal-lt:#E6F7F7;--teal-xlt:#F0FAFA;
+  --noir:#232121;--gold:#B19500;--gold-dk:#8F8016;--gold-lt:#F5F0D0;
+  --txt:#232121;--muted:#5A5A5A;--bdr:#D4E8E8;--bg:#F2FAFA;--bg2:#FAFAFA;
+  --white:#FFFFFF;
+  --success:#2EB3AF;--success-lt:#E6F7F7;
+  --warn:#B19500;--warn-lt:#F5F0D0;
+  --danger:#C0392B;--danger-lt:#FDECEA;
+}
+body{font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.5;min-height:100vh}
+h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-spacing:.04em}
+
+/* HEADER */
+.app-header{background:var(--teal);padding:0 20px;display:flex;align-items:center;gap:14px;height:58px;position:sticky;top:0;z-index:50;box-shadow:0 3px 12px rgba(46,179,175,.3)}
+.app-header .logo-wrap{width:40px;height:40px;border-radius:8px;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2px}
+.app-header .logo-wrap img{width:100%;height:100%;object-fit:contain}
+.app-header .brand{flex:1}
+.app-header .brand h1{color:white;font-size:18px;font-weight:400;line-height:1;font-family:'Bebas Neue','Arial Black',sans-serif;letter-spacing:.05em}
+.app-header .brand p{color:rgba(255,255,255,.75);font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.app-header .year-badge{background:rgba(255,255,255,.2);color:white;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:13px}
+
+/* TABS */
+.tab-bar{display:flex;background:var(--noir);padding:0 16px}
+.tab{padding:11px 18px;font-size:12px;cursor:pointer;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);transition:all .15s;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:-1px}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.tab:hover:not(.active){color:rgba(255,255,255,.8)}
+
+/* LAYOUT */
+.view{display:none;padding:20px;max-width:740px;margin:0 auto}
+.view.active{display:block}
+
+/* CARDS */
+.card{background:white;border-radius:10px;border:1px solid var(--bdr);padding:22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(46,179,175,.06)}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--teal);letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1.5px solid var(--teal-lt)}
+.card-title .icon{font-size:16px}
+
+/* FORMS */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.field label .req{color:var(--danger)}
+.field input,.field select{height:40px;border:1.5px solid var(--bdr);border-radius:8px;background:white;color:var(--txt);font-size:13px;padding:0 12px;width:100%;transition:border-color .15s,box-shadow .15s;font-family:'Open Sans',sans-serif}
+.field input:focus,.field select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(46,179,175,.12)}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.fg2{grid-template-columns:1fr}}
+
+/* INTRO HERO */
+.intro-hero{background:var(--noir);border-radius:12px;padding:28px 24px;margin-bottom:16px;color:white;position:relative;overflow:hidden}
+.intro-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:var(--teal);opacity:.12;border-radius:50%}
+.intro-hero::after{content:'';position:absolute;bottom:-40px;left:-20px;width:120px;height:120px;background:var(--gold);opacity:.1;border-radius:50%}
+.intro-hero h2{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--teal);letter-spacing:.06em;margin-bottom:6px}
+.intro-hero p{font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;max-width:500px}
+.intro-stats{display:flex;gap:16px;margin-top:18px;flex-wrap:wrap}
+.intro-stat{background:rgba(46,179,175,.15);border:1px solid rgba(46,179,175,.3);border-radius:8px;padding:10px 16px;text-align:center}
+.intro-stat .sv{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--teal);letter-spacing:.04em}
+.intro-stat .sl{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+
+/* NIVEAUX */
+.niveau-section{border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:10px;background:white}
+.niveau-header{padding:11px 16px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.05em;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;color:white;transition:opacity .15s}
+.niveau-header:hover{opacity:.92}
+.niveau-header .nbadge{background:rgba(255,255,255,.25);font-family:'Open Sans',sans-serif;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.niveau-header .chev{margin-left:auto;font-size:11px;transition:transform .2s}
+.niveau-header.open .chev{transform:rotate(180deg)}
+.niveau-body{display:none;padding:12px}
+.niveau-body.open{display:block}
+.formation-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.formation-grid{grid-template-columns:1fr}}
+.fc{border:1.5px solid var(--bdr);border-radius:8px;padding:10px 13px;cursor:pointer;transition:all .15s;background:white}
+.fc:hover{border-color:var(--teal);background:var(--teal-xlt)}
+.fc.selected{border-color:var(--teal);background:var(--teal-lt)}
+.fc .fc-t{font-size:12px;font-weight:600;color:var(--txt)}
+.fc.selected .fc-t{color:var(--teal-dk)}
+.fc .fc-s{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:14px}
+.progress-info{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;color:var(--muted);font-weight:600}
+.progress-bar{background:var(--bdr);border-radius:4px;height:5px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,var(--teal),var(--teal-dk));height:100%;border-radius:4px;transition:width .3s}
+
+/* QUESTIONS */
+.q-section-label{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--teal);letter-spacing:.06em;margin-bottom:8px;padding:5px 10px;background:var(--teal-lt);border-radius:5px;display:inline-block}
+.q-text{font-size:14px;font-weight:600;color:var(--txt);margin:10px 0 14px;line-height:1.5}
+.radio-group{display:flex;flex-direction:column;gap:7px}
+.radio-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1.5px solid var(--bdr);border-radius:8px;cursor:pointer;transition:all .15s;font-size:13px;line-height:1.4;background:white}
+.radio-opt:hover{border-color:var(--teal);background:var(--teal-xlt)}
+.radio-opt.selected{border-color:var(--teal);background:var(--teal-lt);font-weight:500}
+.radio-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.radio-opt.selected .radio-dot{border-color:var(--teal);background:var(--teal)}
+.radio-opt.selected .radio-dot::after{content:'';width:5px;height:5px;border-radius:50%;background:white}
+
+/* NAV */
+.nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1.5px solid var(--bdr)}
+.btn{height:40px;padding:0 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;border:1.5px solid var(--bdr);background:white;color:var(--txt);text-transform:uppercase;letter-spacing:.04em;font-family:'Open Sans',sans-serif}
+.btn:hover{background:var(--bg2);border-color:var(--teal)}
+.btn-primary{background:var(--teal);color:white;border-color:var(--teal)}
+.btn-primary:hover{background:var(--teal-dk)}
+.btn-gold{background:var(--gold);color:white;border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-dk)}
+.btn-dark{background:var(--noir);color:white;border-color:var(--noir)}
+.btn-sm{height:34px;padding:0 14px;font-size:11px}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:32px 20px}
+.success-icon{width:76px;height:76px;border-radius:50%;background:var(--teal-lt);border:3px solid var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:var(--teal)}
+.success-screen h2{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--teal);letter-spacing:.05em;margin-bottom:10px}
+.success-screen p{font-size:13px;color:var(--muted);line-height:1.7;max-width:440px;margin:0 auto 20px}
+.alert-qualiopi{background:var(--gold-lt);border:1px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--gold-dk);margin-top:16px;text-align:left;display:flex;gap:10px;align-items:flex-start}
+.alert-qualiopi .icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* DASHBOARD */
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.dash-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--noir);letter-spacing:.05em}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:540px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:white;border:1px solid var(--bdr);border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(46,179,175,.06)}
+.stat-card .sv{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--txt);letter-spacing:.02em}
+.stat-card .sl{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.stat-card.teal .sv{color:var(--teal)}
+.stat-card.gold .sv{color:var(--gold)}
+.stat-card.green .sv{color:var(--success)}
+
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:5px 12px;border:1.5px solid var(--bdr);border-radius:20px;font-size:11px;cursor:pointer;background:white;color:var(--muted);transition:all .15s;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.filter-btn:hover{border-color:var(--teal);color:var(--teal)}
+.filter-btn.active{background:var(--teal-lt);border-color:var(--teal);color:var(--teal-dk)}
+
+.result-row{background:white;border:1px solid var(--bdr);border-radius:10px;padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.result-row:hover{border-color:var(--teal);box-shadow:0 3px 12px rgba(46,179,175,.12)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.result-info{flex:1;min-width:0}
+.result-info .name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-info .meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score-badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;font-size:13px}
+.score-high{background:var(--teal-lt);color:var(--teal-dk)}
+.score-med{background:var(--warn-lt);color:var(--gold-dk)}
+.score-low{background:var(--danger-lt);color:var(--danger)}
+.status-pill{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em}
+.s-new{background:#DBEAFE;color:#1E40AF}
+.s-ok{background:var(--teal-lt);color:var(--teal-dk)}
+.s-no{background:var(--danger-lt);color:var(--danger)}
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);font-size:13px}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+
+/* MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(35,33,33,.55);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal-panel{background:white;border-radius:14px;width:100%;max-width:650px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{padding:18px 22px;border-bottom:1.5px solid var(--bdr);display:flex;align-items:center;gap:12px;position:sticky;top:0;background:white;border-radius:14px 14px 0 0;z-index:1}
+.modal-header .avatar-lg{width:48px;height:48px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.modal-body{padding:22px}
+.modal-footer{padding:14px 22px;border-top:1.5px solid var(--bdr);display:flex;gap:10px;justify-content:flex-end;border-radius:0 0 14px 14px;background:var(--bg2)}
+
+/* SCORE DISPLAY */
+.score-hero{background:var(--noir);border-radius:10px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:16px}
+.score-circle{width:76px;height:76px;border-radius:50%;border:3px solid var(--teal);display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0}
+.score-circle .sv{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--teal);line-height:1}
+.score-circle .sl{font-size:9px;color:rgba(255,255,255,.5);margin-top:2px}
+.score-details{flex:1}
+.score-details .name{font-family:'Bebas Neue',sans-serif;font-size:17px;color:white;letter-spacing:.04em}
+.score-details .meta{font-size:11px;color:rgba(255,255,255,.6);margin-top:3px}
+.score-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.score-box{background:rgba(255,255,255,.07);border-radius:7px;padding:8px 12px}
+.score-box .bv{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--teal);letter-spacing:.03em}
+.score-box .bl{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px}
+
+/* QUESTION DETAIL */
+.q-section-hd{font-family:'Bebas Neue',sans-serif;font-size:13px;color:white;letter-spacing:.06em;padding:7px 12px;background:var(--teal);border-radius:6px;margin:14px 0 8px;display:block}
+.q-item{border:1px solid var(--bdr);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.q-item-hd{padding:8px 12px;font-size:12px;font-weight:600;background:var(--bg2);border-bottom:1px solid var(--bdr);line-height:1.4}
+.q-item-body{padding:8px 12px}
+.opt-row{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:12px;line-height:1.4}
+.opt-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--bdr);flex-shrink:0;margin-top:3px}
+.opt-row.correct{color:var(--teal-dk);font-weight:600}
+.opt-row.correct .opt-dot{background:var(--teal);border-color:var(--teal)}
+.opt-row.wrong{color:var(--danger);font-weight:600}
+.opt-row.wrong .opt-dot{background:var(--danger);border-color:var(--danger)}
+
+/* STATUS SELECT */
+.status-select{padding:7px 11px;border:1.5px solid var(--bdr);border-radius:7px;font-size:12px;background:white;color:var(--txt);cursor:pointer;font-family:'Open Sans',sans-serif;font-weight:600}
+
+/* HUBSPOT STATUS */
+.hs-status{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px}
+.hs-ok{color:var(--teal)}
+.hs-warn{color:var(--gold)}
+.hs-err{color:var(--danger)}
+
+/* GOOGLE SHEET BADGE */
+.sheet-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--teal);text-decoration:none;padding:4px 10px;border:1.5px solid var(--teal);border-radius:20px;transition:all .15s}
+.sheet-link:hover{background:var(--teal-lt)}
+
+/* PRINT */
+@media print{
+  .app-header,.tab-bar,.modal-footer,.no-print,.tab-bar{display:none!important}
+  .modal-overlay{position:static;background:none;padding:0;display:block}
+  .modal-panel{border-radius:0;box-shadow:none;max-width:100%}
+  .modal-header{position:static;border-radius:0}
+  body{background:white}
+  .score-hero{background:#232121!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo-wrap">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJFQjNBRiIgcng9IjEyIi8+CiAgPHJlY3QgeD0iNDgiIHk9IjM4IiB3aWR0aD0iMTQiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjQ4IiB5PSIzOCIgd2lkdGg9IjcwIiBoZWlnaHQ9IjE0IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjQ4IiB5PSI4MiIgd2lkdGg9IjUwIiBoZWlnaHQ9IjE0IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9Ijc1IiB5PSIzOCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjU4IiBmaWxsPSJ3aGl0ZSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTY4IiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIyOCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIyIj5GQUJSSUs8L3RleHQ+CiAgPHRleHQgeD0iMTAwIiB5PSIxODYiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjEiPkRFUyBMRUFERVJTIERFIERFTUFJTjwvdGV4dD4KPC9zdmc+" alt="La Fabrik"/>
+  </div>
+  <div class="brand">
+    <h1>La Fabrik</h1>
+    <p>Des Leaders de Demain</p>
+  </div>
+  <span class="year-badge">2026</span>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" id="tab-test-btn" onclick="showTab('test')">Test d'entrée</div>
+  <div class="tab" id="tab-dash-btn" onclick="showTab('dashboard')">Tableau de bord</div>
+</div>
+
+<div id="tab-test" class="view active">
+  <div id="screen-intro">
+    <div class="intro-hero">
+      <h2>Test d'entrée 2026</h2>
+      <p>Bienvenue ! Ce test évalue votre niveau afin de vérifier votre aptitude à suivre la formation choisie. Il constitue un critère de présélection pour l'admission au sein de notre CFA.</p>
+      <div class="intro-stats">
+        <div class="intro-stat"><div class="sv" id="info-q">—</div><div class="sl">Questions</div></div>
+        <div class="intro-stat"><div class="sv">~20</div><div class="sl">Minutes</div></div>
+        <div class="intro-stat"><div class="sv">19</div><div class="sl">Formations</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">👤</span> Vos informations</div>
+      <div class="fg2">
+        <div class="field"><label>Nom <span class="req">*</span></label><input type="text" id="f-nom" placeholder="Votre nom"/></div>
+        <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" id="f-prenom" placeholder="Votre prénom"/></div>
+      </div>
+      <div class="field"><label>Email <span class="req">*</span></label><input type="email" id="f-email" placeholder="votre.email@exemple.com"/></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;padding:8px 12px;background:var(--teal-xlt);border-radius:6px;border-left:3px solid var(--teal)">
+        Vos informations sont utilisées uniquement dans le cadre du processus d'admission — CFA La Fabrik.
+      </div>
+      <div class="nav-btns"><div></div><button class="btn btn-primary" onclick="goToFormation()">Choisir ma formation →</button></div>
+    </div>
+  </div>
+
+  <div id="screen-formation" style="display:none">
+    <div class="card">
+      <div class="card-title"><span class="icon">🎓</span> Sélectionnez votre formation</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Cliquez sur un niveau pour le déplier, puis sélectionnez votre formation. Le test sera adapté à votre niveau.</p>
+      <div id="niveau-grid"></div>
+      <div class="nav-btns">
+        <button class="btn" onclick="showScreen('intro')">← Retour</button>
+        <button class="btn btn-primary" onclick="goToQuestions()">Commencer le test →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-questions" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="prog-label">Question 1</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="card" id="question-card"></div>
+  </div>
+
+  <div id="screen-success" style="display:none">
+    <div class="card">
+      <div class="success-screen">
+        <div class="success-icon">✓</div>
+        <h2>Test enregistré !</h2>
+        <p>Merci <strong id="success-prenom"></strong>, votre test a bien été pris en compte.<br><br>
+        Tous les candidats seront informés des résultats. Les candidats sélectionnés seront contactés pour la suite du processus d'admission.</p>
+        <div id="hs-result-msg" style="margin-top:12px"></div>
+        <div class="alert-qualiopi">
+          <span class="icon">📋</span>
+          <span>Vos résultats sont enregistrés conformément aux exigences <strong>Qualiopi</strong> et conservés dans notre système de suivi des candidatures.</span>
+        </div>
+        <p style="margin-top:14px;font-size:11px;font-style:italic;color:var(--muted)">CFA La Fabrik — 153 rue André Citroën, ZI La Palud, 83600 Fréjus</p>
+        <div style="margin-top:22px"><button class="btn btn-primary" onclick="resetTest()">Nouveau test</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-dashboard" class="view">
+  <div class="dash-header">
+    <span class="dash-title">Résultats Candidats</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print">
+      <button class="btn btn-sm btn-gold" onclick="exportCSV()">↓ Export CSV Qualiopi</button>
+      <button class="btn btn-sm" onclick="clearAll()" style="color:var(--danger)">Vider</button>
+    </div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card teal"><div class="sv" id="stat-total">0</div><div class="sl">Candidats</div></div>
+    <div class="stat-card"><div class="sv" id="stat-avg">—</div><div class="sl">Score moyen</div></div>
+    <div class="stat-card gold"><div class="sv" id="stat-new">0</div><div class="sl">À traiter</div></div>
+    <div class="stat-card green"><div class="sv" id="stat-ok">0</div><div class="sl">Retenus</div></div>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-btn active" onclick="setFilter('all',this)">Tous</div>
+    <div class="filter-btn" onclick="setFilter('niv3',this)">CAP Niv.3</div>
+    <div class="filter-btn" onclick="setFilter('niv4',this)">Niv.4</div>
+    <div class="filter-btn" onclick="setFilter('niv5',this)">BTS Niv.5</div>
+    <div class="filter-btn" onclick="setFilter('niv6',this)">Niv.6</div>
+    <div class="filter-btn" onclick="setFilter('niv7',this)">Mastère Niv.7</div>
+  </div>
+  <div id="results-list"></div>
+</div>
+
+<div id="detail-modal" style="display:none" class="modal-overlay" onclick="closeDetailOutside(event)">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div class="avatar-lg" id="d-avatar"></div>
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:700;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em" id="d-name"></div>
+        <div style="font-size:11px;color:var(--muted)" id="d-meta"></div>
+        <div id="d-hs-link" style="margin-top:4px"></div>
+      </div>
+      <select class="status-select no-print" onchange="updateStatus(event)" id="d-status-sel">
+        <option value="new">⏳ En attente</option>
+        <option value="ok">✅ Retenu</option>
+        <option value="no">❌ Non retenu</option>
+      </select>
+      <button onclick="closeDetail()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:0 4px;line-height:1" class="no-print">×</button>
+    </div>
+    <div class="modal-body" id="d-body"></div>
+    <div class="modal-footer no-print">
+      <button class="btn btn-sm btn-gold" onclick="exportSingleCSV()">↓ CSV candidat</button>
+      <button class="btn btn-sm btn-dark" onclick="printDetail()">🖨 Imprimer / PDF</button>
+      <button class="btn btn-sm btn-primary" onclick="closeDetail()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby4yTUQzjwSpKXTKaAuDFZUHuQl3aajPI92cobr6lxsGkKQMfr1kQUzg2u-Q2EtSzZaQA/exec';
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Oa29bZXQAfOvPHJq8IOD7SHzrXl-DxzB2La5cYRB_FM/edit';
+var STORAGE_KEY = 'lafabrik_tests_2026';
+
+// ─── NIVEAUX & FORMATIONS ───────────────────────────────────────
+var NIVEAUX = [
+  {id:'niv3',label:'Niveau 3 — CAP',color:'#7D5A0A',
+   formations:[
+     {id:'CAP_AEPE',label:'CAP AEPE',sub:'Accompagnant Éducatif Petite Enfance'},
+     {id:'CAP_COIF',label:'CAP Métiers de la Coiffure',sub:'Coiffure'}
+   ]},
+  {id:'niv4',label:'Niveau 4 — Bac / TP',color:'#7A3A6A',
+   formations:[
+     {id:'BP_COIF',label:'BP Coiffure',sub:'Brevet Professionnel'},
+     {id:'BAC_COIF',label:'Bac Pro Coiffure',sub:'Baccalauréat Professionnel'},
+     {id:'BAC_MCV',label:'Bac Pro MCV',sub:'Métiers du Commerce et de la Vente'},
+     {id:'TP_CC',label:'TP Conseiller Commercial',sub:'Titre Professionnel'},
+     {id:'TP_IEPE',label:'TP IPEPE',sub:'Intervenant Petite Enfance'},
+     {id:'TP_ASMA',label:'TP Assistant Secrétaire Médico-Administratif',sub:'Titre Professionnel'}
+   ]},
+  {id:'niv5',label:'Niveau 5 — BTS / TP',color:'#2EB3AF',
+   formations:[
+     {id:'BTS_BANQUE',label:'BTS Banque',sub:'Conseiller bancaire'},
+     {id:'BTS_COM',label:'BTS Communication',sub:'Communication'},
+     {id:'BTS_MCO',label:'BTS MCO',sub:'Management Commercial Opérationnel'},
+     {id:'BTS_NDRC',label:'BTS NDRC',sub:'Négociation et Digitalisation RC'},
+     {id:'BTS_GPME',label:'BTS GPME',sub:'Gestion PME'},
+     {id:'TP_FPA',label:'TP Formateur pour Adultes',sub:'Titre Professionnel'},
+     {id:'TP_AC',label:'TP Assistant Commercial',sub:'Titre Professionnel'}
+   ]},
+  {id:'niv6',label:'Niveau 6 — Bachelor / TP',color:'#1A6A4A',
+   formations:[
+     {id:'BAC6_REM',label:'TP Responsable Établissement Marchand',sub:'Titre Professionnel Niv.6'},
+     {id:'BAC6_BNQ',label:'Bachelor Banque et Assurance',sub:'Bachelor'}
+   ]},
+  {id:'niv7',label:'Niveau 7 — Mastère',color:'#5B21B6',
+   formations:[
+     {id:'MST_MA',label:'Mastère Manager d\'Affaire',sub:'Mastère Spécialisé'},
+     {id:'MST_ECGP',label:'Mastère Expert Conseil GP',sub:'Gestion de Patrimoine'}
+   ]}
+];
+var FM={};
+NIVEAUX.forEach(function(n){n.formations.forEach(function(f){FM[f.id]={label:f.label,niveau:n.id,niveauLabel:n.label};});});
+
+// ─── QUESTIONS ──────────────────────────────────────────────────
+// Structure identique pour chaque niveau :
+// Partie 1 : Français (10 questions)
+// Partie 2 : Culture Générale (10 questions)
+// Partie 3 : Anglais (10 questions)
+// Questions pro (5 questions)
+
+var BANQUES_Q = {
+
+// ════════════════════════════════════════════════════════════════
+// NIVEAU 3 — CAP (vocabulaire simple, lecture, calcul de base)
+// ════════════════════════════════════════════════════════════════
+niv3_fr:[
+  {q:'Quel est le sens du mot "bienveillant" ?',opts:['a) Méchant','b) Indifférent','c) Qui veut du bien aux autres','d) Curieux'],ans:2},
+  {q:'Choisissez la phrase correctement écrite :',opts:['a) Les enfants joues dans le jardin.','b) Les enfant jouent dans le jardin.','c) Les enfants jouent dans le jardin.','d) Les enfants jouent dans les jardins.'],ans:2},
+  {q:'Quel est le pluriel de "le genou" ?',opts:['a) Les genous','b) Les genoux','c) Les genoues','d) Les genoux'],ans:1},
+  {q:'Quel est l\'antonyme du mot "doux" ?',opts:['a) Calme','b) Violent','c) Rugueux','d) Fort'],ans:2},
+  {q:'Trouvez l\'intrus dans cette liste de noms communs :',opts:['a) Table','b) Gentil','c) Maison','d) Voiture'],ans:1},
+  {q:'Quelle est la bonne ponctuation à la fin d\'une question ?',opts:['a) Un point','b) Un point-virgule','c) Un point d\'exclamation','d) Un point d\'interrogation'],ans:3},
+  {q:'Quelle est la bonne orthographe ?',opts:['a) Il a beaucoup travaillé.','b) Il a beaucoup travaillée.','c) Il a beaucoup travaillés.','d) Il a beaucoup travaillées.'],ans:0},
+  {q:'Dans la phrase "La maîtresse explique la leçon", quel est le verbe ?',opts:['a) Maîtresse','b) Explique','c) Leçon','d) La'],ans:1},
+  {q:'Que signifie le préfixe "in-" dans le mot "incapable" ?',opts:['a) Très','b) Pas du tout / contraire de','c) De nouveau','d) À moitié'],ans:1},
+  {q:'Complétez : "Les parents ont emmené ___ enfants au parc."',opts:['a) leur','b) leurs','c) leur\'s','d) leure'],ans:1}
+],
+niv3_cg:[
+  {q:'Quelle couleur obtient-on en mélangeant bleu et jaune ?',opts:['a) Violet','b) Orange','c) Vert','d) Marron'],ans:2},
+  {q:'Combien de jours y a-t-il dans une année ordinaire ?',opts:['a) 360','b) 364','c) 365','d) 366'],ans:2},
+  {q:'Quel animal est le symbole de la France ?',opts:['a) L\'aigle','b) Le coq','c) Le lion','d) Le loup'],ans:1},
+  {q:'Combien font 15 + 28 ?',opts:['a) 41','b) 43','c) 42','d) 44'],ans:1},
+  {q:'Dans quel continent se trouve la France ?',opts:['a) Asie','b) Afrique','c) Amérique','d) Europe'],ans:3},
+  {q:'Quel organe pompe le sang dans notre corps ?',opts:['a) Les poumons','b) Le cerveau','c) Le cœur','d) L\'estomac'],ans:2},
+  {q:'Quelle est la monnaie utilisée en France ?',opts:['a) Le franc','b) L\'euro','c) La livre','d) Le dollar'],ans:1},
+  {q:'Combien y a-t-il de mois dans une année ?',opts:['a) 10','b) 11','c) 12','d) 13'],ans:2},
+  {q:'Qui dirige une commune en France ?',opts:['a) Le Président','b) Le Préfet','c) Le Maire','d) Le Député'],ans:2},
+  {q:'Si j\'ai 20€ et que j\'achète un article à 13,50€, combien me reste-t-il ?',opts:['a) 5,50€','b) 6€','c) 6,50€','d) 7€'],ans:2}
+],
+niv3_en:[
+  {q:'How do you say "bonjour" in English?',opts:['a) Good night','b) Hello / Good morning','c) Goodbye','d) Thank you'],ans:1},
+  {q:'What colour is the sky on a sunny day?',opts:['a) Green','b) White','c) Blue','d) Yellow'],ans:2},
+  {q:'How do you say "un chat" in English?',opts:['a) A dog','b) A cat','c) A bird','d) A fish'],ans:1},
+  {q:'What number comes after nine?',opts:['a) Eight','b) Eleven','c) Ten','d) Seven'],ans:2},
+  {q:'Which word means "grand" in English?',opts:['a) Small','b) Old','c) Big','d) Fast'],ans:2},
+  {q:'What do you say when you want to thank someone?',opts:['a) Please','b) Sorry','c) Thank you','d) Hello'],ans:2},
+  {q:'How do you say "une pomme" in English?',opts:['a) An orange','b) A pear','c) A banana','d) An apple'],ans:3},
+  {q:'Which day comes after Monday?',opts:['a) Sunday','b) Wednesday','c) Tuesday','d) Thursday'],ans:2},
+  {q:'What is the opposite of "hot"?',opts:['a) Warm','b) Cold','c) Dry','d) Hard'],ans:1},
+  {q:'Choose the correct sentence:',opts:['a) I has a cat.','b) I have a cat.','c) I am a cat.','d) I is a cat.'],ans:1}
+],
+
+// ════════════════════════════════════════════════════════════════
+// NIVEAU 4 — Bac / TP (niveau lycée, méthode, notions pro simples)
+// ════════════════════════════════════════════════════════════════
+niv4_fr:[
+  {q:'Quelle est la nature du mot "rapidement" dans la phrase "Il travaille rapidement" ?',opts:['a) Adjectif','b) Nom commun','c) Adverbe','d) Verbe'],ans:2},
+  {q:'Quel est le COD dans "Le client signe le contrat" ?',opts:['a) Le client','b) Signe','c) Le contrat','d) Il n\'y en a pas'],ans:2},
+  {q:'Quelle figure de style consiste à attribuer des caractéristiques humaines à un objet ?',opts:['a) La métaphore','b) La personnification','c) L\'hyperbole','d) L\'antithèse'],ans:1},
+  {q:'Dans quelle phrase le participe passé est-il correctement accordé ?',opts:['a) Elle s\'est lavée les mains.','b) Elle s\'est lavé les mains.','c) Elles se sont lavées les mains.','d) Elle c\'est lavé les mains.'],ans:1},
+  {q:'Lequel de ces mots est un homonyme de "ver" ?',opts:['a) Vert','b) Verre','c) Vers','d) Les trois'],ans:3},
+  {q:'Que signifie rédiger un texte "argumentatif" ?',opts:['a) Raconter une histoire','b) Décrire un lieu','c) Défendre une opinion en la justifiant','d) Résumer un document'],ans:2},
+  {q:'Quel mode verbal exprime un ordre ou une demande ?',opts:['a) L\'indicatif','b) Le subjonctif','c) L\'impératif','d) Le conditionnel'],ans:2},
+  {q:'Quelle est la bonne orthographe ?',opts:['a) Ils se sont rendu compte.','b) Ils se sont rendus compte.','c) Ils ce sont rendu compte.','d) Ils ce sont rendus compte.'],ans:0},
+  {q:'Dans "Bien que tu sois absent, la réunion a lieu", quel est le mode du verbe souligné ?',opts:['a) Indicatif','b) Subjonctif','c) Conditionnel','d) Impératif'],ans:1},
+  {q:'Qu\'est-ce qu\'un "plan dialectique" ?',opts:['a) Thèse / Antithèse / Synthèse','b) Introduction / Développement / Conclusion','c) Cause / Conséquence / Exemple','d) Contexte / Enjeux / Solution'],ans:0}
+],
+niv4_cg:[
+  {q:'Qui est l\'actuel Président de la République française ?',opts:['a) François Hollande','b) Nicolas Sarkozy','c) Emmanuel Macron','d) Marine Le Pen'],ans:2},
+  {q:'En quelle année a eu lieu la Révolution française ?',opts:['a) 1776','b) 1789','c) 1804','d) 1815'],ans:1},
+  {q:'Quel est le symbole chimique du fer ?',opts:['a) Fe','b) Fr','c) Fi','d) Fo'],ans:0},
+  {q:'Qui a peint La Joconde ?',opts:['a) Michel-Ange','b) Raphaël','c) Léonard de Vinci','d) Botticelli'],ans:2},
+  {q:'Quelle est la capitale de l\'Australie ?',opts:['a) Sydney','b) Melbourne','c) Brisbane','d) Canberra'],ans:3},
+  {q:'Quel est l\'hymne national français ?',opts:['a) Le Chant du Départ','b) La Marseillaise','c) La Carmagnole','d) L\'Internationale'],ans:1},
+  {q:'Dans quel pays se trouve le Taj Mahal ?',opts:['a) Pakistan','b) Inde','c) Bangladesh','d) Iran'],ans:1},
+  {q:'Quelle planète est la plus proche du Soleil ?',opts:['a) Vénus','b) Mars','c) Mercure','d) Jupiter'],ans:2},
+  {q:'Qui a écrit Les Misérables ?',opts:['a) Émile Zola','b) Gustave Flaubert','c) Molière','d) Victor Hugo'],ans:3},
+  {q:'Quel est l\'élément principal du verre ?',opts:['a) Aluminium','b) Silicium','c) Cuivre','d) Plomb'],ans:1}
+],
+niv4_en:[
+  {q:'What is the opposite of "cheap"?',opts:['a) Free','b) Large','c) Expensive','d) Small'],ans:2},
+  {q:'Which sentence is grammatically correct?',opts:['a) He go to work every day.','b) He going to work every day.','c) He goes to work every day.','d) He goed to work every day.'],ans:2},
+  {q:'What is the past tense of "run"?',opts:['a) Running','b) Runned','c) Runs','d) Ran'],ans:3},
+  {q:'How do you spell the number 40?',opts:['a) Fourty','b) Forty','c) Fourtie','d) Fortey'],ans:1},
+  {q:'What is the capital of the United Kingdom?',opts:['a) Manchester','b) Paris','c) London','d) Edinburgh'],ans:2},
+  {q:'What is the plural of "child"?',opts:['a) Childs','b) Childes','c) Childen','d) Children'],ans:3},
+  {q:'Complete: "She ___ a book right now."',opts:['a) Read','b) Reads','c) Is reading','d) Was reading'],ans:2},
+  {q:'How do you say "chien" in English?',opts:['a) Cat','b) Dog','c) Horse','d) Cow'],ans:1},
+  {q:'Which of these is a fruit?',opts:['a) Carrot','b) Potato','c) Tomato','d) Cabbage'],ans:2},
+  {q:'What does "to apply for a job" mean?',opts:['a) Refuser un emploi','b) Postuler à un emploi','c) Quitter un emploi','d) Chercher un emploi en ligne'],ans:1}
+],
+
+// ════════════════════════════════════════════════════════════════
+// NIVEAU 5 — BTS (analyse, méthode, vocabulaire pro, anglais pro)
+// Questions du Google Form original respectées
+// ════════════════════════════════════════════════════════════════
+niv5_fr:[
+  {q:'Quelle est la nature du mot "rapidement" ?',opts:['a) Adjectif','b) Verbe','c) Adverbe','d) Nom'],ans:2},
+  {q:'Quel est le complément d\'objet direct dans "Il mange une pomme" ?',opts:['a) Il','b) Mange','c) Une pomme','d) Aucun'],ans:2},
+  {q:'Quel auteur a écrit Le Rouge et le Noir ?',opts:['a) Victor Hugo','b) Stendhal','c) Balzac','d) Flaubert'],ans:1},
+  {q:'Dans quelle phrase le participe passé est-il bien accordé ?',opts:['a) Elle s\'est lavée les mains.','b) Elle s\'est lavé les mains.','c) Elle s\'est lavées les mains.','d) Elles se sont lavée les mains.'],ans:1},
+  {q:'Quelle est la bonne orthographe ?',opts:['a) Un centenaire','b) Un sentenaire','c) Un centennaire','d) Un centenère'],ans:0},
+  {q:'Quel est l\'antonyme du mot "agréable" ?',opts:['a) Charmant','b) Douloureux','c) Déplaisant','d) Exquis'],ans:2},
+  {q:'"Un oxymore" est :',opts:['a) Une figure de style qui rapproche deux mots opposés','b) Une faute de grammaire','c) Une métaphore filée','d) Une citation célèbre'],ans:0},
+  {q:'Quel est le temps de : "Lorsque tu seras rentré, nous partirons." ?',opts:['a) Présent et futur simple','b) Futur antérieur et futur simple','c) Imparfait et passé composé','d) Passé simple et futur antérieur'],ans:1},
+  {q:'Dans "Il faut que tu viennes", quel est le mode du verbe "viennes" ?',opts:['a) Indicatif','b) Conditionnel','c) Subjonctif','d) Impératif'],ans:2},
+  {q:'Quel mot est une préposition ?',opts:['a) Et','b) Malgré','c) Parce que','d) Toutefois'],ans:1}
+],
+niv5_cg:[
+  {q:'Qui est l\'actuel Président de la République française ?',opts:['a) Emmanuel Macron','b) François Hollande','c) Nicolas Sarkozy','d) Marine Le Pen'],ans:0},
+  {q:'Quelle est la capitale de l\'Australie ?',opts:['a) Sydney','b) Melbourne','c) Canberra','d) Brisbane'],ans:2},
+  {q:'En quelle année a eu lieu la Révolution française ?',opts:['a) 1776','b) 1789','c) 1815','d) 1848'],ans:1},
+  {q:'Quel est le symbole chimique du fer ?',opts:['a) Fe','b) F','c) Ir','d) Fr'],ans:0},
+  {q:'Qui a peint La Joconde ?',opts:['a) Michel-Ange','b) Léonard de Vinci','c) Raphaël','d) Rembrandt'],ans:1},
+  {q:'Dans quel pays se trouve le Taj Mahal ?',opts:['a) Pakistan','b) Inde','c) Bangladesh','d) Iran'],ans:1},
+  {q:'Qui a écrit Les Misérables ?',opts:['a) Émile Zola','b) Victor Hugo','c) Molière','d) Gustave Flaubert'],ans:1},
+  {q:'Quelle est la planète la plus proche du Soleil ?',opts:['a) Mars','b) Vénus','c) Mercure','d) Jupiter'],ans:2},
+  {q:'Quel est l\'hymne national français ?',opts:['a) La Marseillaise','b) Le Chant du Départ','c) La Carmagnole','d) L\'Internationale'],ans:0},
+  {q:'Quel est l\'élément principal du verre ?',opts:['a) Silicium','b) Aluminium','c) Cuivre','d) Plomb'],ans:0}
+],
+niv5_en:[
+  {q:'What is the opposite of "cheap"?',opts:['a) Expensive','b) Large','c) Small','d) Free'],ans:0},
+  {q:'How do you say "bonjour" in English?',opts:['a) Good night','b) Goodbye','c) Good morning','d) Good evening'],ans:2},
+  {q:'Which sentence is correct?',opts:['a) He go to school every day.','b) He goes to school every day.','c) He going to school every day.','d) He goed to school every day.'],ans:1},
+  {q:'What is the past tense of "run"?',opts:['a) Running','b) Ran','c) Runned','d) Runs'],ans:1},
+  {q:'How do you spell the number 40 in English?',opts:['a) Fourty','b) Fortey','c) Forty','d) Fourtie'],ans:2},
+  {q:'What is the capital of the United Kingdom?',opts:['a) Paris','b) London','c) New York','d) Berlin'],ans:1},
+  {q:'Which of these is a fruit?',opts:['a) Tomato','b) Potato','c) Cabbage','d) Carrot'],ans:0},
+  {q:'How do you say "chien" in English?',opts:['a) Cat','b) Dog','c) Cow','d) Horse'],ans:1},
+  {q:'What is the plural of "child"?',opts:['a) Childs','b) Childes','c) Children','d) Childen'],ans:2},
+  {q:'Complete the sentence: "She ___ a book now."',opts:['a) Read','b) Reads','c) Is reading','d) Reading'],ans:2}
+],
+
+// ════════════════════════════════════════════════════════════════
+// NIVEAU 6 — Bachelor (esprit critique, synthèse, anglais des affaires)
+// ════════════════════════════════════════════════════════════════
+niv6_fr:[
+  {q:'Qu\'est-ce qu\'une "thèse" dans un texte argumentatif ?',opts:['a) Un exemple concret','b) La position défendue par l\'auteur','c) La conclusion du texte','d) Un argument adverse'],ans:1},
+  {q:'Dans quelle situation emploie-t-on le conditionnel présent ?',opts:['a) Pour décrire un fait passé','b) Pour énoncer un fait certain','c) Pour exprimer une hypothèse ou une éventualité','d) Pour donner un ordre'],ans:2},
+  {q:'Qu\'est-ce qu\'un "euphémisme" ?',opts:['a) Une exagération stylistique','b) Une formulation atténuée pour éviter un terme trop direct ou brutal','c) Une comparaison entre deux éléments','d) Une répétition à des fins stylistiques'],ans:1},
+  {q:'Quel procédé stylistique consiste à répéter un mot ou groupe en début de phrases successives ?',opts:['a) L\'antithèse','b) L\'anaphore','c) La métonymie','d) L\'ellipse'],ans:1},
+  {q:'Qu\'appelle-t-on "implicite" dans un texte ?',opts:['a) Ce qui est explicitement formulé','b) Ce qui est sous-entendu sans être dit directement','c) La conclusion d\'un raisonnement','d) Les termes techniques'],ans:1},
+  {q:'Qu\'est-ce qu\'une "note de synthèse" ?',opts:['a) Un résumé fidèle d\'un seul document','b) Un document qui regroupe, organise et synthétise les informations de plusieurs sources','c) Un compte rendu de réunion','d) Une lettre professionnelle formelle'],ans:1},
+  {q:'Laquelle de ces formulations est correcte dans un courrier professionnel ?',opts:['a) "Dans l\'attente de vous lire, recevez mes salutations."','b) "Veuillez agréer, Madame, Monsieur, l\'expression de mes salutations distinguées."','c) "Je vous envoie mes cordiales."','d) "Merci de bien vouloir me répondre rapidement."'],ans:1},
+  {q:'Qu\'est-ce que la "cohérence textuelle" ?',opts:['a) L\'absence de fautes d\'orthographe','b) La progression logique et la non-contradiction des informations dans un texte','c) La richesse du vocabulaire utilisé','d) La longueur équilibrée des paragraphes'],ans:1},
+  {q:'Qu\'est-ce qu\'un "discours indirect libre" ?',opts:['a) Un dialogue retranscrit mot pour mot','b) Les pensées ou paroles d\'un personnage intégrées au récit sans guillemets ni verbe introducteur','c) Un monologue du narrateur','d) Une citation entre guillemets'],ans:1},
+  {q:'Dans un rapport professionnel, que doit contenir l\'introduction ?',opts:['a) La conclusion et les recommandations','b) Le contexte, la problématique et l\'annonce du plan','c) Les annexes et sources','d) Le développement complet'],ans:1}
+],
+niv6_cg:[
+  {q:'Quelle institution européenne vote les lois de l\'Union européenne ?',opts:['a) La Commission européenne','b) La Cour de justice de l\'UE','c) Le Parlement européen','d) La Banque centrale européenne'],ans:2},
+  {q:'Qu\'est-ce que le PIB d\'un pays ?',opts:['a) La somme des exportations','b) La valeur totale des biens et services produits sur un territoire en une année','c) Le budget de l\'État','d) Le salaire moyen des habitants'],ans:1},
+  {q:'Quelle est la différence entre inflation et déflation ?',opts:['a) Ce sont deux termes synonymes','b) L\'inflation est une hausse générale des prix, la déflation une baisse','c) L\'inflation concerne les salaires, la déflation les prix','d) L\'inflation est toujours bénéfique, la déflation toujours néfaste'],ans:1},
+  {q:'Quel est le rôle de la Banque centrale européenne (BCE) ?',opts:['a) Financer les États membres directement','b) Contrôler les banques commerciales et maintenir la stabilité des prix dans la zone euro','c) Voter le budget européen','d) Gérer les aides sociales européennes'],ans:1},
+  {q:'Qu\'appelle-t-on le "développement durable" ?',opts:['a) Une croissance économique maximale','b) Un développement qui répond aux besoins du présent sans compromettre les générations futures','c) Une politique de protection de l\'environnement uniquement','d) Un modèle économique réservé aux pays riches'],ans:1},
+  {q:'Quel traité a fondé l\'Union européenne telle qu\'on la connaît ?',opts:['a) Le Traité de Rome','b) Le Traité de Maastricht','c) Le Traité de Lisbonne','d) Le Traité de Paris'],ans:1},
+  {q:'Qu\'est-ce que la "RSE" dans le monde de l\'entreprise ?',opts:['a) Ressources et Services Externalisés','b) Responsabilité Sociale des Entreprises','c) Réseau de Soutien aux Employés','d) Régime Spécial d\'Embauche'],ans:1},
+  {q:'Quel est le taux de TVA normal en France ?',opts:['a) 5,5%','b) 10%','c) 20%','d) 25%'],ans:2},
+  {q:'Qu\'est-ce que le "chômage structurel" ?',opts:['a) Un chômage lié à une récession économique temporaire','b) Un chômage dû à des inadéquations durables entre offres et demandes de compétences','c) Le chômage des jeunes de moins de 25 ans','d) Le chômage saisonnier'],ans:1},
+  {q:'Qu\'est-ce qu\'une "OPA" en finance ?',opts:['a) Offre Publique d\'Achat : tentative d\'acquérir le contrôle d\'une société cotée','b) Organisation de Placement Alternatif','c) Obligation de Participation aux Actifs','d) Ordre de Paiement Automatique'],ans:0}
+],
+niv6_en:[
+  {q:'What does "to negotiate" mean in a business context?',opts:['a) Refuser une offre','b) Discuter pour parvenir à un accord mutuellement satisfaisant','c) Signer un contrat','d) Présenter une offre commerciale'],ans:1},
+  {q:'Which sentence is correct in a formal email?',opts:['a) "I writing to you about..."','b) "I write to you about..."','c) "I am writing to you regarding..."','d) "I writed to you concerning..."'],ans:2},
+  {q:'What does "stakeholder" mean?',opts:['a) Un actionnaire majoritaire uniquement','b) Toute partie prenante ayant un intérêt dans l\'entreprise','c) Un directeur financier','d) Un fournisseur exclusif'],ans:1},
+  {q:'What is a "turnover" in business?',opts:['a) Un retournement de marché','b) Le chiffre d\'affaires d\'une entreprise','c) Le taux de rotation du personnel','d) Les deux réponses b et c sont correctes'],ans:3},
+  {q:'Complete: "The meeting has been ___ to next Monday."',opts:['a) postponed','b) stopped','c) cancelled','d) delayed on'],ans:0},
+  {q:'What does "B2B" stand for?',opts:['a) Back to Business','b) Business to Business','c) Brand to Brand','d) Buy to Business'],ans:1},
+  {q:'What is the meaning of "cash flow"?',opts:['a) La rentabilité d\'un projet','b) Les flux de trésorerie entrants et sortants d\'une entreprise','c) Le bénéfice net annuel','d) Le capital social d\'une entreprise'],ans:1},
+  {q:'Which word best completes: "We need to ___ our strategy to market changes."',opts:['a) adapt','b) adopt','c) adept','d) adhere'],ans:0},
+  {q:'What does "merger" mean?',opts:['a) Une faillite','b) Un rachat hostile','c) Une fusion de deux entreprises','d) Un partenariat commercial'],ans:2},
+  {q:'Which of these is NOT a synonym of "to increase"?',opts:['a) To rise','b) To grow','c) To decline','d) To expand'],ans:2}
+],
+
+// ════════════════════════════════════════════════════════════════
+// NIVEAU 7 — Mastère (analyse critique, management, finance avancée)
+// ════════════════════════════════════════════════════════════════
+niv7_fr:[
+  {q:'Qu\'appelle-t-on le "sophisme" dans un raisonnement ?',opts:['a) Un argument particulièrement bien construit','b) Un raisonnement faux mais présenté comme vrai pour tromper','c) Une figure de style comparative','d) Une citation d\'autorité'],ans:1},
+  {q:'Qu\'est-ce que la "distanciation critique" dans l\'analyse d\'un document ?',opts:['a) Lire rapidement un texte pour en extraire l\'essentiel','b) Prendre du recul par rapport à ses propres opinions pour analyser objectivement','c) Résumer fidèlement un document sans le commenter','d) Identifier uniquement les arguments de l\'auteur'],ans:1},
+  {q:'Dans quelle construction syntaxique l\'ordre des mots est-il inversé à des fins stylistiques ?',opts:['a) L\'apposition','b) L\'hypotaxe','c) L\'inversion','d) La parataxe'],ans:2},
+  {q:'Qu\'est-ce que la "polyphonie" dans un texte ?',opts:['a) La présence de plusieurs voix ou points de vue dans un même texte','b) L\'utilisation de nombreux synonymes','c) La répétition d\'un même argument sous différentes formes','d) Un texte écrit à plusieurs mains'],ans:0},
+  {q:'Qu\'entend-on par "implicature" dans la communication ?',opts:['a) Ce qui est dit de manière explicite','b) Ce qui est communiqué au-delà du sens littéral, selon le contexte','c) Une formulation volontairement ambiguë','d) Un acte de communication non verbale'],ans:1},
+  {q:'Dans un rapport de gestion, qu\'est-ce que la "valeur ajoutée" ?',opts:['a) La différence entre le prix de vente et le prix d\'achat des marchandises','b) La richesse créée par l\'entreprise, soit la différence entre la production et les consommations intermédiaires','c) Le bénéfice net après impôts','d) Le chiffre d\'affaires diminué des charges de personnel'],ans:1},
+  {q:'Qu\'est-ce que le "paradoxe de la communication" dans les organisations ?',opts:['a) Plus on communique, plus on crée de malentendus','b) La communication formelle est toujours plus efficace que l\'informelle','c) Il est impossible de ne pas communiquer : même le silence est un message','d) La communication non verbale est plus fiable que la communication verbale'],ans:2},
+  {q:'Dans la conduite du changement, qu\'est-ce que la "résistance organisationnelle" ?',opts:['a) Une stratégie de l\'entreprise pour bloquer les innovations extérieures','b) Les forces qui s\'opposent aux modifications de l\'organisation par peur de l\'incertitude','c) Une technique managériale de gestion des conflits','d) La politique RH visant à conserver les talents'],ans:1},
+  {q:'Qu\'est-ce que la "pensée systémique" en management ?',opts:['a) L\'application d\'un même processus à tous les problèmes','b) La capacité à appréhender une organisation comme un ensemble d\'éléments interdépendants','c) Une méthode de planification linéaire','d) Le management par objectifs chiffrés'],ans:1},
+  {q:'Qu\'est-ce que l\'"éthique des affaires" (business ethics) ?',opts:['a) L\'ensemble des lois commerciales applicables aux entreprises','b) L\'application volontaire de principes moraux aux décisions et comportements en entreprise','c) La politique RSE obligatoire pour les grandes entreprises','d) Les règles de bonne conduite imposées par les actionnaires'],ans:1}
+],
+niv7_cg:[
+  {q:'Qu\'est-ce que la "mondialisation financière" ?',opts:['a) La standardisation des produits financiers à l\'échelle mondiale','b) L\'intégration croissante des marchés financiers mondiaux favorisant la libre circulation des capitaux','c) La création d\'une monnaie mondiale unique','d) La dépendance de tous les pays envers la Banque mondiale'],ans:1},
+  {q:'Qu\'est-ce que le "risque systémique" ?',opts:['a) Le risque inhérent à un secteur d\'activité spécifique','b) Le risque de défaillance en chaîne qui peut s\'étendre à l\'ensemble du système financier','c) Le risque lié à la mauvaise gestion d\'une seule entreprise','d) Le risque de change sur les marchés émergents'],ans:1},
+  {q:'Qu\'est-ce que la "gouvernance d\'entreprise" ?',opts:['a) La gestion opérationnelle quotidienne d\'une entreprise','b) L\'ensemble des règles et pratiques assurant la direction et le contrôle d\'une entreprise','c) La politique de rémunération des dirigeants','d) La structure organisationnelle d\'une entreprise'],ans:1},
+  {q:'Qu\'entend-on par "externalités négatives" en économie ?',opts:['a) Les coûts supportés par des tiers non impliqués dans une transaction économique','b) Les pertes liées aux exportations','c) Les coûts de délocalisation d\'une entreprise','d) Les charges financières d\'un emprunt'],ans:0},
+  {q:'Qu\'est-ce que le "quantitative easing" (assouplissement quantitatif) ?',opts:['a) Une politique budgétaire de réduction des dépenses publiques','b) Une politique monétaire par laquelle une banque centrale injecte des liquidités dans l\'économie en rachetant des actifs','c) Un programme d\'aide aux entreprises en difficulté','d) Une réforme de la réglementation bancaire'],ans:1},
+  {q:'Qu\'est-ce que le "capital humain" dans la théorie économique ?',opts:['a) Le patrimoine financier des salariés','b) L\'ensemble des connaissances, compétences et santé accumulées par les individus, contribuant à leur productivité','c) Le budget de formation d\'une entreprise','d) La valeur des actifs immatériels d\'une entreprise'],ans:1},
+  {q:'Qu\'est-ce qu\'une obligation "investment grade" ?',opts:['a) Une obligation à haut rendement mais très risquée','b) Une obligation notée de bonne qualité par les agences de notation, présentant un risque de défaut faible','c) Une obligation émise uniquement par les États','d) Une obligation non cotée en bourse'],ans:1},
+  {q:'Qu\'est-ce que la "disruption" dans un secteur économique ?',opts:['a) Une simple amélioration incrémentale d\'un produit existant','b) Une innovation qui bouleverse radicalement un marché en rendant les acteurs établis obsolètes','c) Un retournement conjoncturel du marché','d) Une fusion entre deux entreprises concurrentes'],ans:1},
+  {q:'Quelle est la différence entre "leadership" et "management" ?',opts:['a) Le leadership concerne les opérations, le management la vision','b) Ils sont synonymes dans le monde professionnel','c) Le leadership s\'exerce sur la vision et l\'influence, le management sur la planification et le contrôle','d) Le management est uniquement adapté aux grandes structures'],ans:2},
+  {q:'Qu\'est-ce que la "due diligence" dans une opération de fusion-acquisition ?',opts:['a) La signature du protocole d\'accord entre les parties','b) L\'audit approfondi de la société cible visant à évaluer ses risques et sa valeur réelle avant acquisition','c) La négociation du prix de cession','d) L\'intégration post-fusion des équipes'],ans:1}
+],
+niv7_en:[
+  {q:'In a business meeting, what does "to table a proposal" mean (British English)?',opts:['a) Abandonner une proposition','b) Soumettre une proposition à la discussion','c) Présenter un tableau de données','d) Reporter une proposition à plus tard (sens américain)'],ans:1},
+  {q:'What is the difference between "revenue" and "profit"?',opts:['a) Ce sont des synonymes','b) Le revenue est le CA total, le profit est ce qui reste après déduction de toutes les charges','c) Le profit est le CA total, le revenue est le bénéfice net','d) Le revenue concerne uniquement les services, le profit les produits'],ans:1},
+  {q:'What does "KPI" stand for and how is it used?',opts:['a) Key Profit Index — mesure la profitabilité','b) Key Performance Indicator — mesure l\'atteinte des objectifs stratégiques','c) Knowledge and Process Integration — outil de gestion documentaire','d) Key Partner Incentive — programme de fidélisation'],ans:1},
+  {q:'What is "hedging" in finance?',opts:['a) Une stratégie de croissance agressive','b) Une technique de couverture visant à réduire l\'exposition aux risques financiers','c) Un type d\'investissement spéculatif','d) La diversification d\'un portefeuille d\'actions'],ans:1},
+  {q:'Choose the most appropriate phrase for a formal business letter:',opts:['a) "I hope this email finds you well..."','b) "Just checking in to see..."','c) "Further to our meeting of [date], I wish to confirm..."','d) "As per my last email..."'],ans:2},
+  {q:'What does "equity" mean in corporate finance?',opts:['a) Les dettes de l\'entreprise','b) Les capitaux propres, représentant la valeur nette de l\'entreprise pour ses actionnaires','c) Le chiffre d\'affaires annuel','d) La valeur des actifs immobilisés'],ans:1},
+  {q:'What is a "hostile takeover"?',opts:['a) Une fusion négociée et acceptée par les deux parties','b) Une acquisition réalisée sans l\'accord de la direction de la société cible','c) Un rachat de parts par les salariés','d) Une cession forcée imposée par les actionnaires'],ans:1},
+  {q:'What does "leverage" mean in a financial context?',opts:['a) L\'utilisation de fonds propres pour financer la croissance','b) L\'utilisation de l\'endettement pour amplifier le potentiel de rendement d\'un investissement','c) La capacité d\'une entreprise à négocier avec ses fournisseurs','d) La liquidité d\'un actif financier'],ans:1},
+  {q:'What is "benchmarking" in strategic management?',opts:['a) La fixation d\'objectifs internes uniquement','b) L\'évaluation de sa propre performance en la comparant aux meilleures pratiques du secteur','c) Un audit financier annuel','d) Une méthode de budgétisation'],ans:1},
+  {q:'What does "disruptive innovation" mean?',opts:['a) Une amélioration progressive d\'un produit ou service existant','b) Une innovation qui crée un nouveau marché et finit par déplacer les acteurs établis','c) Une innovation technologique dans le secteur industriel','d) Une stratégie marketing de rupture de prix'],ans:1}
+]
+};
+
+// ─── QUESTIONS PRO PAR FORMATION (5 questions, modèle Google Form) ───
+var QP = {
+// ── Niveau 3 ──
+CAP_AEPE:[
+  {q:'Que signifie le sigle AEPE ?',opts:['a) Aide Éducative Pour Enfants','b) Accompagnant Éducatif Petite Enfance','c) Agent d\'Éveil Pédagogique de l\'Enfance','d) Auxiliaire Éducatif de la Petite Enfance'],ans:1},
+  {q:'À quel âge maximum un enfant peut-il être accueilli en crèche collective ?',opts:['a) 18 mois','b) 2 ans','c) 3 ans','d) 4 ans'],ans:2},
+  {q:'Quel geste pratiquer en priorité face à un nourrisson qui s\'étouffe ?',opts:['a) Le secouer doucement','b) Lui donner de l\'eau','c) Effectuer des tapes dans le dos en position tête vers le bas','d) Attendre que cela passe'],ans:2},
+  {q:'Quel document permet de transmettre les informations entre les parents et la structure d\'accueil au quotidien ?',opts:['a) Le carnet de santé','b) Le projet éducatif','c) Le cahier de liaison ou de transmission','d) Le contrat d\'accueil'],ans:2},
+  {q:'À quel âge l\'enfant commence-t-il généralement à marcher de manière autonome ?',opts:['a) 6 à 9 mois','b) 9 à 11 mois','c) 12 à 15 mois','d) 18 à 24 mois'],ans:2}
+],
+CAP_COIF:[
+  {q:'Quel outil utilise-t-on pour réaliser des coupes en dégradé sur les côtés ?',opts:['a) Les ciseaux droits','b) Les effileurs','c) La tondeuse avec différents sabots','d) Le rasoir coupe-chou'],ans:2},
+  {q:'Quelle est la première étape obligatoire avant toute prestation colorante ?',opts:['a) Laver les cheveux','b) Effectuer un test épidermique (test allergique)','c) Brosser les cheveux','d) Sécher les cheveux'],ans:1},
+  {q:'Quelle est la principale règle d\'hygiène concernant les outils de coiffure ?',opts:['a) Les laver une fois par semaine','b) Les désinfecter dans un bac spécifique entre chaque client','c) Les essuyer avec une serviette propre','d) Les rincer à l\'eau courante'],ans:1},
+  {q:'Qu\'est-ce qu\'un "balayage" en technique de coloration ?',opts:['a) Une coloration uniforme sur toute la chevelure','b) Une décoloration totale des cheveux','c) Une technique de pose de couleur sur des mèches sélectionnées sans toucher la racine','d) Une technique de lissage chimique'],ans:2},
+  {q:'Quel produit neutralise la permanente après l\'action du réducteur ?',opts:['a) Le shampoing','b) Le conditionneur','c) L\'oxydant / le fixateur','d) L\'eau oxygénée'],ans:2}
+],
+// ── Niveau 4 ──
+BP_COIF:[
+  {q:'En quoi consiste le "diagnostic capillaire" avant une prestation ?',opts:['a) Mesurer la longueur des cheveux','b) Analyser l\'état du cheveu, du cuir chevelu et les habitudes du client pour recommander la prestation adaptée','c) Choisir la couleur avec le client','d) Vérifier si le client a des allergies'],ans:1},
+  {q:'Que signifie la notion de "kératinisation" dans le cycle capillaire ?',opts:['a) La chute naturelle du cheveu','b) La phase de durcissement et de formation du cheveu à partir de la kératine','c) La coloration naturelle du cheveu','d) Le traitement par soin protéiné'],ans:1},
+  {q:'Comment appelle-t-on la technique qui consiste à travailler en dégradé progressif de couleur du foncé à la racine vers le clair en pointe ?',opts:['a) Le tie-and-dye','b) L\'ombré hair ou degradé de couleur','c) Le balayage inversé','d) La mèche californienne'],ans:1},
+  {q:'Qu\'est-ce que le "bon de travail" en salon de coiffure ?',opts:['a) La facture remise au client','b) Le planning hebdomadaire des coiffeurs','c) Le document interne retraçant les prestations réalisées, les produits utilisés et le temps passé','d) Le devis remis avant une prestation importante'],ans:2},
+  {q:'Quelle démarche adopter face à un client allergique qui souhaite une coloration ?',opts:['a) Refuser la prestation','b) Réaliser la prestation sans coloration chimique','c) Effectuer obligatoirement un test épidermique 48h avant et consigner le résultat','d) Lui proposer uniquement un balayage'],ans:2}
+],
+BAC_COIF:[
+  {q:'Comment calcule-t-on le prix de revient d\'une prestation en salon ?',opts:['a) Prix de vente - bénéfice souhaité','b) Coût des produits + charges de main-d\'œuvre + quote-part des frais généraux','c) Tarif appliqué par les concurrents','d) Prix des produits utilisés uniquement'],ans:1},
+  {q:'Quelle est la différence entre la "décoloration" et la "déformation permanente" ?',opts:['a) Ce sont deux termes pour la même technique','b) La décoloration retire le pigment, la déformation permanente modifie la structure (ondulation ou lissage)','c) La déformation est réservée aux hommes','d) La décoloration est toujours définitive, la déformation jamais'],ans:1},
+  {q:'Qu\'est-ce que la "fiche technique de prestation" en coiffure professionnelle ?',opts:['a) La liste des tarifs du salon','b) Un document décrivant précisément le protocole, les produits, les doses et le temps de pose pour une prestation','c) Le planning du coiffeur','d) La facture du fournisseur de produits'],ans:1},
+  {q:'Quelle est la procédure légale pour un apprenti souhaitant effectuer seul une prestation colorante ?',opts:['a) Il peut le faire dès son entrée en formation','b) Il doit attendre d\'avoir son diplôme','c) Il doit être supervisé par un professionnel qualifié jusqu\'à l\'obtention de son diplôme','d) Il n\'a pas le droit avant 18 ans'],ans:2},
+  {q:'Quelle est la meilleure réponse face à un client insatisfait du résultat d\'une prestation ?',opts:['a) Lui proposer un remboursement immédiat','b) Nier sa responsabilité','c) Écouter activement, s\'excuser si nécessaire, analyser le problème et proposer une solution adaptée','d) Le diriger vers un autre salon'],ans:2}
+],
+BAC_MCV:[
+  {q:'Qu\'est-ce que le "taux de transformation" en point de vente ?',opts:['a) Le pourcentage de produits vendus par rapport aux stocks','b) Le rapport entre le nombre d\'actes d\'achat et le nombre de visites dans le magasin','c) La marge réalisée sur les ventes','d) Le ratio entre nouvelles entrées et sorties de personnel'],ans:1},
+  {q:'Qu\'appelle-t-on le "merchandising" ?',opts:['a) La politique tarifaire d\'un magasin','b) La gestion des approvisionnements','c) L\'ensemble des techniques d\'optimisation de la présentation des produits en magasin pour favoriser l\'acte d\'achat','d) La publicité sur le lieu de vente uniquement'],ans:2},
+  {q:'Qu\'est-ce que le "facing" d\'un produit ?',opts:['a) La face avant d\'un emballage','b) Le nombre d\'unités d\'un produit visibles de face sur un linéaire','c) Le positionnement du produit en tête de gondole','d) La surface totale occupée par un produit en rayon'],ans:1},
+  {q:'Comment calcule-t-on la marge commerciale ?',opts:['a) Prix de vente HT - Prix d\'achat HT','b) Prix de vente TTC - Charges fixes','c) Chiffre d\'affaires - Charges variables','d) Prix de vente HT - TVA'],ans:0},
+  {q:'Qu\'est-ce que le "cross-selling" (vente croisée) ?',opts:['a) Vendre le même produit à un prix plus élevé','b) Proposer un produit complémentaire lors d\'un achat','c) Fidéliser le client avec un programme de points','d) Comparer les prix avec les concurrents'],ans:1}
+],
+TP_CC:[
+  {q:'Quelle est la structure classique d\'un entretien de vente (méthode SBAM ou CAB) ?',opts:['a) Accueil → Argumentation → Prix → Congé','b) Prise de contact → Découverte des besoins → Argumentation → Traitement des objections → Conclusion','c) Présentation → Offre → Négociation → Signature','d) Prospection → Rendez-vous → Devis → Relance'],ans:1},
+  {q:'Qu\'est-ce que la méthode "CAB" en argumentation commerciale ?',opts:['a) Client / Acheteur / Budget','b) Caractéristiques / Avantages / Bénéfices','c) Contact / Accord / Bon de commande','d) Commercial / Analyse / Business'],ans:1},
+  {q:'Comment définit-on un "prospect chaud" dans une démarche commerciale ?',opts:['a) Un client fidèle depuis plus d\'un an','b) Un contact identifié mais jamais approché','c) Un contact ayant manifesté un intérêt concret et récent pour l\'offre','d) Un prospect contacté par email uniquement'],ans:2},
+  {q:'Qu\'est-ce que le "closing" dans une négociation commerciale ?',opts:['a) La phase de découverte des besoins','b) La présentation de l\'offre commerciale','c) La conclusion et la validation de la vente par le client','d) La rédaction du compte-rendu de visite'],ans:2},
+  {q:'Quelle technique utiliser pour reformuler positivement une objection prix ("c\'est trop cher") ?',opts:['a) Ignorer l\'objection et continuer la présentation','b) Baisser immédiatement le prix','c) Valoriser le rapport qualité/prix et mettre en avant les bénéfices justifiant le tarif','d) Comparer avec un concurrent moins cher'],ans:2}
+],
+TP_IEPE:[
+  {q:'Quelle est la principale mission d\'un professionnel de la petite enfance à domicile ?',opts:['a) Assurer l\'instruction scolaire de l\'enfant','b) Assurer la garde, la sécurité, l\'éveil et le bien-être de l\'enfant','c) Préparer exclusivement les repas','d) Effectuer les tâches ménagères du foyer'],ans:1},
+  {q:'Qu\'est-ce que le "jeu libre" dans le développement de l\'enfant ?',opts:['a) Un jeu sans aucune règle ni matériel','b) Une activité que l\'enfant choisit lui-même, qui favorise son autonomie et sa créativité','c) Un jeu organisé par le professionnel','d) Une activité sportive non encadrée'],ans:1},
+  {q:'Quelle réaction adopter face à un enfant qui fait une crise de colère ?',opts:['a) Le punir immédiatement','b) L\'ignorer complètement','c) Rester calme, mettre des mots sur ses émotions et l\'accompagner à se réguler','d) Céder à ses demandes pour calmer la situation'],ans:2},
+  {q:'Un assistant maternel agréé peut accueillir jusqu\'à combien d\'enfants simultanément ?',opts:['a) 1 enfant','b) 2 enfants','c) Jusqu\'à 4 enfants selon les termes de son agrément','d) Autant qu\'il le souhaite'],ans:2},
+  {q:'Que faire en cas de fièvre (plus de 38°C) chez un nourrisson de moins de 3 mois ?',opts:['a) Attendre pour voir si elle baisse','b) Appeler les parents pour les prévenir et consulter un médecin en urgence','c) Lui donner du paracétamol','d) Le mettre dans un bain froid'],ans:1}
+],
+TP_ASMA:[
+  {q:'Quelle est la base légale du secret professionnel médical en France ?',opts:['a) Le code du commerce','b) L\'article L.1110-4 du Code de la santé publique','c) Le règlement intérieur de l\'établissement de santé','d) La convention collective des assistants médicaux'],ans:1},
+  {q:'Quelle est la fonction de la cotation NGAP (Nomenclature Générale des Actes Professionnels) ?',opts:['a) Fixer les salaires des professionnels de santé','b) Classer les médicaments par famille thérapeutique','c) Définir les codes permettant la tarification et le remboursement des actes médicaux','d) Enregistrer les patients dans le logiciel médical'],ans:2},
+  {q:'Qu\'est-ce que le "tiers payant" dans le système de santé français ?',opts:['a) Le paiement différé des soins','b) Le dispositif permettant au patient de ne pas avancer les frais, la mutuelle et la Sécurité sociale payant directement','c) Le paiement des soins par un tiers membre de la famille','d) Une aide sociale pour les revenus modestes'],ans:1},
+  {q:'Comment accueillir un patient anxieux ou en détresse lors de sa prise en charge ?',opts:['a) Lui demander d\'attendre son tour sans lui parler','b) L\'orienter immédiatement vers le médecin sans lui parler','c) L\'accueillir avec bienveillance, l\'écouter, le rassurer et lui expliquer les étapes de sa prise en charge','d) Appeler le SAMU'],ans:2},
+  {q:'Quel est le délai légal de conservation des dossiers médicaux en France ?',opts:['a) 5 ans','b) 10 ans','c) 20 ans à partir de la dernière consultation','d) 50 ans'],ans:2}
+],
+// ── Niveau 5 (du Google Form original) ──
+BTS_BANQUE:[
+  {q:'Quel est le rôle principal d\'un conseiller bancaire ?',opts:['a) Faire du démarchage téléphonique','b) Gérer uniquement les prêts immobiliers','c) Accompagner les clients dans la gestion de leurs finances et leur proposer des solutions adaptées','d) Éviter tout contact avec les clients en agence'],ans:2},
+  {q:'Quelle est la principale différence entre un crédit à la consommation et un prêt immobilier ?',opts:['a) Le montant uniquement','b) La durée uniquement','c) L\'objet du financement : biens courants vs acquisition immobilière','d) Le taux d\'intérêt uniquement'],ans:2},
+  {q:'Quelle est la principale mission d\'un conseiller en gestion de patrimoine ?',opts:['a) Vendre uniquement des assurances','b) Gérer les comptes courants','c) Optimiser le patrimoine du client selon ses objectifs (rendement, transmission, fiscalité)','d) Promouvoir les cartes bancaires'],ans:2},
+  {q:'Que doit analyser un conseiller bancaire pour évaluer la solvabilité d\'un client ?',opts:['a) L\'historique scolaire','b) La possession d\'un compte bancaire','c) Les revenus, les charges et le taux d\'endettement','d) L\'ancienneté dans la banque'],ans:2},
+  {q:'Quel est l\'objectif principal du Livret A ?',opts:['a) Financer un achat immobilier','b) Spéculer sur les marchés boursiers','c) Constituer une épargne de précaution disponible à taux réglementé','d) Obtenir des prêts à taux bonifiés'],ans:2}
+],
+BTS_COM:[
+  {q:'La communication en entreprise sert-elle uniquement à transmettre des informations ?',opts:['a) Oui, c\'est sa seule fonction','b) Non, elle sert aussi à influencer, convaincre, créer du lien et construire l\'image','c) Oui, car toute communication est neutre et objective','d) Non, elle ne sert qu\'à exprimer des émotions'],ans:1},
+  {q:'Les médias ont-ils une influence sur l\'opinion publique ?',opts:['a) Oui, ils peuvent orienter la perception des événements et construire des représentations sociales','b) Non, chacun forge librement son opinion','c) Oui, mais seulement les médias traditionnels','d) Non, seuls les réseaux sociaux influencent l\'opinion aujourd\'hui'],ans:0},
+  {q:'Les réseaux sociaux sont-ils des médias à part entière ?',opts:['a) Non, ce sont uniquement des plateformes de discussion privée','b) Oui, ce sont des médias numériques qui produisent, diffusent et amplifient des contenus','c) Non, car ils ne produisent pas d\'informations officielles','d) Oui, mais uniquement pour les professionnels'],ans:1},
+  {q:'La communication non verbale comprend-elle les gestes et les expressions faciales ?',opts:['a) Oui, tout ce qui n\'est pas verbal : gestes, postures, regards, expressions','b) Non, elle ne concerne que le ton de la voix','c) Oui, mais elle est moins importante que le verbal','d) Non, seules les expressions du visage en font partie'],ans:0},
+  {q:'Un message mal formulé peut-il entraîner une mauvaise compréhension ?',opts:['a) Oui, car tout bruit dans la communication peut créer un malentendu','b) Non, le contexte compense toujours une mauvaise formulation','c) Oui, mais uniquement dans la communication écrite','d) Non, c\'est toujours la responsabilité du récepteur'],ans:0}
+],
+BTS_MCO:[
+  {q:'Quel est l\'objectif principal d\'une analyse SWOT ?',opts:['a) Identifier uniquement les menaces du marché','b) Analyser les forces, faiblesses internes et les opportunités, menaces externes pour orienter la stratégie','c) Augmenter les prix de vente','d) Réduire les coûts de production'],ans:1},
+  {q:'Que signifie CRM en gestion commerciale ?',opts:['a) Client Relationship Management : gestion de la relation client','b) Corporate Resource Management','c) Commercial Revenue Model','d) Customer Rating Method'],ans:0},
+  {q:'Quel indicateur mesure la performance commerciale d\'un point de vente ?',opts:['a) Le taux de conversion seul','b) Le panier moyen seul','c) Le chiffre d\'affaires seul','d) La combinaison CA, taux de conversion, panier moyen et indice de vente'],ans:3},
+  {q:'Quel est le principal avantage d\'un programme de fidélité ?',opts:['a) Attirer massivement de nouveaux clients','b) Augmenter la valeur vie client (LTV) en fidélisant et en augmentant la fréquence d\'achat','c) Réduire le nombre d\'articles en magasin','d) Améliorer la visibilité sur les réseaux sociaux'],ans:1},
+  {q:'Que signifie le terme "stratégie omnicanale" ?',opts:['a) Utiliser uniquement le canal digital','b) Offrir une expérience client unifiée et cohérente à travers l\'ensemble des canaux de vente et de contact','c) Se spécialiser dans un seul canal de distribution','d) Vendre uniquement en ligne'],ans:1}
+],
+BTS_NDRC:[
+  {q:'Un site e-commerce est-il un outil de digitalisation de la relation client ?',opts:['a) Oui, il constitue un canal d\'interaction et de vente permettant de gérer la relation client en ligne','b) Non, la digitalisation concerne uniquement les réseaux sociaux','c) Oui, mais seulement s\'il propose un chat en direct','d) Non, un site e-commerce ne remplace pas un magasin physique'],ans:0},
+  {q:'Un chatbot peut-il remplacer complètement un conseiller client ?',opts:['a) Oui, il peut traiter toutes les demandes','b) Non, il gère efficacement les demandes simples et répétitives mais ne peut pas remplacer l\'humain pour les situations complexes et émotionnelles','c) Oui, si son IA est suffisamment avancée','d) Non, car les clients refusent toujours d\'interagir avec un robot'],ans:1},
+  {q:'Qu\'est-ce que le "social selling" ?',opts:['a) Vendre en magasin physique grâce à l\'interaction humaine','b) Utiliser les réseaux sociaux professionnels pour prospecter, créer du lien et conclure des ventes','c) Faire de la publicité payante sur les réseaux sociaux','d) Gérer le SAV via les réseaux sociaux'],ans:1},
+  {q:'Un bon référencement SEO améliore-t-il la visibilité d\'une entreprise ?',opts:['a) Oui, il améliore le positionnement naturel dans les moteurs de recherche et génère du trafic qualifié','b) Non, le SEO n\'a aucun impact mesurable','c) Oui, mais seulement combiné à des campagnes de publicité payante','d) Non, seule la présence sur les réseaux sociaux compte'],ans:0},
+  {q:'Les avis clients en ligne ont-ils un impact sur les décisions d\'achat ?',opts:['a) Non, les consommateurs n\'y prêtent pas attention','b) Oui, ils influencent fortement la décision d\'achat (85% des consommateurs consultent les avis avant d\'acheter)','c) Oui, mais seulement pour les achats en ligne','d) Non, seule la réputation de la marque compte'],ans:1}
+],
+BTS_GPME:[
+  {q:'Qu\'est-ce qu\'un prévisionnel financier pour une PME ?',opts:['a) Le bilan comptable de l\'exercice précédent','b) Un document estimant les flux financiers futurs (recettes, dépenses, trésorerie) sur une période donnée','c) La fiche de paie du dirigeant','d) Le plan de communication de l\'entreprise'],ans:1},
+  {q:'Quelle est la taille maximale d\'une PME selon la définition européenne ?',opts:['a) Moins de 10 salariés et CA < 2M€','b) Moins de 100 salariés','c) Moins de 250 salariés et CA ≤ 50M€ ou bilan ≤ 43M€','d) Moins de 500 salariés'],ans:2},
+  {q:'Qu\'est-ce que la TVA collectée pour une entreprise ?',opts:['a) La TVA que l\'entreprise paie sur ses achats','b) La TVA que l\'entreprise facture à ses clients et qu\'elle reverse à l\'État','c) La TVA déduite des charges de l\'entreprise','d) Une taxe sur les salaires'],ans:1},
+  {q:'Quel document juridique est obligatoire pour constituer une SARL ?',opts:['a) Un business plan','b) Des statuts rédigés et déposés au RCS','c) Un prévisionnel financier visé par un expert-comptable','d) Un contrat de travail pour le gérant'],ans:1},
+  {q:'Qu\'est-ce que le "seuil de rentabilité" (point mort) d\'une entreprise ?',opts:['a) Le chiffre d\'affaires minimal pour que l\'entreprise soit en bénéfice','b) Le niveau de stock nécessaire pour fonctionner','c) Le taux de rentabilité moyen du secteur','d) La valeur de l\'entreprise au moment de sa création'],ans:0}
+],
+TP_FPA:[
+  {q:'Quelle méthode pédagogique favorise le plus l\'implication de l\'apprenant adulte ?',opts:['a) Le cours magistral','b) La dictée','c) Les méthodes actives : étude de cas, simulation, jeu de rôle, résolution de problème','d) La lecture de documents'],ans:2},
+  {q:'Qu\'est-ce qu\'un objectif pédagogique opérationnel ?',opts:['a) Le contenu général de la formation','b) Une formulation décrivant ce que l\'apprenant sera capable de faire, dans quel contexte et avec quel niveau de performance à l\'issue de la formation','c) Le planning de la formation','d) Les ressources pédagogiques utilisées'],ans:1},
+  {q:'Quelle est la première étape incontournable de l\'ingénierie de formation ?',opts:['a) Choisir les supports pédagogiques','b) Réserver la salle de formation','c) Analyser et recueillir les besoins de formation','d) Évaluer les apprenants à chaud'],ans:2},
+  {q:'Qu\'est-ce que l\'évaluation "à chaud" en formation ?',opts:['a) L\'évaluation des acquis réalisée plusieurs semaines après la formation','b) L\'évaluation de la satisfaction et des premières réactions des apprenants à la fin de la formation','c) L\'évaluation du formateur par son responsable','d) L\'évaluation des prérequis en entrée de formation'],ans:1},
+  {q:'Quelle est la principale différence pédagogique entre formation présentielle et distancielle ?',opts:['a) La formation à distance est toujours moins efficace','b) Le coût de la formation','c) Les modalités d\'interaction, de présence et d\'accompagnement entre formateur et apprenants','d) La durée totale de la formation'],ans:2}
+],
+TP_AC:[
+  {q:'Quel document commercial permet de formaliser une commande entre un fournisseur et un client ?',opts:['a) Un devis','b) Une facture','c) Un bon de commande','d) Un bon de livraison'],ans:2},
+  {q:'Quelle est la principale mission d\'un assistant commercial dans la gestion de la relation client ?',opts:['a) Gérer les stocks du magasin','b) Assurer le suivi des commandes, gérer les contacts clients et soutenir l\'équipe commerciale','c) Réaliser des études de marché','d) Rédiger des contrats commerciaux seul'],ans:1},
+  {q:'Dans le cadre de la prospection, quel est le rôle de l\'assistant commercial ?',opts:['a) Accueillir les clients en magasin','b) Qualifier les prospects, préparer les fichiers et organiser les actions commerciales du commercial','c) Mettre en place des campagnes publicitaires','d) Préparer les rapports financiers'],ans:1},
+  {q:'Qu\'est-ce qu\'un tableau de bord commercial ?',opts:['a) Un outil de gestion des stocks','b) Un outil de gestion des salaires','c) Un outil de pilotage et de suivi des indicateurs de performance commerciale (CA, taux de transformation, nb de contacts…)','d) Un formulaire de demande de devis'],ans:2},
+  {q:'Quelle est la première étape dans la gestion d\'un appel d\'offres ?',opts:['a) Rédiger l\'offre commerciale','b) Analyser les besoins du client et les critères du cahier des charges','c) Contacter les fournisseurs','d) Rédiger le rapport final'],ans:1}
+],
+// ── Niveau 6 ──
+BAC6_REM:[
+  {q:'Qu\'est-ce que le "yield management" (revenue management) dans le commerce ?',opts:['a) La gestion des rendements agricoles','b) Une stratégie de tarification dynamique qui adapte les prix en temps réel selon l\'offre, la demande et le comportement d\'achat','c) La gestion des stocks en entrepôt logistique','d) Un outil de contrôle de la qualité des produits'],ans:1},
+  {q:'Comment mesure-t-on l\'expérience client (CX) ?',opts:['a) Uniquement par le chiffre d\'affaires','b) Par des indicateurs combinés : NPS, CSAT, CES et analyse des verbatim clients','c) Par le taux de retour produits uniquement','d) Par le nombre de réclamations uniquement'],ans:1},
+  {q:'Quelle est la différence entre management opérationnel et management stratégique ?',opts:['a) Le management stratégique gère le quotidien et le management opérationnel la vision','b) Le management opérationnel pilote les activités quotidiennes, le stratégique définit les orientations à moyen/long terme','c) Ils sont identiques dans une PME','d) Le management stratégique concerne uniquement les finances'],ans:1},
+  {q:'Qu\'est-ce que la "supply chain" (chaîne logistique) dans un établissement marchand ?',opts:['a) La chaîne hiérarchique de l\'entreprise','b) L\'ensemble des flux de produits, d\'informations et financiers depuis le fournisseur jusqu\'au client final','c) Le réseau de distribution numérique uniquement','d) La gestion des ressources humaines'],ans:1},
+  {q:'Comment développer la performance d\'une équipe commerciale en tant que responsable ?',opts:['a) En imposant uniquement des objectifs de vente élevés','b) En combinant fixation d\'objectifs SMART, accompagnement terrain, formation, motivation et évaluation régulière','c) En changeant régulièrement les membres de l\'équipe','d) En réduisant les zones de chalandise'],ans:1}
+],
+BAC6_BNQ:[
+  {q:'Qu\'est-ce que l\'assurance-vie en tant que produit d\'épargne ?',opts:['a) Une assurance en cas de décès uniquement','b) Un contrat d\'épargne à moyen-long terme offrant des avantages fiscaux, une souplesse de gestion et une clause de transmission du capital','c) Un prêt bancaire à taux avantageux','d) Un compte courant rémunéré'],ans:1},
+  {q:'Que signifie "risque de contrepartie" en banque ?',opts:['a) Le risque que la banque fasse faillite','b) Le risque qu\'un emprunteur ou une contrepartie ne respecte pas ses engagements financiers (défaut de paiement)','c) Le risque de piratage informatique des systèmes bancaires','d) Le risque de change sur les opérations internationales'],ans:1},
+  {q:'Qu\'est-ce que le "ratio de solvabilité" (Bâle III) pour une banque ?',opts:['a) Le rapport entre les revenus et les dépenses annuelles','b) Le rapport entre les fonds propres de la banque et ses actifs pondérés par le risque, garantissant sa solidité financière','c) Le taux de remboursement des crédits accordés','d) La part des dépôts garantis par l\'État'],ans:1},
+  {q:'Quelle est la différence entre intermédiation bancaire classique et désintermédiation financière ?',opts:['a) L\'intermédiation est moderne, la désintermédiation est ancienne','b) L\'intermédiation = la banque collecte l\'épargne et octroie des crédits ; la désintermédiation = les entreprises se financent directement sur les marchés','c) Ce sont deux termes synonymes','d) La désintermédiation concerne uniquement les particuliers'],ans:1},
+  {q:'Qu\'est-ce qu\'une Fintech et en quoi transforme-t-elle le secteur bancaire ?',opts:['a) Une banque traditionnelle modernisant ses agences','b) Une entreprise technologique innovant dans les services financiers (paiement, crédit, épargne, conseil) en dehors des circuits bancaires traditionnels','c) Un département informatique d\'une grande banque','d) Un logiciel de comptabilité bancaire'],ans:1}
+],
+// ── Niveau 7 ──
+MST_MA:[
+  {q:'Qu\'est-ce que la méthode DMAIC en management de la qualité et quand l\'utilise-t-on ?',opts:['a) Define, Manage, Allocate, Implement, Control — pour la gestion de projet agile','b) Define, Measure, Analyze, Improve, Control — pour l\'amélioration de processus existants dans une démarche Six Sigma','c) Design, Market, Automate, Integrate, Check — pour le lancement de nouveaux produits','d) Direct, Monitor, Assess, Intervene, Close — pour la conduite du changement'],ans:1},
+  {q:'Qu\'est-ce que le "management par la valeur" (Value-Based Management) ?',opts:['a) Réduire les coûts à tout prix pour maximiser les marges','b) Orienter toutes les décisions managériales vers la création de valeur pour les actionnaires et les parties prenantes','c) Fixer les prix en fonction de la valeur perçue par le client uniquement','d) Gérer les actifs immatériels de l\'entreprise'],ans:1},
+  {q:'Qu\'est-ce que le "change management" et quels en sont les leviers essentiels ?',opts:['a) La gestion des devises étrangères dans les opérations internationales','b) L\'accompagnement des organisations dans les transformations en agissant sur la communication, la formation, l\'implication des acteurs et la gestion des résistances','c) La modification des contrats de travail lors d\'une restructuration','d) La gestion de la trésorerie en période de crise'],ans:1},
+  {q:'Dans un montage LBO (Leveraged Buy-Out), quel est le mécanisme fondamental ?',opts:['a) L\'entreprise se finance par augmentation de capital uniquement','b) L\'acquisition d\'une entreprise est financée majoritairement par endettement, remboursé par les flux de trésorerie générés par la cible','c) La fusion de deux entreprises de même taille pour créer des synergies','d) La cession d\'actifs non stratégiques pour financer la croissance'],ans:1},
+  {q:'Qu\'est-ce que la "pensée stratégique" (strategic thinking) en management ?',opts:['a) La capacité à appliquer rigoureusement le plan stratégique établi','b) La capacité à analyser l\'environnement, anticiper les évolutions, identifier les opportunités et construire un avantage compétitif durable','c) La maîtrise des outils de planification opérationnelle','d) La gestion des parties prenantes dans les projets complexes'],ans:1}
+],
+MST_ECGP:[
+  {q:'Qu\'est-ce que l\'"allocation d\'actifs" dans une stratégie de gestion de patrimoine ?',opts:['a) L\'attribution de tâches aux collaborateurs d\'un family office','b) La répartition optimale du capital entre différentes classes d\'actifs (actions, obligations, immobilier, actifs alternatifs) en fonction du profil risque/rendement du client','c) La gestion exclusive du portefeuille immobilier','d) L\'optimisation fiscale des revenus du capital'],ans:1},
+  {q:'Quelle est la différence entre une SCPI et un OPCI ?',opts:['a) Ce sont des placements identiques','b) La SCPI investit uniquement en immobilier locatif ; l\'OPCI mixe immobilier (60% min.) et actifs financiers (35% max.) avec une liquidité accrue','c) L\'OPCI est réservé aux investisseurs institutionnels','d) La SCPI est plus liquide que l\'OPCI'],ans:1},
+  {q:'Qu\'est-ce que la "flat tax" (Prélèvement Forfaitaire Unique — PFU) en France ?',opts:['a) Un impôt progressif sur les revenus du travail','b) Un prélèvement forfaitaire de 30% (12,8% IR + 17,2% prélèvements sociaux) sur la plupart des revenus du capital depuis 2018','c) Une taxe sur les transactions immobilières','d) Un impôt sur les sociétés à taux fixe'],ans:1},
+  {q:'Qu\'est-ce que l\'"ingénierie patrimoniale" ?',opts:['a) La conception architecturale de bâtiments pour des clients fortunés','b) L\'optimisation globale du patrimoine d\'un client par une approche juridique, fiscale et financière combinée (structuration, transmission, protection)','c) La gestion comptable d\'une entreprise familiale','d) L\'investissement exclusif dans des produits financiers sophistiqués'],ans:1},
+  {q:'Dans le cadre d\'une transmission patrimoniale, qu\'est-ce que l\'"abattement fiscal" ?',opts:['a) La valeur totale du bien transmis','b) La somme déduite de la base imposable avant calcul des droits de succession ou de donation, variant selon le lien de parenté','c) La taxe appliquée sur la valeur vénale du bien','d) Les frais notariaux liés à la transmission'],ans:1}
+]
+};
+
+// ─── ÉTAT & STOCKAGE (localStorage pour persistance) ─────────────
+var S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
+
+function loadDB() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    var parsed = raw ? JSON.parse(raw) : [];
+    window._lfFallback = parsed;
+    return parsed;
+  } catch(e) {
+    return window._lfFallback || [];
+  }
+}
+function saveDB(arr) {
+  window._lfFallback = arr;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  } catch(e) {}
+}
+var currentDetailId = null, currentFilter = 'all';
+
+// ─── BUILD FORMATION UI ──────────────────────────────────────────
+function buildNiveauGrid() {
+  var g = document.getElementById('niveau-grid'); g.innerHTML = '';
+  NIVEAUX.forEach(function(niv) {
+    var sec = document.createElement('div'); sec.className = 'niveau-section';
+    var hdr = document.createElement('div'); hdr.className = 'niveau-header';
+    hdr.style.background = niv.color;
+    hdr.innerHTML = niv.label + '<span class="nbadge">' + niv.formations.length + '</span><span class="chev">▾</span>';
+    var body = document.createElement('div'); body.className = 'niveau-body';
+    var fg = document.createElement('div'); fg.className = 'formation-grid';
+    niv.formations.forEach(function(f) {
+      var c = document.createElement('div'); c.className = 'fc'; c.dataset.id = f.id;
+      c.innerHTML = '<div class="fc-t">' + f.label + '</div><div class="fc-s">' + f.sub + '</div>';
+      c.onclick = function() {
+        document.querySelectorAll('.fc').forEach(function(x) { x.classList.remove('selected'); });
+        c.classList.add('selected'); S.formation = f.id; S.niveauId = niv.id;
+        document.getElementById('info-q').textContent = 35;
+      };
+      fg.appendChild(c);
+    });
+    body.appendChild(fg);
+    hdr.onclick = function() { hdr.classList.toggle('open'); body.classList.toggle('open'); };
+    sec.appendChild(hdr); sec.appendChild(body); g.appendChild(sec);
+  });
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach(function(e) { e.classList.remove('active'); });
+  document.querySelectorAll('.view').forEach(function(e) { e.classList.remove('active'); });
+  // tab-test-btn ou tab-dash-btn selon l'onglet
+  var btnId = t === 'dashboard' ? 'tab-dash-btn' : 'tab-test-btn';
+  var el = document.getElementById(btnId);
+  if (el) el.classList.add('active');
+  var view = document.getElementById('tab-' + t);
+  if (view) view.classList.add('active');
+  if (t === 'dashboard') renderDashboard();
+}
+function showScreen(s) {
+  ['intro','formation','questions','success'].forEach(function(id) {
+    document.getElementById('screen-' + id).style.display = (id === s) ? 'block' : 'none';
+  });
+}
+function goToFormation() {
+  var n = document.getElementById('f-nom').value.trim();
+  var p = document.getElementById('f-prenom').value.trim();
+  var e = document.getElementById('f-email').value.trim();
+  if (!n || !p || !e) { alert('Veuillez remplir tous les champs.'); return; }
+  if (e.indexOf('@') < 0) { alert('Veuillez saisir un email valide.'); return; }
+  S.candidat = {nom:n, prenom:p, email:e};
+  if (!document.getElementById('niveau-grid').children.length) buildNiveauGrid();
+  showScreen('formation');
+}
+function goToQuestions() {
+  if (!S.formation) { alert('Veuillez sélectionner une formation.'); return; }
+  var nid = S.niveauId, fid = S.formation;
+  S.allQ = [];
+  // Partie 1 Français
+  BANQUES_Q[nid + '_fr'].forEach(function(q) { S.allQ.push({section:'📚 Partie 1 : Français', data:q}); });
+  // Partie 2 Culture Générale
+  BANQUES_Q[nid + '_cg'].forEach(function(q) { S.allQ.push({section:'🌍 Partie 2 : Culture Générale', data:q}); });
+  // Partie 3 Anglais
+  BANQUES_Q[nid + '_en'].forEach(function(q) { S.allQ.push({section:'🇬🇧 Partie 3 : Anglais', data:q}); });
+  // Questions Pro
+  QP[fid].forEach(function(q) { S.allQ.push({section:'📌 Questions Professionnelles — ' + FM[fid].label, data:q}); });
+  S.step = 0; S.answers = {};
+  showScreen('questions'); renderQuestion();
+}
+
+// ─── QUESTIONS ───────────────────────────────────────────────────
+function renderQuestion() {
+  var total = S.allQ.length, pct = Math.round((S.step / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = 'Question ' + (S.step + 1) + ' / ' + total;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  var q = S.allQ[S.step], saved = S.answers[S.step];
+  var html = '<span class="q-section-label">' + q.section + '</span>';
+  html += '<div class="q-text">' + q.data.q + '</div><div class="radio-group">';
+  q.data.opts.forEach(function(opt, i) {
+    html += '<div class="radio-opt' + (saved === i ? ' selected' : '') + '" onclick="selAns(' + i + ',this)"><div class="radio-dot"></div>' + opt + '</div>';
+  });
+  html += '</div><div class="nav-btns">';
+  html += S.step > 0 ? '<button class="btn" onclick="prevQ()">← Précédent</button>' : '<div></div>';
+  html += '<span style="font-size:11px;color:var(--muted);font-weight:600">' + (S.step + 1) + '/' + total + '</span>';
+  html += S.step < total - 1 ? '<button class="btn btn-primary" onclick="nextQ()">Suivant →</button>' : '<button class="btn btn-primary" onclick="submitTest()">Terminer ✓</button>';
+  html += '</div>';
+  document.getElementById('question-card').innerHTML = html;
+}
+function selAns(i, el) {
+  document.querySelectorAll('#question-card .radio-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected'); S.answers[S.step] = i;
+}
+function nextQ() { if (S.answers[S.step] === undefined) { alert('Veuillez sélectionner une réponse.'); return; } S.step++; renderQuestion(); }
+function prevQ() { S.step--; renderQuestion(); }
+
+// ─── SUBMIT ──────────────────────────────────────────────────────
+function submitTest() {
+  if (S.answers[S.step] === undefined) { alert('Veuillez sélectionner une réponse.'); return; }
+  var sc = calcScores();
+  var now = new Date();
+  var ds = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + now.getHours() + 'h' + String(now.getMinutes()).padStart(2, '0');
+  var rec = {
+    id: Date.now(), nom: S.candidat.nom, prenom: S.candidat.prenom, email: S.candidat.email,
+    formation: S.formation, niveauId: S.niveauId, date: ds, scores: sc,
+    answers: Object.assign({}, S.answers), allQ: JSON.parse(JSON.stringify(S.allQ)),
+    status: 'new', hsSync: false, sheetRow: null
+  };
+  var db = loadDB(); db.push(rec); saveDB(db);
+  document.getElementById('success-prenom').textContent = S.candidat.prenom;
+  showScreen('success');
+  if (WEBHOOK_URL) sendToWebhook(rec);
+  else document.getElementById('hs-result-msg').innerHTML = '';
+}
+
+function calcScores() {
+  var fr=0, cg=0, en=0, pro=0;
+  S.allQ.forEach(function(qObj, i) {
+    var correct = (S.answers[i] === qObj.data.ans);
+    if (qObj.section.indexOf('Français') >= 0) { if (correct) fr++; }
+    else if (qObj.section.indexOf('Culture') >= 0) { if (correct) cg++; }
+    else if (qObj.section.indexOf('Anglais') >= 0 || qObj.section.indexOf('🇬🇧') >= 0) { if (correct) en++; }
+    else { if (correct) pro++; }
+  });
+  var total = fr + cg + en + pro;
+  return {fr:fr, cg:cg, en:en, pro:pro, total:total, totalMax:35, pct:Math.round((total/35)*100)};
+}
+
+function sendToWebhook(rec) {
+  var payload = {
+    id:rec.id, nom:rec.nom, prenom:rec.prenom, email:rec.email,
+    formation:FM[rec.formation].label, niveau:FM[rec.formation].niveauLabel,
+    date:rec.date, score_pct:rec.scores.pct,
+    score_fr:rec.scores.fr+'/10', score_cg:rec.scores.cg+'/10',
+    score_en:rec.scores.en+'/10', score_pro:rec.scores.pro+'/5',
+    score_total:rec.scores.total+'/35', statut:'En attente'
+  };
+  fetch(WEBHOOK_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.sheetRow) {
+        var db = loadDB(); var r = db.find(function(x) { return x.id === rec.id; });
+        if (r) { r.sheetRow = data.sheetRow; r.hsSync = data.hsSync || false; saveDB(db); }
+      }
+    }).catch(function() {});
+}
+
+function resetTest() {
+  S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
+  ['f-nom','f-prenom','f-email'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('info-q').textContent = '35';
+  document.getElementById('hs-result-msg').innerHTML = '';
+  showScreen('intro');
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────
+function renderDashboard() {
+  var db = loadDB();
+  var filtered = currentFilter === 'all' ? db : db.filter(function(r) { return r.niveauId === currentFilter; });
+  document.getElementById('stat-total').textContent = filtered.length;
+  document.getElementById('stat-new').textContent = filtered.filter(function(r) { return r.status === 'new'; }).length;
+  document.getElementById('stat-ok').textContent = filtered.filter(function(r) { return r.status === 'ok'; }).length;
+  document.getElementById('stat-avg').textContent = filtered.length ? Math.round(filtered.reduce(function(s,r) { return s + r.scores.pct; }, 0) / filtered.length) + '%' : '—';
+  var list = document.getElementById('results-list');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div>Aucun résultat pour l\'instant.<br>Les candidats apparaîtront ici après leur test.</div>';
+    return;
+  }
+  var html = '';
+  filtered.slice().reverse().forEach(function(r) {
+    var ini = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
+    var sc = r.scores.pct;
+    var scCls = sc >= 70 ? 'score-high' : sc >= 50 ? 'score-med' : 'score-low';
+    var stCls = r.status === 'new' ? 's-new' : r.status === 'ok' ? 's-ok' : 's-no';
+    var stLbl = r.status === 'new' ? 'En attente' : r.status === 'ok' ? 'Retenu' : 'Non retenu';
+    html += '<div class="result-row" onclick="openDetail(' + r.id + ')">';
+    html += '<div class="avatar">' + ini + '</div>';
+    html += '<div class="result-info"><div class="name">' + r.prenom + ' ' + r.nom + '</div>';
+    html += '<div class="meta">' + FM[r.formation].label + ' — ' + r.date + '</div></div>';
+    html += '<span class="score-badge ' + scCls + '">' + sc + '%</span>';
+    html += '<span class="status-pill ' + stCls + '">' + stLbl + '</span>';
+    if (r.sheetRow) html += '<span style="font-size:11px;color:var(--teal);margin-left:4px" title="Enregistré Google Sheets">📊</span>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active'); renderDashboard();
+}
+function clearAll() { if (confirm('Supprimer tous les résultats ?')) { saveDB([]); renderDashboard(); } }
+
+// ─── DETAIL MODAL ────────────────────────────────────────────────
+function openDetail(id) {
+  var db = loadDB(); var r = db.find(function(x) { return x.id === id; }); if (!r) return;
+  currentDetailId = id;
+  var fm = FM[r.formation];
+  document.getElementById('d-avatar').textContent = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
+  document.getElementById('d-name').textContent = r.prenom + ' ' + r.nom;
+  document.getElementById('d-meta').textContent = fm.label + ' — ' + r.date + ' — ' + r.email;
+  document.getElementById('d-status-sel').value = r.status;
+  var sheetHtml = '';
+  if (r.sheetRow && SHEET_URL) sheetHtml = '<a href="' + SHEET_URL + '" target="_blank" class="sheet-link">📊 Voir dans Google Sheets (ligne ' + r.sheetRow + ')</a>';
+  document.getElementById('d-hs-link').innerHTML = sheetHtml;
+  var sc = r.scores;
+  var html = '<div class="score-hero">';
+  html += '<div class="score-circle"><div class="sv">' + sc.pct + '%</div><div class="sl">/100</div></div>';
+  html += '<div class="score-details"><div class="name">' + r.prenom + ' ' + r.nom + '</div>';
+  html += '<div class="meta">' + fm.label + '<br>' + r.date + '</div>';
+  html += '<div class="score-breakdown">';
+  html += '<div class="score-box"><div class="bv">' + sc.fr + '/10</div><div class="bl">Français</div></div>';
+  html += '<div class="score-box"><div class="bv">' + sc.cg + '/10</div><div class="bl">Culture G.</div></div>';
+  html += '<div class="score-box"><div class="bv">' + sc.en + '/10</div><div class="bl">Anglais</div></div>';
+  html += '<div class="score-box"><div class="bv">' + sc.pro + '/5</div><div class="bl">Pro</div></div>';
+  html += '</div></div></div>';
+  // Questions par section
+  var sections = ['📚 Partie 1 : Français','🌍 Partie 2 : Culture Générale','🇬🇧 Partie 3 : Anglais'];
+  sections.push('📌 Questions Professionnelles — ' + fm.label);
+  sections.forEach(function(sec) {
+    var items = [];
+    r.allQ.forEach(function(qObj, i) { if (qObj.section === sec) items.push({qObj:qObj, i:i}); });
+    if (!items.length) return;
+    html += '<span class="q-section-hd">' + sec + '</span>';
+    items.forEach(function(x) {
+      var given = r.answers[x.i], correct = x.qObj.data.ans, isRight = (given === correct);
+      html += '<div class="q-item">';
+      html += '<div class="q-item-hd" style="border-left:3px solid ' + (isRight ? 'var(--teal)' : 'var(--danger)') + '">' + (isRight ? '✓ ' : '✗ ') + (x.i + 1) + '. ' + x.qObj.data.q + '</div>';
+      html += '<div class="q-item-body">';
+      x.qObj.data.opts.forEach(function(opt, oi) {
+        var cls = ''; if (oi === correct) cls = 'correct'; else if (oi === given && !isRight) cls = 'wrong';
+        html += '<div class="opt-row ' + cls + '"><div class="opt-dot"></div>' + opt;
+        if (oi === correct) html += ' <em style="font-size:10px">(bonne réponse)</em>';
+        if (oi === given && !isRight) html += ' <em style="font-size:10px">← Réponse du candidat</em>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    });
+  });
+  document.getElementById('d-body').innerHTML = html;
+  document.getElementById('detail-modal').style.display = 'flex';
+}
+function updateStatus(event) {
+  var val = event.target.value; var db = loadDB();
+  var r = db.find(function(x) { return x.id === currentDetailId; });
+  if (r) { r.status = val; saveDB(db); }
+}
+function closeDetail() { document.getElementById('detail-modal').style.display = 'none'; renderDashboard(); }
+function closeDetailOutside(e) { if (e.target === document.getElementById('detail-modal')) closeDetail(); }
+
+// ─── PRINT ───────────────────────────────────────────────────────
+function printDetail() {
+  var db = loadDB(); var r = db.find(function(x) { return x.id === currentDetailId; }); if (!r) return;
+  var fm = FM[r.formation]; var sc = r.scores;
+  var now = new Date(); var ds = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
+  var body = '<div style="font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#232121;padding:24px">';
+  body += '<div style="display:flex;align-items:center;gap:14px;border-bottom:3px solid #2EB3AF;padding-bottom:14px;margin-bottom:20px">';
+  body += '<div style="width:48px;height:48px;background:#2EB3AF;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:12px;letter-spacing:1px;text-align:center;line-height:1.2">LA<br>FABRIK</div>';
+  body += '<div><div style="font-size:17px;font-weight:900;color:#2EB3AF;letter-spacing:1px">LA FABRIK — DES LEADERS DE DEMAIN</div>';
+  body += '<div style="font-size:9px;color:#5A5A5A;letter-spacing:2px;text-transform:uppercase">Résultat Test d\'Entrée 2026 — Document confidentiel Qualiopi</div></div>';
+  body += '<div style="margin-left:auto;font-size:10px;color:#5A5A5A">Généré le ' + ds + '</div></div>';
+  body += '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px"><tr>';
+  body += '<td style="padding:6px 10px;background:#F2FAFA;font-weight:700;width:20%">Candidat</td><td style="padding:6px 10px">' + r.prenom + ' ' + r.nom + '</td>';
+  body += '<td style="padding:6px 10px;background:#F2FAFA;font-weight:700;width:15%">Email</td><td style="padding:6px 10px">' + r.email + '</td></tr><tr>';
+  body += '<td style="padding:6px 10px;background:#F2FAFA;font-weight:700">Formation</td><td style="padding:6px 10px">' + fm.label + ' (' + fm.niveauLabel + ')</td>';
+  body += '<td style="padding:6px 10px;background:#F2FAFA;font-weight:700">Date</td><td style="padding:6px 10px">' + r.date + '</td></tr></table>';
+  body += '<div style="background:#232121;border-radius:10px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:80px 1fr;gap:16px;align-items:center">';
+  body += '<div style="width:76px;height:76px;border-radius:50%;border:3px solid #2EB3AF;display:flex;align-items:center;justify-content:center;flex-direction:column"><div style="font-size:24px;font-weight:900;color:#2EB3AF">' + sc.pct + '%</div><div style="font-size:9px;color:rgba(255,255,255,.5)">/ 100</div></div>';
+  body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Français : <strong style="color:#2EB3AF">' + sc.fr + '/10</strong></div>';
+  body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Culture G. : <strong style="color:#2EB3AF">' + sc.cg + '/10</strong></div>';
+  body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Anglais : <strong style="color:#2EB3AF">' + sc.en + '/10</strong></div>';
+  body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Questions Pro : <strong style="color:#2EB3AF">' + sc.pro + '/5</strong></div>';
+  body += '</div></div>';
+  var allSections = ['📚 Partie 1 : Français','🌍 Partie 2 : Culture Générale','🇬🇧 Partie 3 : Anglais','📌 Questions Professionnelles — ' + fm.label];
+  allSections.forEach(function(sec) {
+    var items = []; r.allQ.forEach(function(qObj,i){ if(qObj.section===sec) items.push({qObj:qObj,i:i}); });
+    if (!items.length) return;
+    body += '<div style="background:#2EB3AF;color:white;padding:6px 12px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + sec + '</div>';
+    items.forEach(function(x) {
+      var given=r.answers[x.i],correct=x.qObj.data.ans,isRight=(given===correct);
+      body += '<div style="border:1px solid #D4E8E8;border-radius:6px;margin-bottom:6px;overflow:hidden">';
+      body += '<div style="padding:6px 10px;background:' + (isRight?'#E6F7F7':'#FDECEA') + ';border-bottom:1px solid #D4E8E8;font-size:10px;font-weight:700;color:' + (isRight?'#1A8A86':'#C0392B') + '">' + (isRight?'✓':'✗') + ' Q' + (x.i+1) + '. ' + x.qObj.data.q + '</div>';
+      body += '<div style="padding:6px 10px">';
+      x.qObj.data.opts.forEach(function(opt,oi){
+        var isC=(oi===correct),isW=(oi===given&&!isRight);
+        body += '<div style="padding:2px 0;font-size:11px;color:' + (isC?'#1A8A86':isW?'#C0392B':'#5A5A5A') + ';font-weight:' + (isC||isW?'700':'400') + '">';
+        body += (isC?'✓ ':isW?'✗ ':'  ') + opt + (isW?' ← Réponse candidat':'') + '</div>';
+      });
+      body += '</div></div>';
+    });
+  });
+  body += '<div style="margin-top:20px;padding-top:10px;border-top:1px solid #D4E8E8;font-size:9px;color:#5A5A5A;text-align:center">CFA La Fabrik — 153 rue André Citroën, ZI La Palud, 83600 Fréjus — contrat@fabrikfrejus.fr</div>';
+  body += '</div>';
+  var w = window.open('','_blank','width=820,height=700');
+  if (w) { w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Résultat ' + r.prenom + ' ' + r.nom + '</title><style>@media print{@page{margin:12mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + body + '<script>window.onload=function(){window.print();}<\/script></body></html>'); w.document.close(); }
+}
+
+// ─── CSV EXPORT ──────────────────────────────────────────────────
+function exportCSV() {
+  var db = loadDB(); if (!db.length) { alert('Aucun résultat à exporter.'); return; }
+  var rows = [['ID','Prénom','Nom','Email','Formation','Niveau','Date test','Score %','Français /10','Culture G. /10','Anglais /10','Questions Pro /5','Score total /35','Statut']];
+  db.forEach(function(r) {
+    var fm = FM[r.formation];
+    rows.push([r.id, r.prenom, r.nom, r.email, fm.label, fm.niveauLabel, r.date, r.scores.pct,
+      r.scores.fr, r.scores.cg, r.scores.en, r.scores.pro, r.scores.total,
+      r.status==='new'?'En attente':r.status==='ok'?'Retenu':'Non retenu']);
+  });
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\n');
+  var blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob); var a = document.createElement('a');
+  a.href = url; a.download = 'LaFabrik_Tests_Qualiopi_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+function exportSingleCSV() {
+  var db = loadDB(); var r = db.find(function(x) { return x.id === currentDetailId; }); if (!r) return;
+  var fm = FM[r.formation];
+  var rows = [['Champ','Valeur']];
+  rows.push(['Prénom',r.prenom],['Nom',r.nom],['Email',r.email],['Formation',fm.label],['Niveau',fm.niveauLabel],['Date',r.date],['Score global',r.scores.pct+'%'],['Français',r.scores.fr+'/10'],['Culture G.',r.scores.cg+'/10'],['Anglais',r.scores.en+'/10'],['Questions Pro',r.scores.pro+'/5'],['Total',r.scores.total+'/35'],['Statut',r.status==='new'?'En attente':r.status==='ok'?'Retenu':'Non retenu']);
+  rows.push(['',''],['DÉTAIL DES RÉPONSES','']);
+  r.allQ.forEach(function(qObj,i){ var given=r.answers[i],correct=qObj.data.ans,isRight=(given===correct); rows.push(['Q'+(i+1)+' ['+qObj.section+'] '+qObj.data.q,(isRight?'✓':'✗')+' '+qObj.data.opts[given]+(!isRight?' → Correct: '+qObj.data.opts[correct]:'')]); });
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\n');
+  var blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob); var a = document.createElement('a');
+  a.href = url; a.download = 'LaFabrik_' + r.prenom + '_' + r.nom + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+// Charge les données au démarrage pour que le dashboard soit
+// immédiatement opérationnel dès le premier clic
+window._lfFallback = loadDB();
+
+</script>
+</body>
+</html>
