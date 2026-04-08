@@ -892,22 +892,31 @@ function calcScores() {
 }
 
 function sendToWebhook(rec) {
+  var detailReponses = '';
+  if (rec.allQ) {
+    rec.allQ.forEach(function(qObj, i) {
+      var given = rec.answers[i];
+      var correct = qObj.data.ans;
+      var isRight = (given === correct);
+      detailReponses += (isRight ? 'OK' : 'FAUX') + ' Q' + (i+1) + '. ' + qObj.data.q + '\n';
+      detailReponses += '   Reponse: ' + (qObj.data.opts[given] || 'N/A') + (isRight ? ' (correct)' : ' -> Correct: ' + qObj.data.opts[correct]) + '\n';
+    });
+  }
   var payload = {
     id:rec.id, nom:rec.nom, prenom:rec.prenom, email:rec.email,
     formation:FM[rec.formation].label, niveau:FM[rec.formation].niveauLabel,
     date:rec.date, score_pct:rec.scores.pct,
     score_fr:rec.scores.fr+'/10', score_cg:rec.scores.cg+'/10',
     score_en:rec.scores.en+'/10', score_pro:rec.scores.pro+'/5',
-    score_total:rec.scores.total+'/35', statut:'En attente'
+    score_total:rec.scores.total+'/35', statut:'En attente',
+    detail_reponses:detailReponses
   };
-  fetch(WEBHOOK_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.sheetRow) {
-        var db = loadDB(); var r = db.find(function(x) { return x.id === rec.id; });
-        if (r) { r.sheetRow = data.sheetRow; r.hsSync = data.hsSync || false; saveDB(db); }
-      }
-    }).catch(function() {});
+  fetch(WEBHOOK_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify(payload)
+  }).catch(function() {});
 }
 
 function resetTest() {
