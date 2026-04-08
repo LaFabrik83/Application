@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Fabrik — Espace Collaborateurs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;500;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#2EB3AF;--teal-dk:#1A8A86;--teal-lt:#E6F7F7;
+  --noir:#232121;--gold:#B19500;--gold-lt:#F5F0D0;
+  --txt:#232121;--muted:#5A5A5A;--bg:#F2FAFA;--bdr:#D4E8E8;
+}
+body{font-family:'Open Sans',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column}
+
+/* HEADER */
+header{background:var(--teal);padding:0 32px;height:64px;display:flex;align-items:center;gap:16px;box-shadow:0 3px 16px rgba(46,179,175,.3)}
+.logo-wrap{width:44px;height:44px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;padding:2px}
+.logo-wrap img{width:100%;height:100%;object-fit:contain}
+.brand h1{font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:.06em;line-height:1}
+.brand p{font-size:9px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.12em;margin-top:1px}
+.header-right{margin-left:auto;font-size:11px;color:rgba(255,255,255,.65);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+
+/* HERO */
+.hero{background:var(--noir);padding:52px 32px 48px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:var(--teal);opacity:.08;border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:220px;height:220px;background:var(--gold);opacity:.07;border-radius:50%}
+.hero h2{font-family:'Bebas Neue',sans-serif;font-size:38px;color:white;letter-spacing:.06em;margin-bottom:10px;position:relative}
+.hero h2 span{color:var(--teal)}
+.hero p{font-size:14px;color:rgba(255,255,255,.65);max-width:480px;margin:0 auto;line-height:1.7;position:relative}
+.hero-badge{display:inline-block;background:rgba(46,179,175,.2);border:1px solid rgba(46,179,175,.4);color:var(--teal);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:16px;letter-spacing:.06em;text-transform:uppercase}
+
+/* TOOLS GRID */
+.tools-section{padding:40px 32px;max-width:960px;margin:0 auto;width:100%;flex:1}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted);letter-spacing:.08em;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:700px){.tools-grid{grid-template-columns:1fr}}
+@media(max-width:900px) and (min-width:701px){.tools-grid{grid-template-columns:1fr 1fr}}
+
+/* TOOL CARD */
+.tool-card{background:white;border-radius:14px;border:1px solid var(--bdr);overflow:hidden;transition:all .2s;cursor:pointer;text-decoration:none;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(46,179,175,.06)}
+.tool-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(46,179,175,.15);border-color:var(--teal)}
+.tool-card-top{padding:28px 24px 20px;flex:1}
+.tool-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.icon-teal{background:var(--teal-lt)}
+.icon-gold{background:var(--gold-lt)}
+.icon-dark{background:#F0F0F0}
+.tool-card h3{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--noir);letter-spacing:.04em;margin-bottom:8px;line-height:1.1}
+.tool-card p{font-size:12px;color:var(--muted);line-height:1.6}
+.tool-card-footer{padding:14px 24px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.tool-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px}
+.tag-teal{background:var(--teal-lt);color:var(--teal-dk)}
+.tag-gold{background:var(--gold-lt);color:#7A6200}
+.tag-dark{background:#ECECEC;color:#444}
+.tool-arrow{font-size:18px;color:var(--teal);font-weight:700;transition:transform .2s}
+.tool-card:hover .tool-arrow{transform:translateX(4px)}
+
+/* FOOTER */
+footer{background:var(--noir);padding:20px 32px;text-align:center}
+footer p{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.04em}
+footer span{color:var(--teal)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJFQjNBRiIgcng9IjEyIi8+CiAgPHJlY3QgeD0iNDgiIHk9IjM4IiB3aWR0aD0iMTQiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjQ4IiB5PSIzOCIgd2lkdGg9IjcwIiBoZWlnaHQ9IjE0IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjQ4IiB5PSI4MiIgd2lkdGg9IjUwIiBoZWlnaHQ9IjE0IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9Ijc1IiB5PSIzOCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjU4IiBmaWxsPSJ3aGl0ZSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTY4IiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIyOCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIyIj5GQUJSSUs8L3RleHQ+CiAgPHRleHQgeD0iMTAwIiB5PSIxODYiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjEiPkRFUyBMRUFERVJTIERFIERFTUFJTjwvdGV4dD4KPC9zdmc+" alt="La Fabrik"/>
+  </div>
+  <div class="brand">
+    <h1>La Fabrik</h1>
+    <p>Des Leaders de Demain</p>
+  </div>
+  <div class="header-right">Espace collaborateurs — 2026</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">Outils internes</div>
+  <h2>Bienvenue sur votre <span>espace La Fabrik</span></h2>
+  <p>Retrouvez ici l'ensemble des outils digitaux mis à votre disposition pour simplifier votre quotidien et accompagner vos candidats.</p>
+</div>
+
+<div class="tools-section">
+  <div class="section-label">Vos outils</div>
+  <div class="tools-grid">
+
+    <a class="tool-card" href="./test-entree/">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-teal">📝</div>
+        <h3>Test d'entrée candidats</h3>
+        <p>Faites passer le test d'évaluation à vos candidats. Résultats centralisés dans le tableau de bord, synchronisés avec HubSpot et Google Sheets.</p>
+      </div>
+      <div class="tool-card-footer">
+        <span class="tool-tag tag-teal">19 formations • Niv. 3 à 7</span>
+        <span class="tool-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="./previsionnel/">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-gold">📊</div>
+        <h3>Prévisionnel apprentissage</h3>
+        <p>Générez le tableau prévisionnel financier d'un contrat d'apprentissage. Calcul automatique des salaires, charges et aides selon la grille 2026.</p>
+      </div>
+      <div class="tool-card-footer">
+        <span class="tool-tag tag-gold">Grille SMIC 2026</span>
+        <span class="tool-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="./fiche-entreprise/">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-dark">🏢</div>
+        <h3>Fiche entreprise</h3>
+        <p>Saisissez et transmettez la fiche d'information entreprise pour la constitution d'un dossier de contrat d'apprentissage.</p>
+      </div>
+      <div class="tool-card-footer">
+        <span class="tool-tag tag-dark">Envoi par email</span>
+        <span class="tool-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <p>CFA <span>La Fabrik</span> — 153 rue André Citroën, ZI La Palud, 83600 Fréjus — <span>contrat@fabrikfrejus.fr</span></p>
+</footer>
+
+</body>
+</html>
