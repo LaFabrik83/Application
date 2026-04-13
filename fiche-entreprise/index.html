@@ -643,6 +643,8 @@ var OPCO_CAISSE = {
   "EP":"AGIRC-ARRCO (regime general)"
 };
 
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZ89dDC0U3PCQWFJtORJ_8a1Ev8_-jpbOgIDKLxBC9X5-pcc38PdgOVk6v7ejVsld0uw/exec';
+
 function g(id) { return document.getElementById(id); }
 function v(id) { var el = g(id); return el ? el.value || "" : ""; }
 function tv(id, val) { var el = g(id); if (el) el.innerText = val || "—"; }
@@ -1017,11 +1019,38 @@ function buildEmail() {
 
 function submitForm() {
   var d = getData();
-  var part = d.app.nom ? d.app.nom + " - " : "";
-  var subj = encodeURIComponent("Fiche Entreprise - " + part + d.ent.rs);
-  var body = encodeURIComponent(buildEmail());
-  window.location.href = "mailto:contrat@fabrikfrejus.fr?cc=info@fabrikfrejus.fr&subject=" + subj + "&body=" + body;
+  var now = new Date();
+  var ds = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
+  var payload = {
+    date: ds,
+    entreprise: d.ent.rs,
+    siret: d.ent.siret,
+    adresse: d.ent.adr + ", " + d.ent.cp + " " + d.ent.ville,
+    dirigeant: d.ent.dirigeant,
+    tel_dirigeant: d.ent.telDir,
+    email_entreprise: d.ent.email || "",
+    apprenti: d.app.nom || "",
+    formation: d.app.formation || "",
+    debut: d.app.debut,
+    fin: d.app.fin,
+    saisie: d.ctr.saisie === "CFA" ? "Deleguee au CFA La Fabrik" : "Prise en charge entreprise",
+    opco: d.ctr.opco || "",
+    convention: d.ctr.conv || "",
+    maitre: d.ma.nom || "",
+    email_ma: d.ma.email || "",
+    tel_ma: d.ma.telP || d.ma.telF || ""
+  };
+
+  // Afficher l'écran succès immédiatement
   goTo(5);
+
+  // Envoi au webhook en arrière-plan
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).catch(function() {});
 }
 
 function resetForm() {
