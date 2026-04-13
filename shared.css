@@ -1,0 +1,49 @@
+/* ============================================================
+   La Fabrik — Styles partagés
+   Charte graphique commune à tous les outils
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Couleurs principales */
+  --teal:       #2EB3AF;
+  --teal-dk:    #1A8A86;
+  --teal-lt:    #E6F7F7;
+  --teal-xlt:   #F0FAFA;
+  --noir:       #232121;
+  --gold:       #B19500;
+  --gold-dk:    #8F8016;
+  --gold-lt:    #F5F0D0;
+
+  /* Texte & fonds */
+  --txt:        #232121;
+  --muted:      #5A5A5A;
+  --bg:         #F2FAFA;
+  --bg2:        #FAFAFA;
+  --bdr:        #D4E8E8;
+  --white:      #FFFFFF;
+
+  /* États */
+  --success:    #2EB3AF;
+  --success-lt: #E6F7F7;
+  --warn:       #B19500;
+  --warn-lt:    #F5F0D0;
+  --danger:     #C0392B;
+  --danger-lt:  #FDECEA;
+
+  /* Aliases fiche-entreprise (rétrocompatibilité) */
+  --primary:    #232121;
+  --teal-dark:  #1A8A86;
+  --teal-light: #E6F7F7;
+  --surface2:   #F2FAFA;
+  --border:     #D4E8E8;
+  --text:       #232121;
+  --radius:     12px;
+}

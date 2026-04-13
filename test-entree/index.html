@@ -3,19 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Test d'entrée candidats CFA La Fabrik — 19 formations du niveau 3 au 7, résultats synchronisés avec HubSpot et Google Sheets.">
+<meta property="og:title" content="Test d'entrée 2026 — CFA La Fabrik">
+<meta property="og:description" content="Faites passer le test d'évaluation à vos candidats. Résultats centralisés et synchronisés automatiquement.">
+<meta property="og:type" content="website">
 <title>Test d'entrée 2026 — CFA La Fabrik</title>
+<link rel="stylesheet" href="../shared.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;500;600&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --teal:#2EB3AF;--teal-dk:#1A8A86;--teal-lt:#E6F7F7;--teal-xlt:#F0FAFA;
-  --noir:#232121;--gold:#B19500;--gold-dk:#8F8016;--gold-lt:#F5F0D0;
-  --txt:#232121;--muted:#5A5A5A;--bdr:#D4E8E8;--bg:#F2FAFA;--bg2:#FAFAFA;
-  --white:#FFFFFF;
-  --success:#2EB3AF;--success-lt:#E6F7F7;
-  --warn:#B19500;--warn-lt:#F5F0D0;
-  --danger:#C0392B;--danger-lt:#FDECEA;
-}
 body{font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.5;min-height:100vh}
 h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-spacing:.04em}
 
@@ -97,6 +91,12 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 .radio-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .radio-opt.selected .radio-dot{border-color:var(--teal);background:var(--teal)}
 .radio-opt.selected .radio-dot::after{content:'';width:5px;height:5px;border-radius:50%;background:white}
+
+/* TIMER */
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--teal);letter-spacing:.04em;background:var(--teal-lt);border:1.5px solid var(--bdr);border-radius:8px;padding:2px 11px;min-width:58px;text-align:center;transition:all .3s}
+.timer-display.warn{color:var(--gold);background:var(--gold-lt);border-color:var(--gold)}
+.timer-display.danger{color:var(--danger);background:var(--danger-lt);border-color:var(--danger);animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* NAV */
 .nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1.5px solid var(--bdr)}
@@ -268,7 +268,10 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     <div class="progress-wrap">
       <div class="progress-info">
         <span id="prog-label">Question 1</span>
-        <span id="prog-pct">0%</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="prog-pct">0%</span>
+          <span class="timer-display no-print" id="timer-display" title="Temps restant">15:00</span>
+        </div>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
@@ -747,6 +750,44 @@ MST_ECGP:[
 // ─── ÉTAT & STOCKAGE (localStorage pour persistance) ─────────────
 var S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
 
+// ─── TIMER ───────────────────────────────────────────────────────────
+var TIMER_DURATION = 15 * 60; // 15 minutes
+var timerInterval = null;
+var timerSecondsLeft = 0;
+var timerSecondsUsed = 0;
+
+function startTimer() {
+  timerSecondsLeft = TIMER_DURATION;
+  timerSecondsUsed = 0;
+  updateTimerDisplay();
+  timerInterval = setInterval(function() {
+    timerSecondsLeft--;
+    timerSecondsUsed++;
+    updateTimerDisplay();
+    if (timerSecondsLeft <= 0) { stopTimer(); autoSubmitTest(); }
+  }, 1000);
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+function updateTimerDisplay() {
+  var el = document.getElementById('timer-display');
+  if (!el) return;
+  var m = Math.floor(timerSecondsLeft / 60);
+  var s = timerSecondsLeft % 60;
+  el.textContent = m + ':' + String(s).padStart(2, '0');
+  el.className = 'timer-display no-print';
+  if (timerSecondsLeft <= 60) el.classList.add('danger');
+  else if (timerSecondsLeft <= 180) el.classList.add('warn');
+}
+function autoSubmitTest() {
+  forceSubmitTest(true);
+}
+function fmtDuration(sec) {
+  var m = Math.floor(sec / 60), s = sec % 60;
+  return m + 'min ' + String(s).padStart(2, '0') + 's';
+}
+
 function loadDB() {
   try {
     var raw = localStorage.getItem(STORAGE_KEY);
@@ -819,6 +860,7 @@ function goToFormation() {
   showScreen('formation');
 }
 function goToQuestions() {
+  startTimer();
   if (!S.formation) { alert('Veuillez sélectionner une formation.'); return; }
   var nid = S.niveauId, fid = S.formation;
   S.allQ = [];
@@ -861,8 +903,8 @@ function nextQ() { if (S.answers[S.step] === undefined) { alert('Veuillez sélec
 function prevQ() { S.step--; renderQuestion(); }
 
 // ─── SUBMIT ──────────────────────────────────────────────────────
-function submitTest() {
-  if (S.answers[S.step] === undefined) { alert('Veuillez sélectionner une réponse.'); return; }
+function forceSubmitTest(timeOut) {
+  stopTimer();
   var sc = calcScores();
   var now = new Date();
   var ds = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + now.getHours() + 'h' + String(now.getMinutes()).padStart(2, '0');
@@ -870,13 +912,22 @@ function submitTest() {
     id: Date.now(), nom: S.candidat.nom, prenom: S.candidat.prenom, email: S.candidat.email,
     formation: S.formation, niveauId: S.niveauId, date: ds, scores: sc,
     answers: Object.assign({}, S.answers), allQ: JSON.parse(JSON.stringify(S.allQ)),
-    status: 'new', hsSync: false, sheetRow: null
+    status: 'new', hsSync: false, sheetRow: null,
+    timeUsed: timerSecondsUsed
   };
   var db = loadDB(); db.push(rec); saveDB(db);
   document.getElementById('success-prenom').textContent = S.candidat.prenom;
+  if (timeOut) {
+    document.getElementById('hs-result-msg').innerHTML = '<div style="background:var(--warn-lt);border:1px solid var(--gold);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--gold-dk);margin-bottom:8px">⏱ Temps écoulé — le test a été soumis automatiquement.</div>';
+  } else {
+    document.getElementById('hs-result-msg').innerHTML = '';
+  }
   showScreen('success');
   if (WEBHOOK_URL) sendToWebhook(rec);
-  else document.getElementById('hs-result-msg').innerHTML = '';
+}
+function submitTest() {
+  if (S.answers[S.step] === undefined) { alert('Veuillez sélectionner une réponse.'); return; }
+  forceSubmitTest(false);
 }
 
 function calcScores() {
@@ -909,7 +960,7 @@ function sendToWebhook(rec) {
     date:rec.date, score_pct:rec.scores.pct,
     score_fr:rec.scores.fr+'/10', score_cg:rec.scores.cg+'/10',
     score_en:rec.scores.en+'/10', score_pro:rec.scores.pro+'/5',
-    score_total:rec.scores.total+'/35', statut:'En attente',
+    score_total:rec.scores.total+'/35', duree:rec.timeUsed ? fmtDuration(rec.timeUsed) : '—', statut:'En attente',
     detail_reponses:detailReponses
   };
   fetch(WEBHOOK_URL, {
@@ -921,6 +972,7 @@ function sendToWebhook(rec) {
 }
 
 function resetTest() {
+  stopTimer();
   S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
   ['f-nom','f-prenom','f-email'].forEach(function(id) { document.getElementById(id).value = ''; });
   document.getElementById('info-q').textContent = '35';
@@ -982,7 +1034,7 @@ function openDetail(id) {
   var html = '<div class="score-hero">';
   html += '<div class="score-circle"><div class="sv">' + sc.pct + '%</div><div class="sl">/100</div></div>';
   html += '<div class="score-details"><div class="name">' + r.prenom + ' ' + r.nom + '</div>';
-  html += '<div class="meta">' + fm.label + '<br>' + r.date + '</div>';
+  html += '<div class="meta">' + fm.label + '<br>' + r.date + (r.timeUsed ? ' — ⏱ ' + fmtDuration(r.timeUsed) : '') + '</div>';
   html += '<div class="score-breakdown">';
   html += '<div class="score-box"><div class="bv">' + sc.fr + '/10</div><div class="bl">Français</div></div>';
   html += '<div class="score-box"><div class="bv">' + sc.cg + '/10</div><div class="bl">Culture G.</div></div>';
@@ -1074,10 +1126,10 @@ function printDetail() {
 // ─── CSV EXPORT ──────────────────────────────────────────────────
 function exportCSV() {
   var db = loadDB(); if (!db.length) { alert('Aucun résultat à exporter.'); return; }
-  var rows = [['ID','Prénom','Nom','Email','Formation','Niveau','Date test','Score %','Français /10','Culture G. /10','Anglais /10','Questions Pro /5','Score total /35','Statut']];
+  var rows = [['ID','Prénom','Nom','Email','Formation','Niveau','Date test','Durée','Score %','Français /10','Culture G. /10','Anglais /10','Questions Pro /5','Score total /35','Statut']];
   db.forEach(function(r) {
     var fm = FM[r.formation];
-    rows.push([r.id, r.prenom, r.nom, r.email, fm.label, fm.niveauLabel, r.date, r.scores.pct,
+    rows.push([r.id, r.prenom, r.nom, r.email, fm.label, fm.niveauLabel, r.date, r.timeUsed ? fmtDuration(r.timeUsed) : '—', r.scores.pct,
       r.scores.fr, r.scores.cg, r.scores.en, r.scores.pro, r.scores.total,
       r.status==='new'?'En attente':r.status==='ok'?'Retenu':'Non retenu']);
   });
