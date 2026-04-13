@@ -98,6 +98,10 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 .timer-display.danger{color:var(--danger);background:var(--danger-lt);border-color:var(--danger);animation:blink .8s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--noir);color:white;font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 /* NAV */
 .nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1.5px solid var(--bdr)}
 .btn{height:40px;padding:0 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;border:1.5px solid var(--bdr);background:white;color:var(--txt);text-transform:uppercase;letter-spacing:.04em;font-family:'Open Sans',sans-serif}
@@ -259,6 +263,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
       <div id="niveau-grid"></div>
       <div class="nav-btns">
         <button class="btn" onclick="showScreen('intro')">← Retour</button>
+        <button class="btn" onclick="copyFormationLink()" style="color:var(--teal);border-color:var(--teal)">🔗 Générer le lien candidat</button>
         <button class="btn btn-primary" onclick="goToQuestions()">Commencer le test →</button>
       </div>
     </div>
@@ -340,6 +345,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     </div>
     <div class="modal-body" id="d-body"></div>
     <div class="modal-footer no-print">
+      <button class="btn btn-sm" onclick="copyTestLink()" style="color:var(--teal);border-color:var(--teal)">🔗 Lien candidat</button>
       <button class="btn btn-sm btn-gold" onclick="exportSingleCSV()">↓ CSV candidat</button>
       <button class="btn btn-sm btn-dark" onclick="printDetail()">🖨 Imprimer / PDF</button>
       <button class="btn btn-sm btn-primary" onclick="closeDetail()">Fermer</button>
@@ -1153,11 +1159,80 @@ function exportSingleCSV() {
   a.click(); URL.revokeObjectURL(url);
 }
 
+// ─── LIEN PARTAGEABLE ────────────────────────────────────────────
+function copyFormationLink() {
+  if (!S.formation) { showToast('⚠️ Veuillez sélectionner une formation.'); return; }
+  var nom = document.getElementById('f-nom').value.trim();
+  var prenom = document.getElementById('f-prenom').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  if (!nom || !prenom || !email) { showToast('⚠️ Veuillez remplir les informations candidat.'); return; }
+  var base = window.location.href.split('?')[0];
+  var params = new URLSearchParams({nom:nom, prenom:prenom, email:email, formation:S.formation});
+  var url = base + '?' + params.toString();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() { showToast('🔗 Lien copié dans le presse-papier !'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('🔗 Lien copié dans le presse-papier !');
+  }
+}
+function copyTestLink() {
+  var db = loadDB();
+  var r = db.find(function(x) { return x.id === currentDetailId; });
+  if (!r) return;
+  var base = window.location.href.split('?')[0];
+  var params = new URLSearchParams({nom:r.nom, prenom:r.prenom, email:r.email, formation:r.formation});
+  var url = base + '?' + params.toString();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() { showToast('🔗 Lien copié dans le presse-papier !'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('🔗 Lien copié dans le presse-papier !');
+  }
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+function readURLParams() {
+  if (!window.location.search) return;
+  var params = new URLSearchParams(window.location.search);
+  var nom = params.get('nom') || '';
+  var prenom = params.get('prenom') || '';
+  var email = params.get('email') || '';
+  var formation = params.get('formation') || '';
+  if (nom) document.getElementById('f-nom').value = nom;
+  if (prenom) document.getElementById('f-prenom').value = prenom;
+  if (email) document.getElementById('f-email').value = email;
+  if (formation && FM[formation]) {
+    S.candidat = {nom:nom, prenom:prenom, email:email};
+    buildNiveauGrid();
+    var fc = document.querySelector('.fc[data-id="' + formation + '"]');
+    if (fc) {
+      fc.click();
+      var body = fc.closest('.niveau-body');
+      var sec = fc.closest('.niveau-section');
+      if (body && sec) {
+        var hdr = sec.querySelector('.niveau-header');
+        if (hdr) { hdr.classList.add('open'); body.classList.add('open'); }
+      }
+    }
+    if (nom && prenom && email) showScreen('formation');
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────────────────
 // Charge les données au démarrage pour que le dashboard soit
 // immédiatement opérationnel dès le premier clic
 window._lfFallback = loadDB();
+readURLParams();
 
 </script>
+<div class="toast" id="toast"></div>
 </body>
 </html>
