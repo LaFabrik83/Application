@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fiche Entreprise — CFA La Fabrik</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;500;600;700&display=swap');
 :root {
-  --primary:#1a3a4a; --teal:#2BBFB3; --teal-dark:#1fa89d; --teal-light:#e8f9f8;
-  --surface2:#f5f9f9; --border:#d8ecea; --text:#1a3a4a; --muted:#7a9aa5;
+  --primary:#232121; --teal:#2EB3AF; --teal-dark:#1A8A86; --teal-light:#E6F7F7;
+  --surface2:#F2FAFA; --border:#D4E8E8; --text:#232121; --muted:#5A5A5A;
   --success:#2ecc71; --radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);min-height:100vh;}
+body{font-family:'Open Sans',sans-serif;background:var(--surface2);color:var(--text);min-height:100vh;}
 .app-header{background:var(--primary);padding:0.9rem 2rem;display:flex;align-items:center;gap:1.2rem;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--teal);}
 .header-logo img{height:48px;width:48px;border-radius:8px;object-fit:cover;display:block;}
 .header-text h1{color:white;font-size:15px;font-weight:600;}
@@ -43,7 +43,7 @@ label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase
 label .req{color:var(--teal);margin-left:2px;}
 input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
   width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;
-  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:white;
+  font-family:'Open Sans',sans-serif;font-size:14px;color:var(--text);background:white;
   transition:border-color 0.2s;outline:none;}
 input:focus,select:focus,textarea:focus{border-color:var(--teal);}
 input.error,select.error{border-color:#e84545;background:#fff8f8;}
@@ -68,7 +68,7 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
 .diploma-option.selected .diploma-dot{border-color:var(--teal);background:var(--teal);}
 .cond-section{border:1.5px solid var(--border);border-radius:8px;padding:1rem;margin-top:0.5rem;background:var(--surface2);display:none;}
 .cond-section.visible{display:block;}
-.info-box{background:#e8f9f8;border:1px solid #b2e8e4;border-radius:8px;padding:0.9rem 1rem;font-size:12px;color:#0d7a74;line-height:1.6;margin:0.5rem 0;}
+.info-box{background:#E6F7F7;border:1px solid #9FD8D6;border-radius:8px;padding:0.9rem 1rem;font-size:12px;color:#1A8A86;line-height:1.6;margin:0.5rem 0;}
 .warn-box{background:#fff8e6;border:1px solid #ffd166;border-radius:8px;padding:0.9rem 1rem;font-size:12px;color:#7a5200;line-height:1.6;margin:0.5rem 0;}
 .verify-box{background:#fffbf0;border:1.5px solid #f5a623;border-radius:10px;padding:1rem 1.1rem;margin:1rem 0 0.5rem;display:none;}
 .verify-box.visible{display:block;}
@@ -80,9 +80,9 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
 .siret-ok{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--success);font-size:16px;display:none;}
 .siret-err{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#e84545;font-size:16px;display:none;}
 @keyframes spin{to{transform:translateY(-50%) rotate(360deg);}}
-.autofill-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--teal-dark);background:var(--teal-light);border:1px solid #b2e8e4;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:600;}
+.autofill-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--teal-dark);background:var(--teal-light);border:1px solid #9FD8D6;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:600;}
 .nav-bar{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 0 0;flex-wrap:wrap;gap:0.75rem;}
-.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.75rem 1.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;}
+.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.75rem 1.5rem;border-radius:8px;font-family:'Open Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;}
 .btn-primary{background:var(--primary);color:white;}
 .btn-primary:hover{background:#2a4a5e;transform:translateY(-1px);}
 .btn-teal{background:var(--teal);color:white;}
@@ -115,6 +115,7 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
     <h1>Fiche Entreprise Partenaire</h1>
     <p>Contrat d'apprentissage &mdash; CFA La Fabrik</p>
   </div>
+  <a href="../" style="color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;background:rgba(255,255,255,.12);padding:5px 12px;border-radius:20px;white-space:nowrap">← Accueil</a>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:25%"></div></div>
 </div>
 
@@ -881,10 +882,10 @@ function printVersion(version) {
   var ds = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
   var logo = g("logoB64").value;
 
-  var css = "<style>body{font-family:Arial,sans-serif;font-size:12px;color:#1a3a4a;margin:0}.page{padding:15mm;max-width:210mm;margin:0 auto}.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:3px solid #2BBFB3}.hdr img{width:60px;height:60px;border-radius:8px;object-fit:cover}.hdr-r{text-align:right;font-size:10px;color:#7a9aa5;line-height:1.7}.title{text-align:center;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:10px 0 14px;color:#1a3a4a}.badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle}.be{background:#2BBFB3;color:white}.bs{background:#1a3a4a;color:white}.sec{margin-bottom:12px}.sec-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#2BBFB3;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #d8ecea}.row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0f6f5;font-size:11px}.lbl{color:#7a9aa5;width:45%}.val{font-weight:500;width:55%;text-align:right}.note{background:#e8f9f8;border:1px solid #b2e8e4;border-radius:4px;padding:8px;margin:8px 0;font-size:11px;color:#0d7a74}.signs{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.sign{border:1px solid #d8ecea;border-radius:4px;padding:10px;min-height:55px}.sign-l{font-size:9px;color:#7a9aa5;text-transform:uppercase;letter-spacing:0.5px}.ftr{margin-top:16px;padding-top:8px;border-top:1px solid #d8ecea;display:flex;justify-content:space-between;font-size:9px;color:#aaa}@media print{body{margin:0}.page{padding:10mm}}</style>";
+  var css = "<style>body{font-family:Arial,sans-serif;font-size:12px;color:#232121;margin:0}.page{padding:15mm;max-width:210mm;margin:0 auto}.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:3px solid #2EB3AF}.hdr img{width:60px;height:60px;border-radius:8px;object-fit:cover}.hdr-r{text-align:right;font-size:10px;color:#5A5A5A;line-height:1.7}.title{text-align:center;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:10px 0 14px;color:#232121}.badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle}.be{background:#2EB3AF;color:white}.bs{background:#232121;color:white}.sec{margin-bottom:12px}.sec-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#2EB3AF;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #D4E8E8}.row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0f6f5;font-size:11px}.lbl{color:#5A5A5A;width:45%}.val{font-weight:500;width:55%;text-align:right}.note{background:#E6F7F7;border:1px solid #9FD8D6;border-radius:4px;padding:8px;margin:8px 0;font-size:11px;color:#1A8A86}.signs{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.sign{border:1px solid #D4E8E8;border-radius:4px;padding:10px;min-height:55px}.sign-l{font-size:9px;color:#5A5A5A;text-transform:uppercase;letter-spacing:0.5px}.ftr{margin-top:16px;padding-top:8px;border-top:1px solid #D4E8E8;display:flex;justify-content:space-between;font-size:9px;color:#aaa}@media print{body{margin:0}.page{padding:10mm}}</style>";
 
   var body = "<div class=\"page\">";
-  body += "<div class=\"hdr\"><div><img src=\"data:image/png;base64," + logo + "\" alt=\"La Fabrik\"/><div style=\"font-size:9px;color:#7a9aa5;margin-top:3px\">CFA Qualiopi &mdash; Frejus, Var</div></div>";
+  body += "<div class=\"hdr\"><div><img src=\"data:image/png;base64," + logo + "\" alt=\"La Fabrik\"/><div style=\"font-size:9px;color:#5A5A5A;margin-top:3px\">CFA Qualiopi &mdash; Frejus, Var</div></div>";
   body += "<div class=\"hdr-r\"><div>04 22 54 26 03</div><div>contrat@fabrikfrejus.fr</div><div>07 43 39 92 64</div><div><strong>Date : " + ds + "</strong></div></div></div>";
   body += "<div class=\"title\">Fiche Entreprise &mdash; Contrat Apprentissage<span class=\"badge " + (isEcole ? "bs" : "be") + "\">" + (isEcole ? "Version Ecole" : "Exemplaire Entreprise") + "</span></div>";
 
@@ -925,8 +926,8 @@ function printVersion(version) {
 
   if (isEcole) {
     body += "<div class=\"sec\"><div class=\"sec-t\">Notes internes</div>";
-    body += "<div style=\"font-size:11px;color:#0d7a74;padding:4px 0\">Attestation maitre apprentissage confirmee (art. L.6223-8 Code travail)</div>";
-    body += "<div style=\"border:1px solid #d8ecea;border-radius:4px;padding:8px;min-height:45px;margin-top:5px;font-size:10px;color:#aaa\">Commentaires / Observations :</div></div>";
+    body += "<div style=\"font-size:11px;color:#1A8A86;padding:4px 0\">Attestation maitre apprentissage confirmee (art. L.6223-8 Code travail)</div>";
+    body += "<div style=\"border:1px solid #D4E8E8;border-radius:4px;padding:8px;min-height:45px;margin-top:5px;font-size:10px;color:#aaa\">Commentaires / Observations :</div></div>";
   }
 
   body += "<div class=\"signs\"><div class=\"sign\"><div class=\"sign-l\">Signature de entreprise</div><div style=\"font-size:9px;color:#aaa;margin-top:4px\">Nom, date et cachet</div></div>";
