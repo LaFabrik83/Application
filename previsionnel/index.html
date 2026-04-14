@@ -12,13 +12,13 @@
 <link rel="stylesheet" href="../shared.css">
 <style>
 :root{--amber:#FAEEDA;--amber-dk:#633806;--muted:#64706A;--bdr:#D8E4E2;--bg2:#F5F8F8;}
-body{font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;background:#EEF3F2;color:var(--txt);font-size:13px;line-height:1.5}
+body{font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.5}
 .app{max-width:800px;margin:0 auto;padding:24px 16px}
-.sh{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.sl{width:46px;height:46px;border-radius:10px;overflow:hidden;flex-shrink:0}
-.sl img{width:100%;height:100%;object-fit:cover;display:block}
-.sh h1{font-size:15px;font-weight:600}
-.sh p{font-size:12px;color:var(--muted)}
+.app-header{background:var(--teal);padding:0 20px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;box-shadow:0 3px 12px rgba(46,179,175,.3)}
+.app-header .logo-wrap{width:40px;height:40px;border-radius:8px;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2px}
+.app-header .logo-wrap img{width:100%;height:100%;object-fit:contain}
+.app-header .brand h1{color:white;font-size:18px;font-weight:400;line-height:1;font-family:'Bebas Neue','Arial Black',sans-serif;letter-spacing:.05em}
+.app-header .brand p{color:rgba(255,255,255,.75);font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
 .card{background:#fff;border-radius:8px;border:1px solid var(--bdr);padding:20px;margin-bottom:16px}
 .ct{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
 .fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px}
@@ -91,21 +91,23 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
 </style>
 </head>
 <body>
+<div class="app-header">
+  <div class="logo-wrap">
+    <img src="../logo.png" alt="La Fabrik"/>
+  </div>
+  <div class="brand">
+    <h1>Prévisionnel apprentissage</h1>
+    <p>Contrat d'apprentissage — CFA La Fabrik</p>
+  </div>
+  <a href="../" style="margin-left:auto;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;background:rgba(255,255,255,.12);padding:5px 12px;border-radius:20px;white-space:nowrap">← Accueil</a>
+</div>
+
 <div class="app">
 
   <div class="ph" id="ph">
     <img src="../logo.png" alt="La Fabrik">
     <h1>Tableau Prévisionnel — Contrat d'apprentissage</h1>
     <p id="phSub"></p>
-  </div>
-
-  <div class="sh">
-    <div class="sl"><img src="../logo.png" alt="La Fabrik"></div>
-    <div>
-      <h1>Prévisionnel apprentissage</h1>
-      <p>Contrat d'apprentissage — calcul automatique 2026</p>
-    </div>
-    <a href="../" style="margin-left:auto;color:var(--teal);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-decoration:none;background:var(--teal-lt);border:1px solid var(--bdr);padding:5px 12px;border-radius:20px;white-space:nowrap">← Accueil</a>
   </div>
 
   <div class="card">
@@ -140,13 +142,6 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
           <option value="5">Niveau 5 - BTS, BUT</option>
           <option value="6">Niveau 6 - Licence, Bachelor</option>
           <option value="7">Niveau 7 - Master, Ingenieur</option>
-        </select>
-      </div>
-      <div class="fi">
-        <label>Type de contrat</label>
-        <select id="typecontrat" onchange="compute()">
-          <option value="apprentissage">Contrat d'apprentissage</option>
-          <option value="pro">Contrat de professionnalisation</option>
         </select>
       </div>
       <div class="fi">
@@ -197,11 +192,6 @@ var GRILLE = {
     2: {lt18:39, a18:51, a21:61, a26:100},
     3: {lt18:55, a18:67, a21:78, a26:100}
   },
-  pro: {
-    1: {lt18:27, a18:43, a21:53, a26:100},
-    2: {lt18:39, a18:51, a21:61, a26:100},
-    3: {lt18:55, a18:67, a21:78, a26:100}
-  }
 };
 var TCOL = {lt18:1, a18:2, a21:3, a26:4};
 
@@ -242,7 +232,6 @@ function getGenre(g) {
 }
 
 function getAide(niv, eff, tc) {
-  if (tc === 'pro') return {m:0, label:'Aucune aide (contrat pro)', ok:false, note:''};
   var n = parseInt(niv);
   if (eff === 'small') {
     if (n <= 4) return {m:5000, label:'Aide unique - 5 000 EUR', ok:true, note:'Niveau 4 et moins'};
@@ -259,9 +248,6 @@ function getAideText(niv, genre, tc, formation, albl) {
   var g = getGenre(genre);
   var f = formation ? ('ce ' + formation) : 'ce diplome';
   var n = parseInt(niv);
-  if (tc === 'pro') {
-    return "Pour un contrat de professionnalisation, aucune aide exceptionnelle automatique n'est applicable.";
-  }
   if (n <= 4) {
     return "L'aide unique (5 000 EUR) est versee sur la <strong>1re annee d'execution</strong> uniquement. Si l'employeur a deja beneficie de cette aide pour " + g.le + " meme " + g.cand + " et " + f + ", il ne peut pas en percevoir une nouvelle pour " + albl + ".";
   }
@@ -413,7 +399,7 @@ function compute() {
   var dob        = document.getElementById('dob').value;
   var formation  = document.getElementById('formation').value.trim();
   var niveau     = document.getElementById('niveau').value;
-  var tc         = document.getElementById('typecontrat').value;
+  var tc         = 'apprentissage';
   var annee      = parseInt(document.getElementById('annee').value);
   var ds         = document.getElementById('dstart').value;
   var de         = document.getElementById('dend').value;
@@ -539,7 +525,6 @@ function compute() {
   html += '<tr><td class="lc">Age au debut du contrat</td><td>' + ad + ' ans' + (tChg ? ' > ' + af + ' ans en fin (changement de tranche)' : '') + '</td></tr>';
   html += '<tr><td class="lc">Formation</td><td>' + (formation || '-') + '</td></tr>';
   html += '<tr><td class="lc">Niveau du diplome</td><td>' + nlbl + ' - Niveau ' + niveau + ' RNCP</td></tr>';
-  html += '<tr><td class="lc">Type de contrat</td><td>' + tlbl + '</td></tr>';
   html += '<tr><td class="lc">Duree ' + albl + '</td><td>'
     + (ds ? new Date(ds).toLocaleDateString('fr-FR', {month:'long', year:'numeric'}) : '-')
     + ' - '
