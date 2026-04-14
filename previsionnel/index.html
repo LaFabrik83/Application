@@ -552,7 +552,7 @@ function compute() {
   html += '<div style="flex:1;min-width:130px;background:rgba(46,179,175,.25);border:1px solid #2EB3AF;border-radius:8px;padding:12px 14px;">';
   html += '<div class="sc-lbl" style="color:rgba(255,255,255,.75)">Coût net après aide</div>';
   html += '<div class="sc-val" style="color:#2EB3AF;font-family:\'Bebas Neue\',sans-serif;font-size:22px;">≈ ' + fmtR(cmNMin) + ' – ' + fmtR(cmNMax) + '</div>';
-  html += '<div class="sc-sub" style="color:rgba(255,255,255,.6)">/ mois · aide ' + fmtR(aideMens) + ' €/mois</div></div>';
+  html += '<div class="sc-sub" style="color:rgba(255,255,255,.6)">/ mois · aide ' + fmtR(aideMens) + '</div></div>';
   html += '</div>';
 
   html += '<div class="sl2">1. Profil ' + g.cand + (cand ? ' - ' + cand : '') + '</div>';
@@ -668,7 +668,7 @@ function genPDF() {
     + '.synthese-card{background:#232121!important;border-radius:8pt;padding:12pt 14pt;margin-bottom:10pt;display:flex;gap:8pt;flex-wrap:wrap;page-break-inside:avoid}'
     + '.synthese-card>div{flex:1;min-width:90pt;border-radius:6pt;padding:8pt 10pt}'
     + '.synthese-card .sc-lbl{font-size:6pt;color:#8A9A9A;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3pt}'
-    + '.synthese-card .sc-val{font-size:14pt;font-weight:700;letter-spacing:.02em;margin-bottom:1pt}'
+    + '.synthese-card .sc-val{font-size:11pt;font-weight:700;letter-spacing:.02em;margin-bottom:1pt}'
     + '.synthese-card .sc-sub{font-size:6pt;color:#8A9A9A}'
     + '*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'
     + 'body{font-family:Arial,Helvetica,sans-serif;font-size:8pt;color:#1E2830;line-height:1.4;background:white}'
@@ -676,7 +676,7 @@ function genPDF() {
     + '.ph img{width:60pt;height:60pt;object-fit:contain;margin:0 auto 6pt;display:block}'
     + '.ph h1{font-size:15pt;font-weight:700;color:#1E2830;margin:0 0 3pt}'
     + '.ph p{font-size:9pt;color:#2EB3AF;font-weight:500}'
-    + '.sl2{font-size:7.5pt;font-weight:700;color:#2EB3AF;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;border-left:2.5pt solid #2EB3AF;padding-left:5pt}'
+    + '.sl2{font-size:7.5pt;font-weight:700;color:#2EB3AF;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;border-left:2.5pt solid #2EB3AF;padding-left:5pt;page-break-after:avoid;break-after:avoid}'
     + '.tw{border:.4pt solid #D8E4E2;margin-bottom:6pt;page-break-inside:avoid}'
     + 'table{width:100%;border-collapse:collapse;font-size:7.5pt}'
     + 'th{background:#2EB3AF!important;color:white!important;padding:4pt 7pt;text-align:left;font-weight:600;font-size:7pt}'
@@ -692,23 +692,22 @@ function genPDF() {
     + '.tag{display:inline-block;font-size:6.5pt;padding:1pt 5pt;border-radius:99pt;font-weight:600}'
     + '.tg{background:#D1F0E8!important;color:#1A8A86!important}'
     + '.tr{background:#FCEBEB!important;color:#7A1F1F!important}'
-    + '.brow,.fn{display:none!important}'
+    + '.brow,.fn{display:none!important}' + '.pdf-footer{margin-top:14pt;padding-top:8pt;border-top:1.5pt solid #2EB3AF;font-size:6pt;color:#64706A;text-align:center;line-height:1.8}'
     + '[style*="overflow-x:auto"]{overflow:visible!important}'
     + 'table[style*="min-width"]{min-width:0!important;font-size:7pt!important}'
-    + '</style></head><body>';
+    + '</style><script>window.onload=function(){window.print();}<\/script></head><body>';
 
   pdfHTML += '<div class="ph"><img src="' + LOGO + '" alt="La Fabrik"><h1>Tableau previsionnel - Contrat apprentissage</h1><p>' + subtitle + '</p></div>';
   pdfHTML += res;
   pdfHTML += '<div style="margin-top:8pt;padding-top:6pt;border-top:.4pt solid #D8E4E2;font-size:6.5pt;color:#64706A;line-height:1.7">Sources : Code du travail Art. D6222-26 à D6222-30 - LOI n°2025-199 du 28/02/2025 - Décret n°2025-290 du 28/03/2025 - Décret n°2026-168 du 06/03/2026 - SMIC 2026 : 1 823,03 € brut mensuel</div>';
+  pdfHTML += '<div class="pdf-footer">CFA La Fabrik — 153 rue André Citroën, ZI La Palud, 83600 Fréjus<br>contrat@fabrikfrejus.fr — application-lafabrik.netlify.app</div>';
   pdfHTML += '</body></html>';
 
-  var win = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,location=no,status=no');
-  if (!win) { alert('Autorisez les popups puis reessayez.'); return; }
-  win.document.open();
-  win.document.write(pdfHTML);
-  win.document.close();
+  var blob = new Blob([pdfHTML], {type: 'text/html;charset=utf-8'});
+  var blobUrl = URL.createObjectURL(blob);
+  var win = window.open(blobUrl, '_blank');
+  if (!win) { alert('Autorisez les popups puis reessayez.'); URL.revokeObjectURL(blobUrl); return; }
   win.focus();
-  setTimeout(function() { win.print(); }, 800);
 }
 
 function copyLink() {
