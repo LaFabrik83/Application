@@ -151,6 +151,9 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
           <option value="2" selected>2ème année</option>
           <option value="3">3ème année</option>
         </select>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;padding:5px 8px;background:var(--teal-lt);border-radius:5px;border-left:2px solid var(--teal)">
+          <strong>Bachelor 1 an</strong> → sélectionner 3ème année<br>(art. D.6222-28-1 du Code du travail)
+        </div>
       </div>
       <div class="fi">
         <label>Date de debut du contrat</label>
@@ -179,8 +182,8 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
   </div>
 
   <div class="src" id="src">
-    Sources officielles : Code du travail Art. D6222-26 a D6222-30 · service-public.fr Fiche F2918 · Decret n°2026-168 du 06/03/2026<br>
-    travail-emploi.gouv.fr · economie.gouv.fr · SMIC 2026 : 1 823,03 EUR brut mensuel (base 35h/semaine)
+    Code du travail Art. D6222-26 à D6222-30 · LOI n°2025-199 du 28/02/2025 Art. 23 · Décret n°2025-290 du 28/03/2025 · Décret n°2026-168 du 06/03/2026 · service-public.fr<br>
+    travail-emploi.gouv.fr · economie.gouv.fr · SMIC 2026 : 1 823,03 € brut mensuel (base 35h/semaine) · Seuil exonération charges salariales : 50% SMIC (contrats ≥ 01/03/2025)
   </div>
 
 </div>
@@ -542,7 +545,7 @@ function compute() {
   html += '<tr class="hl"><td>Salaire brut mensuel</td><td><strong>' + fmt(brut) + '</strong> (' + taux + ' % x ' + fmt(SMIC) + ')</td></tr>';
   html += '<tr class="hl"><td>Salaire net mensuel estime</td><td><strong>approx. ' + fmt(net) + '</strong></td></tr>';
   html += '</table></div>';
-  html += '<div style="font-size:10px;color:var(--muted);margin-bottom:10px;font-style:italic;">Source : service-public.fr - Art. D6222-26 du Code du travail - SMIC au 1er janvier 2026.</div>';
+  html += '<div style="font-size:10px;color:var(--muted);margin-bottom:10px;font-style:italic;">Sources : Code du travail Art. D6222-26 à D6222-30 - LOI n°2025-199 du 28/02/2025 - Décret n°2025-290 du 28/03/2025 - SMIC 2026 : 1 823,03 €</div>';
   html += annAlert;
 
   // Section 3 - Grille
@@ -655,7 +658,7 @@ function genPDF() {
 
   pdfHTML += '<div class="ph"><img src="' + LOGO + '" alt="La Fabrik"><h1>Tableau previsionnel - Contrat apprentissage</h1><p>' + subtitle + '</p></div>';
   pdfHTML += res;
-  pdfHTML += '<div style="margin-top:8pt;padding-top:6pt;border-top:.4pt solid #D8E4E2;font-size:6.5pt;color:#64706A;line-height:1.7">Sources officielles : Code du travail Art. D6222-26 a D6222-30 - service-public.fr Fiche F2918 - Decret n 2026-168 du 06/03/2026 - SMIC 2026 : 1 823,03 EUR brut mensuel</div>';
+  pdfHTML += '<div style="margin-top:8pt;padding-top:6pt;border-top:.4pt solid #D8E4E2;font-size:6.5pt;color:#64706A;line-height:1.7">Sources : Code du travail Art. D6222-26 à D6222-30 - LOI n°2025-199 du 28/02/2025 - Décret n°2025-290 du 28/03/2025 - Décret n°2026-168 du 06/03/2026 - SMIC 2026 : 1 823,03 € brut mensuel</div>';
   pdfHTML += '</body></html>';
 
   var win = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,location=no,status=no');
