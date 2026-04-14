@@ -122,6 +122,20 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 .alert-qualiopi{background:var(--gold-lt);border:1px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--gold-dk);margin-top:16px;text-align:left;display:flex;gap:10px;align-items:flex-start}
 .alert-qualiopi .icon{font-size:16px;flex-shrink:0;margin-top:1px}
 
+/* SEARCH */
+.search-wrap{margin-bottom:10px;position:relative}
+.search-wrap input{width:100%;height:38px;border:1.5px solid var(--bdr);border-radius:8px;padding:0 12px 0 36px;font-size:13px;font-family:'Open Sans',sans-serif;color:var(--txt);background:white;transition:border-color .15s}
+.search-wrap input:focus{outline:none;border-color:var(--teal)}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none}
+
+/* QUICK ACTIONS */
+.quick-actions{display:flex;gap:4px;flex-shrink:0}
+.qa-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--bdr);background:white;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-weight:700;line-height:1}
+.qa-btn.ok{border-color:var(--teal);color:var(--teal)}
+.qa-btn.ok:hover,.qa-btn.ok.active{background:var(--teal);color:white}
+.qa-btn.no{border-color:var(--danger);color:var(--danger)}
+.qa-btn.no:hover,.qa-btn.no.active{background:var(--danger);color:white}
+
 /* DASHBOARD */
 .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .dash-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--noir);letter-spacing:.05em}
@@ -307,8 +321,8 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
   <div class="dash-header">
     <span class="dash-title">Résultats Candidats</span>
     <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print">
+      <button class="btn btn-sm" id="btn-archives" onclick="toggleArchived(this)">Voir archivés</button>
       <button class="btn btn-sm btn-gold" onclick="exportCSV()">↓ Export CSV Qualiopi</button>
-      <button class="btn btn-sm" onclick="clearAll()" style="color:var(--danger)">Vider</button>
     </div>
   </div>
   <div class="stat-grid">
@@ -316,6 +330,10 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     <div class="stat-card"><div class="sv" id="stat-avg">—</div><div class="sl">Score moyen</div></div>
     <div class="stat-card gold"><div class="sv" id="stat-new">0</div><div class="sl">À traiter</div></div>
     <div class="stat-card green"><div class="sv" id="stat-ok">0</div><div class="sl">Retenus</div></div>
+  </div>
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search-input" placeholder="Rechercher par nom, email, formation..." oninput="renderDashboard()">
   </div>
   <div class="filter-bar">
     <div class="filter-btn active" onclick="setFilter('all',this)">Tous</div>
@@ -341,6 +359,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
         <option value="new">⏳ En attente</option>
         <option value="ok">✅ Retenu</option>
         <option value="no">❌ Non retenu</option>
+        <option value="archived">📦 Archivé</option>
       </select>
       <button onclick="closeDetail()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:0 4px;line-height:1" class="no-print">×</button>
     </div>
@@ -349,6 +368,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
       <button class="btn btn-sm" onclick="copyTestLink()" style="color:var(--teal);border-color:var(--teal)">🔗 Lien candidat</button>
       <button class="btn btn-sm btn-gold" onclick="exportSingleCSV()">↓ CSV candidat</button>
       <button class="btn btn-sm btn-dark" onclick="printDetail()">🖨 Imprimer / PDF</button>
+      <button class="btn btn-sm" onclick="archiverCandidat()" style="color:var(--danger);border-color:var(--danger)">Archiver</button>
       <button class="btn btn-sm btn-primary" onclick="closeDetail()">Fermer</button>
     </div>
   </div>
@@ -357,7 +377,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
-var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyTy3TyPESi3Xy-Q8yTCXjkNhXiCR5M86gNA9Sv4yoWhNJv9S1QIJgBznrRlV4IfcAyYg/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyLZYGOGMUOtmbdV3sYvFwiAxHlGBxw8gsZ7JlJfIXvhze5ccZtesuqL4Yasq--tBWHGA/exec';
 var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Oa29bZXQAfOvPHJq8IOD7SHzrXl-DxzB2La5cYRB_FM/edit';
 var STORAGE_KEY = 'lafabrik_tests_2026';
 
@@ -400,6 +420,60 @@ var NIVEAUX = [
 ];
 var FM={};
 NIVEAUX.forEach(function(n){n.formations.forEach(function(f){FM[f.id]={label:f.label,niveau:n.id,niveauLabel:n.label};});});
+
+var FM_BY_LABEL = {};
+var NIVEAU_BY_LABEL = {};
+NIVEAUX.forEach(function(n) {
+  NIVEAU_BY_LABEL[n.label] = n.id;
+  n.formations.forEach(function(f) { FM_BY_LABEL[f.label] = f.id; });
+});
+var sheetCache = [];
+
+function loadFromSheet() {
+  fetch(WEBHOOK_URL)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.results) return;
+      sheetCache = [];
+      data.results.forEach(function(row) {
+        if (!row.id) return;
+        var fmId = FM_BY_LABEL[row.formation_label] || null;
+        var niveauId = NIVEAU_BY_LABEL[row.niveau_label] || null;
+        var scorePct = parseInt(row.score_pct) || 0;
+        var scoreFr  = parseInt(String(row.score_fr  || '0').split('/')[0]) || 0;
+        var scoreCg  = parseInt(String(row.score_cg  || '0').split('/')[0]) || 0;
+        var scoreEn  = parseInt(String(row.score_en  || '0').split('/')[0]) || 0;
+        var scorePro = parseInt(String(row.score_pro || '0').split('/')[0]) || 0;
+        var scoreTotal = parseInt(String(row.score_total || '0').split('/')[0]) || 0;
+        sheetCache.push({
+          id: String(row.id),
+          prenom: row.prenom || '',
+          nom: row.nom || '',
+          email: row.email || '',
+          formation: fmId,
+          formation_label: row.formation_label || '',
+          niveauId: niveauId,
+          date: row.date || '',
+          scores: {pct:scorePct, fr:scoreFr, cg:scoreCg, en:scoreEn, pro:scorePro, total:scoreTotal},
+          status: row.statut === 'Retenu' ? 'ok' : row.statut === 'Non retenu' ? 'no' : 'new',
+          allQ: null, answers: null, fromSheet: true
+        });
+      });
+      renderDashboard();
+    })
+    .catch(function() {});
+}
+
+function getMergedDB() {
+  var local = loadDB();
+  var localIds = {};
+  local.forEach(function(r) { localIds[String(r.id)] = true; });
+  var merged = local.slice();
+  sheetCache.forEach(function(r) {
+    if (!localIds[String(r.id)]) merged.push(r);
+  });
+  return merged;
+}
 
 // ─── QUESTIONS ──────────────────────────────────────────────────
 // Structure identique pour chaque niveau :
@@ -811,7 +885,52 @@ function saveDB(arr) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   } catch(e) {}
 }
-var currentDetailId = null, currentFilter = 'all';
+var currentDetailId = null, currentFilter = 'all', showArchived = false;
+
+function statusToLabel(s) {
+  return s === 'ok' ? 'Retenu' : s === 'no' ? 'Non retenu' : s === 'archived' ? 'Archive' : 'En attente';
+}
+
+function sendStatusUpdate(id, statut) {
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify({action: 'updateStatus', id: String(id), statut: statut})
+  }).catch(function() {});
+}
+
+function quickStatus(id, status) {
+  var db = loadDB();
+  var r = db.find(function(x) { return String(x.id) === String(id); });
+  if (!r) {
+    var merged = getMergedDB();
+    r = merged.find(function(x) { return String(x.id) === String(id); });
+    if (r) { db.push(r); }
+  }
+  if (r) { r.status = status; saveDB(db); sendStatusUpdate(id, statusToLabel(status)); renderDashboard(); }
+}
+
+function toggleArchived(btn) {
+  showArchived = !showArchived;
+  btn.style.background = showArchived ? 'var(--teal)' : '';
+  btn.style.color = showArchived ? 'white' : '';
+  btn.style.borderColor = showArchived ? 'var(--teal)' : '';
+  renderDashboard();
+}
+
+function archiverCandidat() {
+  if (!confirm('Archiver ce candidat ? Il disparaitra de la liste principale mais restera dans Google Sheets.')) return;
+  var db = loadDB();
+  var r = db.find(function(x) { return String(x.id) === String(currentDetailId); });
+  if (!r) {
+    var merged = getMergedDB();
+    r = merged.find(function(x) { return String(x.id) === String(currentDetailId); });
+    if (r) { db.push(r); }
+  }
+  if (r) { r.status = 'archived'; saveDB(db); sendStatusUpdate(currentDetailId, 'Archive'); }
+  closeDetail();
+}
 
 // ─── BUILD FORMATION UI ──────────────────────────────────────────
 function buildNiveauGrid() {
@@ -848,7 +967,7 @@ function showTab(t) {
   if (el) el.classList.add('active');
   var view = document.getElementById('tab-' + t);
   if (view) view.classList.add('active');
-  if (t === 'dashboard') renderDashboard();
+  if (t === 'dashboard') { loadFromSheet(); renderDashboard(); }
 }
 function showScreen(s) {
   ['intro','formation','questions','success'].forEach(function(id) {
@@ -988,31 +1107,46 @@ function resetTest() {
 
 // ─── DASHBOARD ───────────────────────────────────────────────────
 function renderDashboard() {
-  var db = loadDB();
+  var db = getMergedDB();
+  if (!showArchived) db = db.filter(function(r) { return r.status !== 'archived'; });
+  var searchTerm = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
   var filtered = currentFilter === 'all' ? db : db.filter(function(r) { return r.niveauId === currentFilter; });
+  if (searchTerm) {
+    filtered = filtered.filter(function(r) {
+      var fmLabel = r.formation ? FM[r.formation].label : (r.formation_label || '');
+      return (r.prenom + ' ' + r.nom).toLowerCase().indexOf(searchTerm) >= 0
+        || (r.email || '').toLowerCase().indexOf(searchTerm) >= 0
+        || fmLabel.toLowerCase().indexOf(searchTerm) >= 0;
+    });
+  }
   document.getElementById('stat-total').textContent = filtered.length;
   document.getElementById('stat-new').textContent = filtered.filter(function(r) { return r.status === 'new'; }).length;
   document.getElementById('stat-ok').textContent = filtered.filter(function(r) { return r.status === 'ok'; }).length;
   document.getElementById('stat-avg').textContent = filtered.length ? Math.round(filtered.reduce(function(s,r) { return s + r.scores.pct; }, 0) / filtered.length) + '%' : '—';
   var list = document.getElementById('results-list');
   if (!filtered.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div>Aucun résultat pour l\'instant.<br>Les candidats apparaîtront ici après leur test.</div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div>' + (searchTerm ? 'Aucun résultat pour cette recherche.' : 'Aucun résultat pour l\'instant.<br>Les candidats apparaîtront ici après leur test.') + '</div>';
     return;
   }
   var html = '';
   filtered.slice().reverse().forEach(function(r) {
     var ini = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
     var sc = r.scores.pct;
+    var fmLabel = r.formation ? FM[r.formation].label : (r.formation_label || '—');
     var scCls = sc >= 70 ? 'score-high' : sc >= 50 ? 'score-med' : 'score-low';
-    var stCls = r.status === 'new' ? 's-new' : r.status === 'ok' ? 's-ok' : 's-no';
-    var stLbl = r.status === 'new' ? 'En attente' : r.status === 'ok' ? 'Retenu' : 'Non retenu';
-    html += '<div class="result-row" onclick="openDetail(' + r.id + ')">';
+    var stCls = r.status === 'new' ? 's-new' : r.status === 'ok' ? 's-ok' : r.status === 'archived' ? '' : 's-no';
+    var stLbl = r.status === 'new' ? 'En attente' : r.status === 'ok' ? 'Retenu' : r.status === 'archived' ? 'Archivé' : 'Non retenu';
+    var isOk = r.status === 'ok', isNo = r.status === 'no';
+    html += '<div class="result-row" onclick="openDetail(\'' + r.id + '\')">';
     html += '<div class="avatar">' + ini + '</div>';
     html += '<div class="result-info"><div class="name">' + r.prenom + ' ' + r.nom + '</div>';
-    html += '<div class="meta">' + FM[r.formation].label + ' — ' + r.date + '</div></div>';
+    html += '<div class="meta">' + fmLabel + ' — ' + r.date + '</div></div>';
     html += '<span class="score-badge ' + scCls + '">' + sc + '%</span>';
     html += '<span class="status-pill ' + stCls + '">' + stLbl + '</span>';
-    if (r.sheetRow) html += '<span style="font-size:11px;color:var(--teal);margin-left:4px" title="Enregistré Google Sheets">📊</span>';
+    html += '<div class="quick-actions no-print" onclick="event.stopPropagation()">';
+    html += '<button class="qa-btn ok' + (isOk ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'ok\')" title="Retenu">✓</button>';
+    html += '<button class="qa-btn no' + (isNo ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'no\')" title="Non retenu">✗</button>';
+    html += '</div>';
     html += '</div>';
   });
   list.innerHTML = html;
@@ -1026,15 +1160,22 @@ function clearAll() { if (confirm('Supprimer tous les résultats ?')) { saveDB([
 
 // ─── DETAIL MODAL ────────────────────────────────────────────────
 function openDetail(id) {
-  var db = loadDB(); var r = db.find(function(x) { return x.id === id; }); if (!r) return;
+  var db = getMergedDB(); var r = db.find(function(x) { return String(x.id) === String(id); }); if (!r) return;
   currentDetailId = id;
-  var fm = FM[r.formation];
+  // Si fiche venue du Sheet uniquement, on la sauvegarde localement pour le suivi statut
+  if (r.fromSheet) {
+    var local = loadDB();
+    if (!local.find(function(x) { return String(x.id) === String(id); })) {
+      local.push(r); saveDB(local);
+    }
+  }
+  var fm = r.formation ? FM[r.formation] : {label: r.formation_label || '—', niveauLabel: ''};
   document.getElementById('d-avatar').textContent = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
   document.getElementById('d-name').textContent = r.prenom + ' ' + r.nom;
   document.getElementById('d-meta').textContent = fm.label + ' — ' + r.date + ' — ' + r.email;
-  document.getElementById('d-status-sel').value = r.status;
+  document.getElementById('d-status-sel').value = r.status || 'new';
   var sheetHtml = '';
-  if (r.sheetRow && SHEET_URL) sheetHtml = '<a href="' + SHEET_URL + '" target="_blank" class="sheet-link">📊 Voir dans Google Sheets (ligne ' + r.sheetRow + ')</a>';
+  if (SHEET_URL) sheetHtml = '<a href="' + SHEET_URL + '" target="_blank" class="sheet-link" style="font-size:11px;color:var(--teal)">Voir dans Google Sheets</a>';
   document.getElementById('d-hs-link').innerHTML = sheetHtml;
   var sc = r.scores;
   var html = '<div class="score-hero">';
@@ -1047,44 +1188,53 @@ function openDetail(id) {
   html += '<div class="score-box"><div class="bv">' + sc.en + '/10</div><div class="bl">Anglais</div></div>';
   html += '<div class="score-box"><div class="bv">' + sc.pro + '/5</div><div class="bl">Pro</div></div>';
   html += '</div></div></div>';
-  // Questions par section
-  var sections = ['📚 Partie 1 : Français','🌍 Partie 2 : Culture Générale','🇬🇧 Partie 3 : Anglais'];
-  sections.push('📌 Questions Professionnelles — ' + fm.label);
-  sections.forEach(function(sec) {
-    var items = [];
-    r.allQ.forEach(function(qObj, i) { if (qObj.section === sec) items.push({qObj:qObj, i:i}); });
-    if (!items.length) return;
-    html += '<span class="q-section-hd">' + sec + '</span>';
-    items.forEach(function(x) {
-      var given = r.answers[x.i], correct = x.qObj.data.ans, isRight = (given === correct);
-      html += '<div class="q-item">';
-      html += '<div class="q-item-hd" style="border-left:3px solid ' + (isRight ? 'var(--teal)' : 'var(--danger)') + '">' + (isRight ? '✓ ' : '✗ ') + (x.i + 1) + '. ' + x.qObj.data.q + '</div>';
-      html += '<div class="q-item-body">';
-      x.qObj.data.opts.forEach(function(opt, oi) {
-        var cls = ''; if (oi === correct) cls = 'correct'; else if (oi === given && !isRight) cls = 'wrong';
-        html += '<div class="opt-row ' + cls + '"><div class="opt-dot"></div>' + opt;
-        if (oi === correct) html += ' <em style="font-size:10px">(bonne réponse)</em>';
-        if (oi === given && !isRight) html += ' <em style="font-size:10px">← Réponse du candidat</em>';
-        html += '</div>';
+  if (r.allQ && r.allQ.length) {
+    var sections = ['📚 Partie 1 : Français','🌍 Partie 2 : Culture Générale','🇬🇧 Partie 3 : Anglais'];
+    sections.push('📌 Questions Professionnelles — ' + fm.label);
+    sections.forEach(function(sec) {
+      var items = [];
+      r.allQ.forEach(function(qObj, i) { if (qObj.section === sec) items.push({qObj:qObj, i:i}); });
+      if (!items.length) return;
+      html += '<span class="q-section-hd">' + sec + '</span>';
+      items.forEach(function(x) {
+        var given = r.answers[x.i], correct = x.qObj.data.ans, isRight = (given === correct);
+        html += '<div class="q-item">';
+        html += '<div class="q-item-hd" style="border-left:3px solid ' + (isRight ? 'var(--teal)' : 'var(--danger)') + '">' + (isRight ? '✓ ' : '✗ ') + (x.i + 1) + '. ' + x.qObj.data.q + '</div>';
+        html += '<div class="q-item-body">';
+        x.qObj.data.opts.forEach(function(opt, oi) {
+          var cls = ''; if (oi === correct) cls = 'correct'; else if (oi === given && !isRight) cls = 'wrong';
+          html += '<div class="opt-row ' + cls + '"><div class="opt-dot"></div>' + opt;
+          if (oi === correct) html += ' <em style="font-size:10px">(bonne réponse)</em>';
+          if (oi === given && !isRight) html += ' <em style="font-size:10px">← Réponse du candidat</em>';
+          html += '</div>';
+        });
+        html += '</div></div>';
       });
-      html += '</div></div>';
     });
-  });
+  } else {
+    html += '<div style="margin-top:16px;padding:14px 16px;background:var(--gold-lt);border:1px solid var(--gold);border-radius:8px;font-size:12px;color:var(--gold-dk)">';
+    html += 'Le détail des réponses est disponible uniquement sur l\'appareil où le test a été passé. Les scores sont synchronisés depuis Google Sheets.</div>';
+  }
   document.getElementById('d-body').innerHTML = html;
   document.getElementById('detail-modal').style.display = 'flex';
 }
 function updateStatus(event) {
   var val = event.target.value; var db = loadDB();
-  var r = db.find(function(x) { return x.id === currentDetailId; });
-  if (r) { r.status = val; saveDB(db); }
+  var r = db.find(function(x) { return String(x.id) === String(currentDetailId); });
+  if (!r) {
+    var merged = getMergedDB();
+    r = merged.find(function(x) { return String(x.id) === String(currentDetailId); });
+    if (r) { db.push(r); }
+  }
+  if (r) { r.status = val; saveDB(db); sendStatusUpdate(currentDetailId, statusToLabel(val)); }
 }
 function closeDetail() { document.getElementById('detail-modal').style.display = 'none'; renderDashboard(); }
 function closeDetailOutside(e) { if (e.target === document.getElementById('detail-modal')) closeDetail(); }
 
 // ─── PRINT ───────────────────────────────────────────────────────
 function printDetail() {
-  var db = loadDB(); var r = db.find(function(x) { return x.id === currentDetailId; }); if (!r) return;
-  var fm = FM[r.formation]; var sc = r.scores;
+  var db = getMergedDB(); var r = db.find(function(x) { return String(x.id) === String(currentDetailId); }); if (!r) return;
+  var fm = r.formation ? FM[r.formation] : {label: r.formation_label || '—', niveauLabel: ''}; var sc = r.scores;
   var now = new Date(); var ds = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
   var body = '<div style="font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#232121;padding:24px">';
   body += '<div style="display:flex;align-items:center;gap:14px;border-bottom:3px solid #2EB3AF;padding-bottom:14px;margin-bottom:20px">';
@@ -1145,7 +1295,7 @@ function printDetail() {
 
 // ─── CSV EXPORT ──────────────────────────────────────────────────
 function exportCSV() {
-  var db = loadDB(); if (!db.length) { alert('Aucun résultat à exporter.'); return; }
+  var db = getMergedDB(); if (!db.length) { alert('Aucun résultat à exporter.'); return; }
   var rows = [['ID','Prénom','Nom','Email','Formation','Niveau','Date test','Durée','Score %','Français /10','Culture G. /10','Anglais /10','Questions Pro /5','Score total /35','Statut']];
   db.forEach(function(r) {
     var fm = FM[r.formation];
@@ -1160,8 +1310,8 @@ function exportCSV() {
   a.click(); URL.revokeObjectURL(url);
 }
 function exportSingleCSV() {
-  var db = loadDB(); var r = db.find(function(x) { return x.id === currentDetailId; }); if (!r) return;
-  var fm = FM[r.formation];
+  var db = getMergedDB(); var r = db.find(function(x) { return String(x.id) === String(currentDetailId); }); if (!r) return;
+  var fm = r.formation ? FM[r.formation] : {label: r.formation_label || '—', niveauLabel: ''};
   var rows = [['Champ','Valeur']];
   rows.push(['Prénom',r.prenom],['Nom',r.nom],['Email',r.email],['Formation',fm.label],['Niveau',fm.niveauLabel],['Date',r.date],['Score global',r.scores.pct+'%'],['Français',r.scores.fr+'/10'],['Culture G.',r.scores.cg+'/10'],['Anglais',r.scores.en+'/10'],['Questions Pro',r.scores.pro+'/5'],['Total',r.scores.total+'/35'],['Statut',r.status==='new'?'En attente':r.status==='ok'?'Retenu':'Non retenu']);
   rows.push(['',''],['DÉTAIL DES RÉPONSES','']);
@@ -1193,8 +1343,8 @@ function copyFormationLink() {
   }
 }
 function copyTestLink() {
-  var db = loadDB();
-  var r = db.find(function(x) { return x.id === currentDetailId; });
+  var db = getMergedDB();
+  var r = db.find(function(x) { return String(x.id) === String(currentDetailId); });
   if (!r) return;
   var base = window.location.href.split('?')[0];
   var params = new URLSearchParams({nom:r.nom, prenom:r.prenom, email:r.email, formation:r.formation});
