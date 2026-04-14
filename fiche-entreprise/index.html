@@ -103,7 +103,37 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
 .step-content{display:none;}
 .step-content.active{display:block;}
 .mt1{margin-top:1rem;}
+
+/* Grille d'adéquation */
+.grille-table{width:100%;border-collapse:collapse;font-size:12px;}
+.grille-table th{background:var(--noir);color:white;padding:8px 10px;text-align:left;font-size:11px;font-weight:600;}
+.grille-table td{padding:8px 10px;border:1px solid var(--bdr);vertical-align:top;}
+.grille-table tr:nth-child(even) td{background:var(--teal-xlt);}
+.bloc-cell{background:var(--teal-lt)!important;font-weight:600;color:var(--teal-dk);font-size:11px;writing-mode:initial;text-align:center;min-width:80px;max-width:100px;}
+.taches-list{font-size:11px;color:var(--muted);margin:4px 0 0 0;padding-left:14px;}
+.rating-cell{text-align:center;min-width:36px;}
+.rating-cell input[type=radio]{accent-color:var(--teal);width:16px;height:16px;}
+.secteur-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border:1px solid var(--bdr);border-radius:8px;margin-bottom:6px;background:white;}
+.secteur-item input[type=checkbox]{accent-color:var(--teal);width:16px;height:16px;margin-top:2px;flex-shrink:0;}
+.secteur-item label{font-size:13px;color:var(--txt);cursor:pointer;flex:1;}
+.secteur-item.libre{border-style:dashed;}
+.cert-item{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--bdr);border-radius:8px;margin-bottom:8px;background:white;}
+.cert-question{flex:1;font-size:12px;color:var(--txt);}
+.cert-oui-non{display:flex;gap:12px;flex-shrink:0;}
+.cert-oui-non label{display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;}
+.cert-complement{margin-top:8px;}
+.cert-complement textarea{width:100%;padding:6px 10px;border:1.5px solid var(--bdr);border-radius:6px;font-size:12px;font-family:'Open Sans',sans-serif;resize:vertical;min-height:60px;outline:none;}
+/* Signature */
+#signatureCanvas{background:#fafafa;}
+/* Print */
+@media print {
+  .app-header,.nav-bar,.btn,.step-indicator,#dot1,#dot2,#dot3,#dot4,#dot5,#dot6{display:none!important;}
+  .step-content{display:block!important;}
+  body{background:white;}
+  .card{border:1px solid #ccc;box-shadow:none;}
+}
 </style>
+<script src="grille-data.js"></script>
 </head>
 <body>
 
@@ -125,7 +155,11 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
     <div class="step-line" id="line23"></div>
     <div class="step-dot" id="dot3"><div class="step-dot-circle">3</div><div class="step-dot-label">Ma&icirc;tre apprentissage</div></div>
     <div class="step-line" id="line34"></div>
-    <div class="step-dot" id="dot4"><div class="step-dot-circle">4</div><div class="step-dot-label">R&eacute;capitulatif</div></div>
+    <div class="step-dot" id="dot4"><div class="step-dot-circle">4</div><div class="step-dot-label">Ad&eacute;quation</div></div>
+    <div class="step-line" id="line45"></div>
+    <div class="step-dot" id="dot5"><div class="step-dot-circle">5</div><div class="step-dot-label">Signature</div></div>
+    <div class="step-line" id="line56"></div>
+    <div class="step-dot" id="dot6"><div class="step-dot-circle">6</div><div class="step-dot-label">R&eacute;capitulatif</div></div>
   </div>
 
   <!-- ETAPE 1 -->
@@ -226,18 +260,44 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
         </div>
         <div class="field">
           <label>Formation choisie</label>
-          <select id="formation">
-            <option value="">-- S&eacute;lectionner --</option>
-            <option>BTS Profession Immobilier</option>
-            <option>BTS MCO</option>
-            <option>BTS GPME</option>
-            <option>BTS SAM</option>
-            <option>BTS Commerce International</option>
-            <option>Bachelor RH</option>
-            <option>CAP AEPE</option>
-            <option>TP IP&Egrave;PE</option>
-            <option>Autre</option>
+          <select id="formation" onchange="onFormationChange()">
+            <option value="">-- Sélectionner --</option>
+            <optgroup label="Niveau 3 — CAP">
+              <option value="CAP_AEPE">CAP AEPE — Accompagnant Éducatif Petite Enfance</option>
+              <option value="CAP_COIF">CAP Métiers de la Coiffure</option>
+            </optgroup>
+            <optgroup label="Niveau 4 — Bac / TP">
+              <option value="BP_COIF">BP Coiffure</option>
+              <option value="BAC_COIF">Bac Pro Coiffure</option>
+              <option value="BAC_MCV">Bac Pro MCV — Métiers du Commerce et de la Vente</option>
+              <option value="TP_CC">TP Conseiller Commercial</option>
+              <option value="TP_IEPE">TP IPEPE — Intervenant Petite Enfance</option>
+              <option value="TP_ASMA">TP Assistant Secrétaire Médico-Administratif</option>
+            </optgroup>
+            <optgroup label="Niveau 5 — BTS / TP">
+              <option value="BTS_BANQUE">BTS Banque</option>
+              <option value="BTS_COM">BTS Communication</option>
+              <option value="BTS_MCO">BTS MCO — Management Commercial Opérationnel</option>
+              <option value="BTS_NDRC">BTS NDRC — Négociation et Digitalisation RC</option>
+              <option value="BTS_GPME">BTS GPME — Gestion PME</option>
+              <option value="TP_FPA">TP Formateur Professionnel d'Adultes</option>
+              <option value="TP_AC">TP Assistant Commercial</option>
+            </optgroup>
+            <optgroup label="Niveau 6">
+              <option value="BAC6_REM">TP Responsable Établissement Marchand</option>
+              <option value="BAC6_BNQ">Bachelor Banque et Assurance</option>
+            </optgroup>
+            <optgroup label="Niveau 7 — Mastère">
+              <option value="MST_MA">Mastère Manager d'Affaires</option>
+              <option value="MST_ECGP">Mastère Expert Conseil GP — Gestion de Patrimoine</option>
+            </optgroup>
           </select>
+        </div>
+        <div class="field full" id="link-generator" style="display:none">
+          <div style="background:var(--teal-lt);border:1px solid var(--teal);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:13px;color:var(--teal-dk);flex:1;">Pré-remplir le lien à envoyer à l'entreprise</span>
+            <button type="button" class="btn btn-teal" style="font-size:12px;padding:6px 14px;" onclick="copyEntrepriseLink()">🔗 Copier le lien entreprise</button>
+          </div>
         </div>
         <div class="field">
           <label>Disponibilit&eacute; &mdash; d&eacute;but de contrat</label>
@@ -411,12 +471,69 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
     </div>
     <div class="nav-bar">
       <button class="btn btn-ghost" onclick="goTo(2)">&#x2190; Pr&eacute;c&eacute;dent</button>
-      <button class="btn btn-primary" onclick="goTo(4)">V&eacute;rifier &amp; Valider &#x2192;</button>
+      <button class="btn btn-primary" onclick="goToAdequation()">Suivant &#x2192;</button>
     </div>
   </div>
 
-  <!-- ETAPE 4 -->
+  <!-- ETAPE 4 — GRILLE D'ADÉQUATION -->
   <div class="step-content" id="step4">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">📋</div> Grille de contrôle de l'adéquation</div>
+      <div class="card-subtitle" id="grille-subtitle">Vérifiez l'adéquation des activités de votre entreprise avec le référentiel de formation</div>
+
+      <!-- SECTEUR D'ACTIVITÉ -->
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:13px;font-weight:600;color:var(--noir);margin-bottom:0.75rem;padding-bottom:6px;border-bottom:2px solid var(--teal);">1er contrôle — Secteur d'activité <span style="font-weight:400;color:var(--muted)">(cochez le secteur correspondant)</span></div>
+        <div id="grille-secteurs"></div>
+      </div>
+
+      <!-- TABLEAU COMPÉTENCES -->
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:13px;font-weight:600;color:var(--noir);margin-bottom:0.75rem;padding-bottom:6px;border-bottom:2px solid var(--teal);">2ème contrôle — Compétences mises en œuvre</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:0.75rem;font-style:italic;">★★★ L'entreprise confiera des missions permettant de développer cette compétence &nbsp;|&nbsp; ★★ L'entreprise peut proposer des activités en dehors des missions courantes &nbsp;|&nbsp; ★ Aucune mission proposée ne permet la construction de cette compétence</div>
+        <div id="grille-competences" style="overflow-x:auto;"></div>
+      </div>
+
+      <!-- CERTIFICATION -->
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--noir);margin-bottom:0.75rem;padding-bottom:6px;border-bottom:2px solid var(--teal);">Certification — Les parties prenantes certifient :</div>
+        <div id="grille-certification"></div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <button class="btn btn-ghost" onclick="goTo(3)">&#x2190; Précédent</button>
+      <button class="btn btn-primary" onclick="goTo(5)">Suivant — Signature &#x2192;</button>
+    </div>
+  </div>
+
+  <!-- ETAPE 5 — SIGNATURE -->
+  <div class="step-content" id="step5">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">✍️</div> Signature</div>
+      <div class="card-subtitle">Signez dans le cadre ci-dessous pour valider la grille d'adéquation. Utilisez votre souris, votre stylet ou votre doigt sur écran tactile.</div>
+
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Nom, prénom et fonction du signataire <span style="color:var(--teal)">*</span></label>
+        <input type="text" id="signataire" placeholder="Prénom NOM — Directeur(trice)" style="width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Open Sans',sans-serif;font-size:14px;margin-top:5px;outline:none;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+
+      <div style="border:2px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;position:relative;">
+        <div style="background:var(--teal-lt);padding:8px 14px;font-size:12px;color:var(--teal-dk);border-bottom:1px solid var(--bdr);">Signez ici — Cliquez et tracez votre signature</div>
+        <canvas id="signatureCanvas" width="700" height="200" style="display:block;width:100%;max-width:100%;cursor:crosshair;touch-action:none;"></canvas>
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-ghost" style="font-size:12px;padding:6px 14px;" onclick="clearSignature()">Effacer</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:0.5rem;">En signant ce document, vous certifiez l'exactitude des informations renseignées dans la grille d'adéquation ci-dessus, conformément aux exigences Qualiopi.</p>
+    </div>
+    <div class="nav-bar">
+      <button class="btn btn-ghost" onclick="goTo(4)">&#x2190; Précédent</button>
+      <button class="btn btn-primary" onclick="goTo(6)">Vérifier &amp; Valider &#x2192;</button>
+    </div>
+  </div>
+
+  <!-- ETAPE 6 (ex-4) -->
+  <div class="step-content" id="step6">
     <div class="card">
       <div class="card-title"><div class="card-title-icon">&#x1F50D;</div> R&eacute;capitulatif complet</div>
       <div class="card-subtitle">V&eacute;rifiez toutes les informations avant envoi</div>
@@ -472,7 +589,7 @@ input.autofilled,select.autofilled{background:var(--teal-light);border-color:var
   </div>
 
   <!-- SUCCES -->
-  <div class="step-content" id="step5">
+  <div class="step-content" id="step7">
     <div class="card">
       <div class="success-screen">
         <div class="success-icon">&#x2713;</div>
@@ -497,6 +614,7 @@ var curStep = 1;
 var selSaisie = "";
 var selSms = "";
 var selDiplome = "";
+readURLParams();
 var siretTimer = null;
 
 var APE_OPCO = {
@@ -807,17 +925,18 @@ function goTo(step) {
   document.querySelectorAll(".step-content").forEach(function(s) { s.classList.remove("active"); });
   var el = g("step" + step);
   if (el) { el.classList.add("active"); window.scrollTo({top:0,behavior:"smooth"}); }
-  for (var i = 1; i <= 4; i++) {
+  for (var i = 1; i <= 6; i++) {
     var dot = g("dot" + i);
     if (!dot) continue;
     dot.className = "step-dot" + (i < step ? " done" : i === step ? " active" : "");
-    if (i < 4) {
+    if (i < 6) {
       var ln = g("line" + i + (i+1));
       if (ln) ln.className = "step-line" + (i < step ? " done" : "");
     }
   }
-  g("progressBar").style.width = (step / 4 * 100) + "%";
-  if (step === 4) fillRecap();
+  g("progressBar").style.width = (step / 6 * 100) + "%";
+  if (step === 6) fillRecap();
+  if (step === 5) { initSignature(); }
 }
 
 function fmtDate(d) {
@@ -1038,11 +1157,14 @@ function submitForm() {
     convention: d.ctr.conv || "",
     maitre: d.ma.nom || "",
     email_ma: d.ma.email || "",
-    tel_ma: d.ma.telP || d.ma.telF || ""
+    tel_ma: d.ma.telP || d.ma.telF || "",
+    signature: getSignatureData(),
+    signataire: v('signataire'),
+    grille: getGrilleData() ? JSON.stringify(getGrilleData()) : ''
   };
 
   // Afficher l'écran succès immédiatement
-  goTo(5);
+  goTo(7);
 
   // Envoi au webhook en arrière-plan
   fetch(WEBHOOK_URL, {
@@ -1063,6 +1185,255 @@ function resetForm() {
   selSaisie = ""; selSms = ""; selDiplome = "";
   goTo(1);
 }
+
+// ========= GRILLE D'ADÉQUATION =========
+
+function onFormationChange() {
+  var fid = v('formation');
+  var lg = g('link-generator');
+  if (lg) lg.style.display = (fid) ? 'block' : 'none';
+}
+
+function buildGrille(fid) {
+  var gr = GRILLES[fid];
+  if (!gr) return;
+  
+  // Subtitle
+  var sub = g('grille-subtitle');
+  if (sub) sub.textContent = 'Grille — ' + gr.titre + (gr.rncp ? ' (' + gr.rncp + ')' : '');
+  
+  // Secteurs
+  var secEl = g('grille-secteurs');
+  if (secEl) {
+    var html = '';
+    gr.secteurs.forEach(function(s, i) {
+      html += '<div class="secteur-item' + (s.libre ? ' libre' : '') + '">';
+      html += '<input type="checkbox" id="sec_' + i + '" name="secteur">';
+      if (s.libre) {
+        html += '<label for="sec_' + i + '">' + s.label + ' <input type="text" id="sec_libre_' + i + '" style="margin-left:6px;padding:3px 8px;border:1px solid var(--bdr);border-radius:4px;font-size:12px;width:200px;" placeholder="Précisez..."></label>';
+      } else {
+        html += '<label for="sec_' + i + '">' + s.label + '</label>';
+      }
+      html += '</div>';
+    });
+    secEl.innerHTML = html;
+  }
+  
+  // Tableau compétences
+  var compEl = g('grille-competences');
+  if (compEl) {
+    var tbl = '<table class="grille-table"><thead><tr>';
+    tbl += '<th style="width:90px">Bloc</th>';
+    tbl += '<th>Compétence / Tâches</th>';
+    tbl += '<th style="width:40px;text-align:center">★★★</th>';
+    tbl += '<th style="width:40px;text-align:center">★★</th>';
+    tbl += '<th style="width:40px;text-align:center">★</th>';
+    tbl += '<th style="width:140px">Commentaire</th>';
+    tbl += '</tr></thead><tbody>';
+    
+    var rowIdx = 0;
+    gr.blocs.forEach(function(bloc, bi) {
+      var nbComp = bloc.competences.length;
+      bloc.competences.forEach(function(comp, ci) {
+        var rid = 'comp_' + bi + '_' + ci;
+        tbl += '<tr>';
+        if (ci === 0) {
+          tbl += '<td class="bloc-cell" rowspan="' + nbComp + '">' + bloc.label + '</td>';
+        }
+        tbl += '<td><strong style="font-size:12px">' + comp.label + '</strong>';
+        if (comp.taches && comp.taches.length) {
+          tbl += '<ul class="taches-list">';
+          comp.taches.forEach(function(t) { tbl += '<li>' + t + '</li>'; });
+          tbl += '</ul>';
+        }
+        tbl += '</td>';
+        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="***"></td>';
+        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="**"></td>';
+        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="*"></td>';
+        tbl += '<td><input type="text" style="width:100%;padding:4px 6px;border:1px solid var(--bdr);border-radius:4px;font-size:11px;" placeholder="..." id="comment_' + bi + '_' + ci + '"></td>';
+        tbl += '</tr>';
+        rowIdx++;
+      });
+    });
+    tbl += '</tbody></table>';
+    compEl.innerHTML = tbl;
+  }
+  
+  // Certification
+  var certEl = g('grille-certification');
+  if (certEl) {
+    certEl.innerHTML = buildCertification();
+  }
+}
+
+function buildCertification() {
+  var q1 = "L'entreprise relève du secteur cible du référentiel du diplôme";
+  var q2 = "Le maître d'apprentissage désigné est en capacité de former et d'évaluer aux compétences référencées dans la grille";
+  var q3 = "Si le tableau indique des blocs et/ou des compétences non mises en œuvre dans l'entreprise, l'entreprise consent à recourir au conventionnement avec une tierce entreprise (Code du travail, articles R6223-10 à R6223-16)";
+  
+  function certRow(id, label, showComplement) {
+    var html = '<div class="cert-item">';
+    html += '<div class="cert-question">' + label;
+    if (showComplement) {
+      html += '<div class="cert-complement"><textarea id="cert_complement_' + id + '" placeholder="Précisez si OUI : bloc / compétences à développer dans une tierce entreprise, secteur / entreprise à cibler. Si NON : raisons justifiant le non recours..."></textarea></div>';
+    }
+    html += '</div>';
+    html += '<div class="cert-oui-non">';
+    html += '<label><input type="radio" name="cert_' + id + '" value="OUI"> OUI</label>';
+    html += '<label><input type="radio" name="cert_' + id + '" value="NON"> NON</label>';
+    html += '</div></div>';
+    return html;
+  }
+  
+  return certRow('q1', q1, false) + certRow('q2', q2, false) + certRow('q3', q3, true);
+}
+
+function getGrilleData() {
+  var fid = v('formation');
+  var gr = GRILLES[fid];
+  if (!gr) return null;
+  
+  var result = { formation_id: fid, formation_titre: gr.titre, secteurs: [], competences: [], certification: {} };
+  
+  // Secteurs
+  gr.secteurs.forEach(function(s, i) {
+    var cb = g('sec_' + i);
+    if (cb && cb.checked) {
+      var val = s.label;
+      var libre = g('sec_libre_' + i);
+      if (libre && libre.value) val += ' : ' + libre.value;
+      result.secteurs.push(val);
+    }
+  });
+  
+  // Compétences
+  gr.blocs.forEach(function(bloc, bi) {
+    bloc.competences.forEach(function(comp, ci) {
+      var rid = 'comp_' + bi + '_' + ci;
+      var checked = document.querySelector('input[name="' + rid + '"]:checked');
+      var comment = v('comment_' + bi + '_' + ci);
+      result.competences.push({
+        bloc: bloc.label,
+        competence: comp.label,
+        niveau: checked ? checked.value : '',
+        commentaire: comment
+      });
+    });
+  });
+  
+  // Certification
+  ['q1','q2','q3'].forEach(function(q) {
+    var r = document.querySelector('input[name="cert_' + q + '"]:checked');
+    result.certification[q] = r ? r.value : '';
+  });
+  var comp3 = g('cert_complement_q3');
+  result.certification['q3_complement'] = comp3 ? comp3.value : '';
+  
+  return result;
+}
+
+// ========= SIGNATURE =========
+
+var sigCanvas, sigCtx, sigDrawing = false, sigHasData = false;
+
+function initSignature() {
+  sigCanvas = g('signatureCanvas');
+  if (!sigCanvas) return;
+  sigCtx = sigCanvas.getContext('2d');
+  sigCtx.strokeStyle = '#1a1a1a';
+  sigCtx.lineWidth = 2;
+  sigCtx.lineCap = 'round';
+  sigCtx.lineJoin = 'round';
+  
+  function getPos(e) {
+    var r = sigCanvas.getBoundingClientRect();
+    var scaleX = sigCanvas.width / r.width;
+    var scaleY = sigCanvas.height / r.height;
+    var src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - r.left) * scaleX, y: (src.clientY - r.top) * scaleY };
+  }
+  
+  sigCanvas.addEventListener('mousedown', function(e) { sigDrawing = true; var p = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); });
+  sigCanvas.addEventListener('mousemove', function(e) { if (!sigDrawing) return; var p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); sigHasData = true; });
+  sigCanvas.addEventListener('mouseup', function() { sigDrawing = false; });
+  sigCanvas.addEventListener('mouseleave', function() { sigDrawing = false; });
+  sigCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); sigDrawing = true; var p = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); });
+  sigCanvas.addEventListener('touchmove', function(e) { e.preventDefault(); if (!sigDrawing) return; var p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); sigHasData = true; });
+  sigCanvas.addEventListener('touchend', function() { sigDrawing = false; });
+}
+
+function clearSignature() {
+  if (sigCanvas && sigCtx) {
+    sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+    sigHasData = false;
+  }
+}
+
+function getSignatureData() {
+  if (!sigCanvas || !sigHasData) return '';
+  return sigCanvas.toDataURL('image/png');
+}
+
+// ========= LIEN COMMERCIAL =========
+
+function copyEntrepriseLink() {
+  var fid = v('formation');
+  var apprenti = v('nomApprenti');
+  var debut = v('dateDebut');
+  var fin = v('dateFin');
+  if (!fid || !apprenti) {
+    alert("Remplissez le nom de l'apprenti et selectionnez la formation.");
+    return;
+  }
+  var params = new URLSearchParams({ apprenti: apprenti, formation: fid, debut: debut, fin: fin, mode: 'entreprise' });
+  var url = window.location.href.split('?')[0] + '?' + params.toString();
+  navigator.clipboard.writeText(url).then(function() {
+    alert("Lien copié ! Envoyez-le à l'entreprise.");
+  }).catch(function() {
+    prompt('Copiez ce lien :', url);
+  });
+}
+
+function readURLParams() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'entreprise') {
+    var apprenti = params.get('apprenti');
+    var fid = params.get('formation');
+    var debut = params.get('debut');
+    var fin = params.get('dateFin') || params.get('fin');
+    if (apprenti) { var el = g('nomApprenti'); if (el) { el.value = apprenti; el.readOnly = true; el.style.background = 'var(--teal-lt)'; } }
+    if (debut) { var el = g('dateDebut'); if (el) { el.value = debut; el.readOnly = true; el.style.background = 'var(--teal-lt)'; } }
+    if (fin) { var el = g('dateFin'); if (el) { el.value = fin; el.readOnly = true; el.style.background = 'var(--teal-lt)'; } }
+    if (fid) {
+      var sel = g('formation');
+      if (sel) {
+        sel.value = fid;
+        sel.disabled = true;
+        sel.style.background = 'var(--teal-lt)';
+        onFormationChange();
+      }
+    }
+    // Afficher bandeau info
+    var banner = document.createElement('div');
+    banner.style.cssText = 'background:var(--teal-lt);border:1px solid var(--teal);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--teal-dk);margin-bottom:1rem;';
+    banner.innerHTML = "📋 <strong>Formulaire pré-rempli par le CFA La Fabrik</strong> — Les informations de l'apprenti(e) sont verrouillées. Remplissez les informations de votre entreprise.";
+    var firstCard = document.querySelector('#step1 .card');
+    if (firstCard) firstCard.insertAdjacentElement('beforebegin', banner);
+  }
+}
+
+// ========= NAVIGATION ADÉQUATION =========
+
+function goToAdequation() {
+  var fid = v('formation');
+  if (fid && GRILLES[fid]) {
+    buildGrille(fid);
+    goTo(4);
+  } else {
+    goTo(6);
+  }
+}
+
 </script>
 </body>
 </html>
