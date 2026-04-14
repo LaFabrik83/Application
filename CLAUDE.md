@@ -123,15 +123,21 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Import `shared.css`
 
 ### 3. Fiche entreprise (`fiche-entreprise/`)
-- Formulaire multi-étapes : informations entreprise, maître d'apprentissage, formations souhaitées, grille de compétences
+- Formulaire 6 étapes : entreprise → apprenti → maître d'apprentissage → grille d'adéquation → signature → récapitulatif
 - Auto-complétion SIRET via API entreprise
 - Lien partageable pré-rempli (apprenti, formation, dates)
+- **Formation OBLIGATOIRE** (étape 1 — champ requis avec validation)
+- **Grille d'adéquation OBLIGATOIRE** (étape 4 — secteur + toutes compétences notées + 3 questions certification) — décision légale : sans grille, pas de contrat
+- `goToAdequation()` : si pas de formation → alerte + retour étape 1 ; sinon toujours afficher la grille (jamais de saut vers étape 6)
 - À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
 - Webhook GAS actuel : `AKfycbw9aFQNbZOCci4oNvs8zLdqEko4qQYpOtOje0E49BKZ5cEZQqCaXFJJ4EZNcKbqL0JR`
 - Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
-- Génération PDF entreprise et PDF école
+- 3 PDFs disponibles (étape 6 + écran succès) : PDF Entreprise, PDF École, **PDF Grille signée**
+- `printVersion()` : Blob URL + auto-print + vraie signature injectée (remplace les cases vides)
+- `printGrille()` : PDF autonome avec secteurs, tableau compétences (étoiles colorées), attestations OUI/NON, signature réelle
 - Import `shared.css`
 - ⚠️ `grille-data.js` doit toujours être commité avec `index.html`
+- ⚠️ Fichier très volumineux (~350 Ko) — modifier via sed/Bash ou Edit avec chaînes précises
 
 ---
 
@@ -139,7 +145,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 
 | Priorité | Problème | Fichier(s) concerné(s) |
 |---|---|---|
-| Moyenne | `fiche-entreprise/index.html` très volumineux (323 Ko) | `fiche-entreprise/index.html` |
+| Moyenne | `fiche-entreprise/index.html` très volumineux (~350 Ko) | `fiche-entreprise/index.html` |
 | Basse | Année 2026 codée en dur dans le header de l'accueil | `index.html` |
 
 ---
@@ -155,3 +161,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Test d'entrée — tâche HubSpot automatique à J+2 via API Engagements v1 (tâche "Appeler" avec score et formation)
 - **2026-04** : Test d'entrée — tableau de bord cross-poste via Google Sheets (doGet GAS), sync statut, archivage, recherche, actions rapides, impression PDF
 - **2026-04** : Fiche entreprise — GAS complet créé (Sheets + emails automatiques + HubSpot)
+- **2026-04** : Fiche entreprise — grille d'adéquation rendue obligatoire (légalement requise pour établir le contrat)
+- **2026-04** : Fiche entreprise — `printGrille()` ajouté : PDF grille remplie + signature réelle (Blob URL)
+- **2026-04** : Fiche entreprise — `printVersion()` converti en Blob URL, signature injectée dans les PDFs
+- **2026-04** : Fiche entreprise — bouton "Modifier" étape 6 corrigé (redirige vers étape 1, pas étape 3)

@@ -260,7 +260,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
           <input type="text" id="nomApprenti" placeholder="Pr&eacute;nom NOM"/>
         </div>
         <div class="field">
-          <label>Formation choisie</label>
+          <label>Formation choisie <span class="req">*</span></label>
           <select id="formation" onchange="onFormationChange()">
             <option value="">-- Sélectionner --</option>
             <optgroup label="Niveau 3 — CAP">
@@ -293,6 +293,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
               <option value="MST_ECGP">Mastère Expert Conseil GP — Gestion de Patrimoine</option>
             </optgroup>
           </select>
+          <div class="field-error" id="err_formation">Veuillez sélectionner une formation</div>
         </div>
         <div class="field full" id="link-generator" style="display:none">
           <div style="background:var(--teal-lt);border:1px solid var(--teal);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -580,7 +581,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
       </div>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-ghost" onclick="goTo(3)">&#x2190; Modifier</button>
+      <button class="btn btn-ghost" onclick="goTo(1)">&#x2190; Modifier</button>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
         <button class="btn btn-outline" onclick="printVersion('entreprise')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -589,6 +590,10 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
         <button class="btn btn-outline" onclick="printVersion('ecole')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           PDF &Eacute;cole
+        </button>
+        <button class="btn btn-outline" onclick="printGrille()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          PDF Grille sign&eacute;e
         </button>
         <button class="btn btn-teal" onclick="submitForm()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -617,6 +622,10 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
           <button class="btn btn-outline" onclick="printVersion('ecole')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             PDF &Eacute;cole
+          </button>
+          <button class="btn btn-outline" onclick="printGrille()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            PDF Grille sign&eacute;e
           </button>
           <button class="btn btn-ghost" onclick="resetForm()">Nouveau formulaire</button>
         </div>
@@ -910,6 +919,9 @@ function validateStep(step) {
     if (!v("telEntreprise")) { showErr("telEntreprise", true); ok = false; }
     var em = v("emailEntreprise");
     if (!em || !/\S+@\S+\.\S+/.test(em)) { showErr("emailEntreprise", true); ok = false; }
+    var ef = g("err_formation");
+    if (!v("formation")) { if (ef) ef.style.display = "block"; var sf = g("formation"); if (sf) sf.classList.add("error"); ok = false; }
+    else { if (ef) ef.style.display = "none"; var sf2 = g("formation"); if (sf2) sf2.classList.remove("error"); }
   }
   if (step === 2) {
     var es = g("err_saisie");
@@ -933,6 +945,37 @@ function validateStep(step) {
     var ed = g("err_diplome"), es2 = g("err_sms");
     if (!selDiplome) { if (ed) ed.style.display = "block"; ok = false; } else { if (ed) ed.style.display = "none"; }
     if (!selSms) { if (es2) es2.style.display = "block"; ok = false; } else { if (es2) es2.style.display = "none"; }
+  }
+  if (step === 4) {
+    var fid = v('formation');
+    var gr = fid ? GRILLES[fid] : null;
+    if (gr) {
+      // Vérifier qu'au moins un secteur est coché
+      var secCoche = false;
+      gr.secteurs.forEach(function(s, i) { var cb = g('sec_' + i); if (cb && cb.checked) secCoche = true; });
+      if (!secCoche) { alert('Veuillez cocher au moins un secteur d\'activité.'); ok = false; }
+      // Vérifier que toutes les compétences sont notées
+      if (ok) {
+        var compManquante = false;
+        gr.blocs.forEach(function(bloc, bi) {
+          bloc.competences.forEach(function(comp, ci) {
+            var rid = 'comp_' + bi + '_' + ci;
+            var checked = document.querySelector('input[name="' + rid + '"]:checked');
+            if (!checked) compManquante = true;
+          });
+        });
+        if (compManquante) { alert('Veuillez noter toutes les compétences (★, ★★ ou ★★★).'); ok = false; }
+      }
+      // Vérifier les certifications
+      if (ok) {
+        var certManquante = false;
+        ['q1','q2','q3'].forEach(function(q) {
+          var r = document.querySelector('input[name="cert_' + q + '"]:checked');
+          if (!r) certManquante = true;
+        });
+        if (certManquante) { alert('Veuillez répondre à toutes les questions de certification.'); ok = false; }
+      }
+    }
   }
   return ok;
 }
@@ -1067,14 +1110,99 @@ function printVersion(version) {
     body += "<div style=\"border:1px solid #D4E8E8;border-radius:4px;padding:8px;min-height:45px;margin-top:5px;font-size:10px;color:#aaa\">Commentaires / Observations :</div></div>";
   }
 
-  body += "<div class=\"signs\"><div class=\"sign\"><div class=\"sign-l\">Signature de entreprise</div><div style=\"font-size:9px;color:#aaa;margin-top:4px\">Nom, date et cachet</div></div>";
+  var sig = getSignatureData();
+  var sigHtml = sig ? "<img src=\"" + sig + "\" style=\"max-width:180px;max-height:55px;display:block;margin-top:4px\">" : "<div style=\"font-size:9px;color:#aaa;margin-top:4px\">Nom, date et cachet</div>";
+  body += "<div class=\"signs\"><div class=\"sign\"><div class=\"sign-l\">Signature entreprise</div>" + sigHtml + "</div>";
   body += "<div class=\"sign\"><div class=\"sign-l\">Signature CFA La Fabrik</div><div style=\"font-size:9px;color:#aaa;margin-top:4px\">Nom et date</div></div></div>";
   body += "<div class=\"ftr\"><span>CFA La Fabrik &mdash; 153 rue Andre Citroen, ZI La Palud, 83600 Frejus</span><span>Genere le " + ds + (isEcole ? " - Version Ecole" : " - Exemplaire Entreprise") + "</span></div>";
   body += "</div>";
 
   var html = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"/>" + css + "</head><body>" + body + "<script>window.onload=function(){window.print();}<\/script></body></html>";
-  var w = window.open("", "_blank", "width=900,height=700");
-  if (w) { w.document.write(html); w.document.close(); }
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  if (w) { setTimeout(function() { URL.revokeObjectURL(url); }, 60000); }
+}
+
+function printGrille() {
+  var gd = getGrilleData();
+  if (!gd) { alert('Aucune grille disponible. Veuillez s\u00e9lectionner une formation et remplir la grille.'); return; }
+  var sig = getSignatureData();
+  var signataire = v('signataire') || '';
+  var now = new Date();
+  var ds = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
+  var logo = g('logoB64').value;
+  var d = getData();
+
+  var css = '<style>body{font-family:Arial,sans-serif;font-size:11px;color:#232121;margin:0}.page{padding:12mm;max-width:210mm;margin:0 auto}.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:3px solid #2EB3AF}.hdr img{width:50px;height:50px;border-radius:6px;object-fit:cover}.hdr-r{text-align:right;font-size:9px;color:#5A5A5A;line-height:1.7}.title{text-align:center;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:8px 0 12px;color:#232121}.info-band{background:#E6F7F7;border:1px solid #9FD8D6;border-radius:4px;padding:7px 10px;margin-bottom:10px;font-size:10px;color:#1A8A86;display:flex;gap:24px;flex-wrap:wrap}.info-band strong{display:block;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#1A8A86;margin-bottom:1px}.sec-block{margin-bottom:10px}.sec-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#2EB3AF;margin-bottom:4px;padding-bottom:2px;border-bottom:1px solid #D4E8E8}.sec-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}.sec-tag{background:#E6F7F7;border:1px solid #9FD8D6;border-radius:3px;padding:2px 8px;font-size:10px;color:#1A8A86}table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px}th{background:#2EB3AF;color:white;padding:4px 6px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.5px}td{padding:4px 6px;border-bottom:1px solid #f0f6f5;vertical-align:top}.bloc-cell{background:#f5fafa;font-weight:600;font-size:9px;color:#1A8A86;border-right:2px solid #2EB3AF;text-align:center;vertical-align:middle}.rating{text-align:center;font-weight:700;font-size:13px}.r3{color:#2EB3AF}.r2{color:#B19500}.r1{color:#e84545}.cert-block{margin-bottom:10px;border:1px solid #D4E8E8;border-radius:6px;padding:8px 10px}.cert-item{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border-bottom:1px solid #f0f0f0;gap:8px}.cert-item:last-child{border-bottom:none}.cert-q{font-size:10px;flex:1;line-height:1.5}.cert-r{font-weight:700;font-size:11px;white-space:nowrap;padding-top:1px}.cert-r.oui{color:#2EB3AF}.cert-r.non{color:#e84545}.cert-comp{margin-top:3px;font-size:9px;color:#5A5A5A;font-style:italic;padding-left:6px;border-left:2px solid #D4E8E8}.sign-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sign-box{border:1px solid #D4E8E8;border-radius:4px;padding:10px;min-height:70px}.sign-l{font-size:9px;color:#5A5A5A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}.ftr{margin-top:12px;padding-top:8px;border-top:1px solid #D4E8E8;display:flex;justify-content:space-between;font-size:9px;color:#aaa}@media print{body{margin:0}.page{padding:8mm}}</style>';
+
+  var body = '<div class="page">';
+  body += '<div class="hdr"><div><img src="data:image/png;base64,' + logo + '" alt="La Fabrik"/><div style="font-size:9px;color:#5A5A5A;margin-top:2px">CFA Qualiopi &mdash; Frejus, Var</div></div>';
+  body += '<div class="hdr-r"><div>04 22 54 26 03</div><div>contrat@fabrikfrejus.fr</div><div><strong>Date : ' + ds + '</strong></div></div></div>';
+  body += '<div class="title">Grille d\'Ad\u00e9quation Entreprise &mdash; ' + gd.formation_titre + '</div>';
+
+  body += '<div class="info-band">';
+  if (d.app.nom) body += '<div><strong>Apprenti(e)</strong>' + d.app.nom + '</div>';
+  if (d.ent.rs) body += '<div><strong>Entreprise</strong>' + d.ent.rs + '</div>';
+  if (d.ma.nom) body += '<div><strong>Ma\u00eetre d\'apprentissage</strong>' + d.ma.nom + '</div>';
+  body += '</div>';
+
+  // Secteurs
+  if (gd.secteurs.length) {
+    body += '<div class="sec-block"><div class="sec-t">Secteurs d\'activit\u00e9 concern\u00e9s</div><div class="sec-list">';
+    gd.secteurs.forEach(function(s) { body += '<span class="sec-tag">' + s + '</span>'; });
+    body += '</div></div>';
+  }
+
+  // Tableau compétences
+  body += '<table><thead><tr><th style="width:85px">Bloc</th><th>Comp\u00e9tence</th><th style="width:44px;text-align:center">Niveau</th><th style="width:130px">Commentaire</th></tr></thead><tbody>';
+  var lastBloc = '';
+  gd.competences.forEach(function(c) {
+    var niv = c.niveau === '***' ? '<span class="rating r3">★★★</span>' : (c.niveau === '**' ? '<span class="rating r2">★★</span>' : (c.niveau === '*' ? '<span class="rating r1">★</span>' : '<span style="color:#aaa;font-size:9px">—</span>'));
+    var isNewBloc = c.bloc !== lastBloc;
+    lastBloc = c.bloc;
+    body += '<tr>';
+    if (isNewBloc) {
+      var blocCount = gd.competences.filter(function(x) { return x.bloc === c.bloc; }).length;
+      body += '<td class="bloc-cell" rowspan="' + blocCount + '">' + c.bloc + '</td>';
+    }
+    body += '<td>' + c.competence + '</td><td style="text-align:center">' + niv + '</td><td style="font-size:9px;color:#5A5A5A">' + (c.commentaire || '') + '</td></tr>';
+  });
+  body += '</tbody></table>';
+
+  // Certification
+  var certLabels = {
+    q1: 'L\'entreprise rel\u00e8ve du secteur cible du r\u00e9f\u00e9rentiel du dipl\u00f4me',
+    q2: 'Le ma\u00eetre d\'apprentissage est en capacit\u00e9 de former et d\'\u00e9valuer aux comp\u00e9tences r\u00e9f\u00e9renc\u00e9es',
+    q3: 'En cas de blocs/comp\u00e9tences non mis en \u0153uvre dans l\'entreprise, l\'entreprise consent au conventionnement avec une tierce entreprise (art. R6223-10 \u00e0 R6223-16)'
+  };
+  body += '<div class="sec-t" style="margin-bottom:6px">Attestations de certification</div><div class="cert-block">';
+  ['q1','q2','q3'].forEach(function(q) {
+    var rep = gd.certification[q] || '—';
+    var cls = rep === 'OUI' ? 'oui' : (rep === 'NON' ? 'non' : '');
+    body += '<div class="cert-item"><span class="cert-q">' + certLabels[q];
+    if (q === 'q3' && gd.certification.q3_complement) {
+      body += '<div class="cert-comp">' + gd.certification.q3_complement + '</div>';
+    }
+    body += '</span><span class="cert-r ' + cls + '">' + rep + '</span></div>';
+  });
+  body += '</div>';
+
+  // Signatures
+  var sigHtml = sig ? '<img src="' + sig + '" style="max-width:190px;max-height:60px;display:block;margin-top:4px">' : '<div style="min-height:55px"></div>';
+  body += '<div class="sign-wrap">';
+  body += '<div class="sign-box"><div class="sign-l">Signature ma\u00eetre apprentissage' + (signataire ? ' — ' + signataire : '') + '</div>' + sigHtml + '</div>';
+  body += '<div class="sign-box"><div class="sign-l">Signature CFA La Fabrik</div><div style="font-size:9px;color:#aaa;margin-top:4px">Nom et date</div></div>';
+  body += '</div>';
+
+  body += '<div class="ftr"><span>CFA La Fabrik &mdash; 153 rue Andre Citroen, ZI La Palud, 83600 Frejus</span><span>Grille d\'ad\u00e9quation sign\u00e9e &mdash; ' + ds + '</span></div>';
+  body += '</div>';
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"/>' + css + '</head><body>' + body + '<script>window.onload=function(){window.print();}<\/script></body></html>';
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  if (w) { setTimeout(function() { URL.revokeObjectURL(url); }, 60000); }
 }
 
 function buildEmail() {
@@ -1444,12 +1572,13 @@ function readURLParams() {
 
 function goToAdequation() {
   var fid = v('formation');
-  if (fid && GRILLES[fid]) {
-    buildGrille(fid);
-    goTo(4);
-  } else {
-    goTo(6);
+  if (!fid) {
+    alert('Veuillez s\u00e9lectionner une formation \u00e0 l\u00e9tape 1.');
+    goTo(1);
+    return;
   }
+  buildGrille(fid);
+  goTo(4);
 }
 
 </script>
