@@ -111,7 +111,7 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
   </div>
 
   <div class="card">
-    <div class="ct">Parametres du contrat</div>
+    <div class="ct">Paramètres du contrat</div>
     <div class="fg">
       <div class="fi">
         <label>Nom candidat(e) (optionnel)</label>
@@ -120,9 +120,9 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
       <div class="fi">
         <label>Genre</label>
         <select id="genre" onchange="compute()">
-          <option value="f">Feminin</option>
+          <option value="f">Féminin</option>
           <option value="m">Masculin</option>
-          <option value="n">Non precise</option>
+          <option value="n">Non précisé</option>
         </select>
       </div>
       <div class="fi">
@@ -134,7 +134,7 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
         <input type="text" id="formation" placeholder="ex. BTS Communication" oninput="compute()">
       </div>
       <div class="fi">
-        <label>Niveau du diplome (RNCP)</label>
+        <label>Niveau du diplôme (RNCP)</label>
         <select id="niveau" onchange="compute()">
           <option value="">- selectionner -</option>
           <option value="3">Niveau 3 - CAP, BEP</option>
@@ -145,11 +145,11 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
         </select>
       </div>
       <div class="fi">
-        <label>Annee de contrat</label>
+        <label>Année de contrat</label>
         <select id="annee" onchange="compute()">
-          <option value="1">1ere annee</option>
-          <option value="2" selected>2eme annee</option>
-          <option value="3">3eme annee</option>
+          <option value="1">1ère année</option>
+          <option value="2" selected>2ème année</option>
+          <option value="3">3ème année</option>
         </select>
       </div>
       <div class="fi">
@@ -537,7 +537,7 @@ function compute() {
   html += '<div class="tw"><table>';
   html += '<tr><td class="lc">SMIC mensuel brut 2026</td><td>' + fmt(SMIC) + '</td></tr>';
   html += '<tr><td class="lc">Tranche d age applicable</td><td>' + tDeb + '</td></tr>';
-  html += '<tr><td class="lc">Annee de contrat</td><td>' + albl + '</td></tr>';
+  html += '<tr><td class="lc">Année de contrat</td><td>' + albl + '</td></tr>';
   html += '<tr><td class="lc">Taux legal applicable</td><td>' + taux + ' % du SMIC</td></tr>';
   html += '<tr class="hl"><td>Salaire brut mensuel</td><td><strong>' + fmt(brut) + '</strong> (' + taux + ' % x ' + fmt(SMIC) + ')</td></tr>';
   html += '<tr class="hl"><td>Salaire net mensuel estime</td><td><strong>approx. ' + fmt(net) + '</strong></td></tr>';
