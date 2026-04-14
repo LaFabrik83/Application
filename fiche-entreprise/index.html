@@ -166,6 +166,67 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
   <!-- ETAPE 1 -->
   <div class="step-content active" id="step1">
     <div class="card">
+      <div class="card-title"><div class="card-title-icon">&#x1F393;</div> L&rsquo;apprenti(e)</div>
+      <div class="card-subtitle">Informations relatives au(à la) candidat(e)</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Nom et pr&eacute;nom</label>
+          <input type="text" id="nomApprenti" placeholder="Pr&eacute;nom NOM"/>
+        </div>
+        <div class="field">
+          <label>Formation choisie <span class="req">*</span></label>
+          <select id="formation" onchange="onFormationChange()">
+            <option value="">-- Sélectionner --</option>
+            <optgroup label="Niveau 3 — CAP">
+              <option value="CAP_AEPE">CAP AEPE — Accompagnant Éducatif Petite Enfance</option>
+              <option value="CAP_COIF">CAP Métiers de la Coiffure</option>
+            </optgroup>
+            <optgroup label="Niveau 4 — Bac / TP">
+              <option value="BP_COIF">BP Coiffure</option>
+              <option value="BAC_COIF">Bac Pro Coiffure</option>
+              <option value="BAC_MCV">Bac Pro MCV — Métiers du Commerce et de la Vente</option>
+              <option value="TP_CC">TP Conseiller Commercial</option>
+              <option value="TP_IEPE">TP IPEPE — Intervenant Petite Enfance</option>
+              <option value="TP_ASMA">TP Assistant Secrétaire Médico-Administratif</option>
+            </optgroup>
+            <optgroup label="Niveau 5 — BTS / TP">
+              <option value="BTS_BANQUE">BTS Banque</option>
+              <option value="BTS_COM">BTS Communication</option>
+              <option value="BTS_MCO">BTS MCO — Management Commercial Opérationnel</option>
+              <option value="BTS_NDRC">BTS NDRC — Négociation et Digitalisation RC</option>
+              <option value="BTS_GPME">BTS GPME — Gestion PME</option>
+              <option value="TP_FPA">TP Formateur Professionnel d'Adultes</option>
+              <option value="TP_AC">TP Assistant Commercial</option>
+            </optgroup>
+            <optgroup label="Niveau 6">
+              <option value="BAC6_REM">TP Responsable Établissement Marchand</option>
+              <option value="BAC6_BNQ">Bachelor Banque et Assurance</option>
+            </optgroup>
+            <optgroup label="Niveau 7 — Mastère">
+              <option value="MST_MA">Mastère Manager d'Affaires</option>
+              <option value="MST_ECGP">Mastère Expert Conseil GP — Gestion de Patrimoine</option>
+            </optgroup>
+          </select>
+          <div class="field-error" id="err_formation">Veuillez sélectionner une formation</div>
+        </div>
+        <div class="field full" id="link-generator" style="display:none">
+          <div style="background:var(--teal-lt);border:1px solid var(--teal);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:13px;color:var(--teal-dk);flex:1;">Pré-remplir le lien à envoyer à l'entreprise</span>
+            <button type="button" class="btn btn-teal" style="font-size:12px;padding:6px 14px;" onclick="copyEntrepriseLink()">🔗 Copier le lien entreprise</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Disponibilit&eacute; &mdash; d&eacute;but de contrat</label>
+          <input type="date" id="dateDebut"/>
+        </div>
+        <div class="field">
+          <label>Date de fin de contrat</label>
+          <input type="date" id="dateFin"/>
+          <div class="field-hint">G&eacute;n&eacute;ralement le 30/06 de l&rsquo;ann&eacute;e d&rsquo;examen</div>
+        </div>
+      </div>
+    </div>
+    <div class="card mt1">
       <div class="card-title"><div class="card-title-icon">&#x1F3E2;</div> Informations g&eacute;n&eacute;rales entreprise</div>
       <div class="card-subtitle">Commencez par saisir votre num&eacute;ro SIRET &mdash; les autres champs se rempliront automatiquement</div>
       <div class="field" style="margin-bottom:1.2rem">
@@ -249,67 +310,6 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
           <li>L&rsquo;<strong>OPCO</strong> et la <strong>convention collective</strong> (&eacute;tape suivante) sont corrects</li>
         </ul>
         <p class="verify-note">En cas de doute&nbsp;: <strong>contrat@fabrikfrejus.fr</strong> &mdash; 04 22 54 26 03</p>
-      </div>
-    </div>
-    <div class="card mt1">
-      <div class="card-title"><div class="card-title-icon">&#x1F393;</div> L&rsquo;apprenti(e)</div>
-      <div class="card-subtitle">Informations relatives au(à la) candidat(e)</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Nom et pr&eacute;nom</label>
-          <input type="text" id="nomApprenti" placeholder="Pr&eacute;nom NOM"/>
-        </div>
-        <div class="field">
-          <label>Formation choisie <span class="req">*</span></label>
-          <select id="formation" onchange="onFormationChange()">
-            <option value="">-- Sélectionner --</option>
-            <optgroup label="Niveau 3 — CAP">
-              <option value="CAP_AEPE">CAP AEPE — Accompagnant Éducatif Petite Enfance</option>
-              <option value="CAP_COIF">CAP Métiers de la Coiffure</option>
-            </optgroup>
-            <optgroup label="Niveau 4 — Bac / TP">
-              <option value="BP_COIF">BP Coiffure</option>
-              <option value="BAC_COIF">Bac Pro Coiffure</option>
-              <option value="BAC_MCV">Bac Pro MCV — Métiers du Commerce et de la Vente</option>
-              <option value="TP_CC">TP Conseiller Commercial</option>
-              <option value="TP_IEPE">TP IPEPE — Intervenant Petite Enfance</option>
-              <option value="TP_ASMA">TP Assistant Secrétaire Médico-Administratif</option>
-            </optgroup>
-            <optgroup label="Niveau 5 — BTS / TP">
-              <option value="BTS_BANQUE">BTS Banque</option>
-              <option value="BTS_COM">BTS Communication</option>
-              <option value="BTS_MCO">BTS MCO — Management Commercial Opérationnel</option>
-              <option value="BTS_NDRC">BTS NDRC — Négociation et Digitalisation RC</option>
-              <option value="BTS_GPME">BTS GPME — Gestion PME</option>
-              <option value="TP_FPA">TP Formateur Professionnel d'Adultes</option>
-              <option value="TP_AC">TP Assistant Commercial</option>
-            </optgroup>
-            <optgroup label="Niveau 6">
-              <option value="BAC6_REM">TP Responsable Établissement Marchand</option>
-              <option value="BAC6_BNQ">Bachelor Banque et Assurance</option>
-            </optgroup>
-            <optgroup label="Niveau 7 — Mastère">
-              <option value="MST_MA">Mastère Manager d'Affaires</option>
-              <option value="MST_ECGP">Mastère Expert Conseil GP — Gestion de Patrimoine</option>
-            </optgroup>
-          </select>
-          <div class="field-error" id="err_formation">Veuillez sélectionner une formation</div>
-        </div>
-        <div class="field full" id="link-generator" style="display:none">
-          <div style="background:var(--teal-lt);border:1px solid var(--teal);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span style="font-size:13px;color:var(--teal-dk);flex:1;">Pré-remplir le lien à envoyer à l'entreprise</span>
-            <button type="button" class="btn btn-teal" style="font-size:12px;padding:6px 14px;" onclick="copyEntrepriseLink()">🔗 Copier le lien entreprise</button>
-          </div>
-        </div>
-        <div class="field">
-          <label>Disponibilit&eacute; &mdash; d&eacute;but de contrat</label>
-          <input type="date" id="dateDebut"/>
-        </div>
-        <div class="field">
-          <label>Date de fin de contrat</label>
-          <input type="date" id="dateFin"/>
-          <div class="field-hint">G&eacute;n&eacute;ralement le 30/06 de l&rsquo;ann&eacute;e d&rsquo;examen</div>
-        </div>
       </div>
     </div>
     <div class="nav-bar">
@@ -788,7 +788,7 @@ var OPCO_CAISSE = {
   "EP":"AGIRC-ARRCO (regime general)"
 };
 
-var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw9aFQNbZOCci4oNvs8zLdqEko4qQYpOtOje0E49BKZ5cEZQqCaXFJJ4EZNcKbqL0JR/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyX8q-ZBmDAWPvYwf1Q6x8EXjTm0Oaz_NAhdlGtNRmNoaSCwvZxr0hgRQvpNU0RLQpCxA/exec';
 
 function g(id) { return document.getElementById(id); }
 function v(id) { var el = g(id); return el ? el.value || "" : ""; }

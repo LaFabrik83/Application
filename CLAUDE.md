@@ -130,7 +130,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **Grille d'adéquation OBLIGATOIRE** (étape 4 — secteur + toutes compétences notées + 3 questions certification) — décision légale : sans grille, pas de contrat
 - `goToAdequation()` : si pas de formation → alerte + retour étape 1 ; sinon toujours afficher la grille (jamais de saut vers étape 6)
 - À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
-- Webhook GAS actuel : `AKfycbw9aFQNbZOCci4oNvs8zLdqEko4qQYpOtOje0E49BKZ5cEZQqCaXFJJ4EZNcKbqL0JR`
+- Webhook GAS actuel : `AKfycbyX8q-ZBmDAWPvYwf1Q6x8EXjTm0Oaz_NAhdlGtNRmNoaSCwvZxr0hgRQvpNU0RLQpCxA`
 - Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
 - 3 PDFs disponibles (étape 6 + écran succès) : PDF Entreprise, PDF École, **PDF Grille signée**
 - `printVersion()` : Blob URL + auto-print + vraie signature injectée (remplace les cases vides)
