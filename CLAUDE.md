@@ -125,8 +125,11 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 ### 3. Fiche entreprise (`fiche-entreprise/`)
 - Formulaire multi-étapes : informations entreprise, maître d'apprentissage, formations souhaitées, grille de compétences
 - Auto-complétion SIRET via API entreprise
-- Envoi par webhook Google Apps Script
-- Webhook GAS actuel : `AKfycbyZ89dDC0U3PCQWFJtORJ_8a1Ev8_-jpbOgIDKLxBC9X5-pcc38PdgOVk6v7ejVsld0uw`
+- Lien partageable pré-rempli (apprenti, formation, dates)
+- À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
+- Webhook GAS actuel : `AKfycbw9aFQNbZOCci4oNvs8zLdqEko4qQYpOtOje0E49BKZ5cEZQqCaXFJJ4EZNcKbqL0JR`
+- Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
+- Génération PDF entreprise et PDF école
 - Import `shared.css`
 - ⚠️ `grille-data.js` doit toujours être commité avec `index.html`
 
@@ -151,3 +154,4 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Prévisionnel — contrat pro supprimé, carte synthèse, tableau multi-années, PDF Blob avec auto-print
 - **2026-04** : Test d'entrée — tâche HubSpot automatique à J+2 via API Engagements v1 (tâche "Appeler" avec score et formation)
 - **2026-04** : Test d'entrée — tableau de bord cross-poste via Google Sheets (doGet GAS), sync statut, archivage, recherche, actions rapides, impression PDF
+- **2026-04** : Fiche entreprise — GAS complet créé (Sheets + emails automatiques + HubSpot)
