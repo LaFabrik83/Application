@@ -582,9 +582,18 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
     <div class="nav-bar">
       <button class="btn btn-ghost" onclick="goTo(3)">&#x2190; Modifier</button>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-        <button class="btn btn-outline" onclick="printVersion('entreprise')">&#x1F5A8;&#xFE0F; PDF Entreprise</button>
-        <button class="btn btn-outline" onclick="printVersion('ecole')">&#x1F3EB; PDF &Eacute;cole</button>
-        <button class="btn btn-teal" onclick="submitForm()">&#x2709;&#xFE0F; Envoyer &agrave; La Fabrik</button>
+        <button class="btn btn-outline" onclick="printVersion('entreprise')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          PDF Entreprise
+        </button>
+        <button class="btn btn-outline" onclick="printVersion('ecole')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          PDF &Eacute;cole
+        </button>
+        <button class="btn btn-teal" onclick="submitForm()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer &agrave; La Fabrik
+        </button>
       </div>
     </div>
   </div>
@@ -593,14 +602,22 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
   <div class="step-content" id="step7">
     <div class="card">
       <div class="success-screen">
-        <div class="success-icon">&#x2713;</div>
+        <div class="success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
         <h2>Fiche transmise avec succ&egrave;s !</h2>
-        <p>Votre fiche entreprise a &eacute;t&eacute; envoy&eacute;e &agrave; <strong>contrat@fabrikfrejus.fr</strong><br>
-        Notre &eacute;quipe revient vers vous rapidement pour vous transmettre le contrat d&rsquo;apprentissage.<br><br>
+        <p>Votre dossier a &eacute;t&eacute; re&ccedil;u et enregistr&eacute;. Un email r&eacute;capitulatif a &eacute;t&eacute; envoy&eacute; &agrave; <strong>contrat@fabrikfrejus.fr</strong> et <strong>info@fabrikfrejus.fr</strong>.<br><br>
+        Notre &eacute;quipe revient vers vous rapidement pour la suite du dossier.<br><br>
         <em>CFA La Fabrik &mdash; 153 rue Andr&eacute; Citro&euml;n, ZI La Palud, 83600 Fr&eacute;jus</em></p>
         <div class="success-actions">
-          <button class="btn btn-outline" onclick="printVersion('entreprise')">&#x1F5A8;&#xFE0F; PDF Entreprise</button>
-          <button class="btn btn-outline" onclick="printVersion('ecole')">&#x1F3EB; PDF &Eacute;cole</button>
+          <button class="btn btn-outline" onclick="printVersion('entreprise')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            PDF Entreprise
+          </button>
+          <button class="btn btn-outline" onclick="printVersion('ecole')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            PDF &Eacute;cole
+          </button>
           <button class="btn btn-ghost" onclick="resetForm()">Nouveau formulaire</button>
         </div>
       </div>
@@ -762,7 +779,7 @@ var OPCO_CAISSE = {
   "EP":"AGIRC-ARRCO (regime general)"
 };
 
-var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZ89dDC0U3PCQWFJtORJ_8a1Ev8_-jpbOgIDKLxBC9X5-pcc38PdgOVk6v7ejVsld0uw/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw9aFQNbZOCci4oNvs8zLdqEko4qQYpOtOje0E49BKZ5cEZQqCaXFJJ4EZNcKbqL0JR/exec';
 
 function g(id) { return document.getElementById(id); }
 function v(id) { var el = g(id); return el ? el.value || "" : ""; }
