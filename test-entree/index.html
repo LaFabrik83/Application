@@ -288,13 +288,13 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     <div class="card">
       <div class="success-screen">
         <div class="success-icon">✓</div>
-        <h2>Test enregistré !</h2>
-        <p>Merci <strong id="success-prenom"></strong>, votre test a bien été pris en compte.<br><br>
-        Tous les candidats seront informés des résultats. Les candidats sélectionnés seront contactés pour la suite du processus d'admission.</p>
+        <h2>Bravo, c'est dans la boîte !</h2>
+        <p>Tu viens de franchir une première étape importante, <strong id="success-prenom"></strong>. Notre équipe prend le temps d'étudier ton profil et te recontacte <strong>sous 48h</strong> pour échanger avec toi sur la suite.</p>
+        <p style="margin-top:10px">En attendant, n'hésite pas à préparer tes questions — on est là pour t'accompagner.</p>
         <div id="hs-result-msg" style="margin-top:12px"></div>
         <div class="alert-qualiopi">
-          <span class="icon">📋</span>
-          <span>Vos résultats sont enregistrés conformément aux exigences <strong>Qualiopi</strong> et conservés dans notre système de suivi des candidatures.</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F8016" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Tes résultats sont enregistrés conformément aux exigences <strong>Qualiopi</strong> et conservés dans notre système de suivi des candidatures.</span>
         </div>
         <p style="margin-top:14px;font-size:11px;font-style:italic;color:var(--muted)">CFA La Fabrik — 153 rue André Citroën, ZI La Palud, 83600 Fréjus</p>
         <div style="margin-top:22px"><button class="btn btn-primary" onclick="resetTest()">Nouveau test</button></div>
@@ -1105,28 +1105,42 @@ function printDetail() {
   body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Anglais : <strong style="color:#2EB3AF">' + sc.en + '/10</strong></div>';
   body += '<div style="color:rgba(255,255,255,.6);font-size:11px">Questions Pro : <strong style="color:#2EB3AF">' + sc.pro + '/5</strong></div>';
   body += '</div></div>';
+  var sectionLabels = {
+    'fr': 'Partie 1 : Francais',
+    'cg': 'Partie 2 : Culture Generale',
+    'en': 'Partie 3 : Anglais',
+    'pro': 'Questions Professionnelles — ' + fm.label
+  };
   var allSections = ['📚 Partie 1 : Français','🌍 Partie 2 : Culture Générale','🇬🇧 Partie 3 : Anglais','📌 Questions Professionnelles — ' + fm.label];
-  allSections.forEach(function(sec) {
+  allSections.forEach(function(sec, si) {
     var items = []; r.allQ.forEach(function(qObj,i){ if(qObj.section===sec) items.push({qObj:qObj,i:i}); });
     if (!items.length) return;
-    body += '<div style="background:#2EB3AF;color:white;padding:6px 12px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + sec + '</div>';
+    var secLabel = [sectionLabels.fr, sectionLabels.cg, sectionLabels.en, sectionLabels.pro][si];
+    body += '<div style="background:#2EB3AF;color:white;padding:6px 12px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px">' + secLabel + '</div>';
     items.forEach(function(x) {
       var given=r.answers[x.i],correct=x.qObj.data.ans,isRight=(given===correct);
-      body += '<div style="border:1px solid #D4E8E8;border-radius:6px;margin-bottom:6px;overflow:hidden">';
-      body += '<div style="padding:6px 10px;background:' + (isRight?'#E6F7F7':'#FDECEA') + ';border-bottom:1px solid #D4E8E8;font-size:10px;font-weight:700;color:' + (isRight?'#1A8A86':'#C0392B') + '">' + (isRight?'✓':'✗') + ' Q' + (x.i+1) + '. ' + x.qObj.data.q + '</div>';
+      body += '<div style="border:1px solid #D4E8E8;border-radius:6px;margin-bottom:6px;overflow:hidden;page-break-inside:avoid">';
+      body += '<div style="padding:6px 10px;background:' + (isRight?'#E6F7F7':'#FDECEA') + ';border-bottom:1px solid #D4E8E8;font-size:10px;font-weight:700;color:' + (isRight?'#1A8A86':'#C0392B') + '">' + (isRight?'OK':'ERREUR') + ' — Q' + (x.i+1) + '. ' + x.qObj.data.q + '</div>';
       body += '<div style="padding:6px 10px">';
       x.qObj.data.opts.forEach(function(opt,oi){
         var isC=(oi===correct),isW=(oi===given&&!isRight);
         body += '<div style="padding:2px 0;font-size:11px;color:' + (isC?'#1A8A86':isW?'#C0392B':'#5A5A5A') + ';font-weight:' + (isC||isW?'700':'400') + '">';
-        body += (isC?'✓ ':isW?'✗ ':'  ') + opt + (isW?' ← Réponse candidat':'') + '</div>';
+        body += (isC?'+ ':isW?'x ':'  ') + opt + (isC?' (bonne reponse)':'') + (isW?' <- Reponse candidat':'') + '</div>';
       });
       body += '</div></div>';
     });
   });
-  body += '<div style="margin-top:20px;padding-top:10px;border-top:1px solid #D4E8E8;font-size:9px;color:#5A5A5A;text-align:center">CFA La Fabrik — 153 rue André Citroën, ZI La Palud, 83600 Fréjus — contrat@fabrikfrejus.fr</div>';
+  body += '<div style="margin-top:24px;padding-top:10px;border-top:2px solid #2EB3AF;font-size:9px;color:#5A5A5A;text-align:center">CFA La Fabrik — 153 rue Andre Citron, ZI La Palud, 83600 Frejus — contrat@fabrikfrejus.fr — Document confidentiel Qualiopi</div>';
   body += '</div>';
-  var w = window.open('','_blank','width=820,height=700');
-  if (w) { w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Résultat ' + r.prenom + ' ' + r.nom + '</title><style>@media print{@page{margin:12mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + body + '<script>window.onload=function(){window.print();}<\/script></body></html>'); w.document.close(); }
+  var pdfHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resultat ' + r.prenom + ' ' + r.nom + '</title>'
+    + '<style>@media print{@page{margin:12mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Helvetica,Arial,sans-serif}}</style>'
+    + '<\/head><body>' + body
+    + '<script>window.onload=function(){window.print();}<\/script><\/body><\/html>';
+  var blob = new Blob([pdfHTML], {type:'text/html;charset=utf-8'});
+  var blobUrl = URL.createObjectURL(blob);
+  var win = window.open(blobUrl, '_blank');
+  if (!win) { alert('Autorisez les popups puis reessayez.'); URL.revokeObjectURL(blobUrl); return; }
+  win.focus();
 }
 
 // ─── CSV EXPORT ──────────────────────────────────────────────────
