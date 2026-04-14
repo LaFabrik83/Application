@@ -99,12 +99,18 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 ### 1. Test d'entrée (`test-entree/`)
 - 35 questions adaptées à 19 formations (niveaux 3 à 7) — structure : 10 FR + 10 CG + 10 EN + 5 Pro
 - Minuterie 15 minutes avec auto-soumission
+- Écran de fin candidat : message bienveillant "Bravo, c'est dans la boîte !" avec mention 48h
 - À la soumission : enregistrement localStorage + envoi webhook GAS
-- GAS enregistre dans Google Sheets, crée une note HubSpot et crée une tâche "Appeler" échéance J+2 à 9h
-- Webhook GAS actuel : `AKfycbyTy3TyPESi3Xy-Q8yTCXjkNhXiCR5M86gNA9Sv4yoWhNJv9S1QIJgBznrRlV4IfcAyYg`
+- GAS enregistre dans Google Sheets (16 colonnes), crée une note HubSpot et une tâche "Appeler" J+2 à 9h
+- Webhook GAS actuel : `AKfycbyLZYGOGMUOtmbdV3sYvFwiAxHlGBxw8gsZ7JlJfIXvhze5ccZtesuqL4Yasq--tBWHGA`
 - ⚠️ La tâche HubSpot utilise l'API Engagements v1 (pas v3 tasks — scope non disponible sur ce plan)
 - Lien candidat partageable avec formation et infos pré-remplies
-- Tableau de bord interne : filtres par niveau, statuts (retenu / non retenu / en attente), modal détail, export CSV
+- Tableau de bord cross-poste : données lues depuis Google Sheets au chargement (visible sur tous les postes)
+- Tableau de bord : recherche par nom/email/formation, filtres par niveau, actions rapides ✓/✗ sur chaque ligne
+- Tableau de bord : statut synchronisé vers Google Sheets à chaque changement
+- Tableau de bord : archivage candidat (disparaît de la vue principale, reste dans le Sheet), toggle "Voir archivés"
+- Tableau de bord : modal détail, impression PDF complète (Blob URL + auto-print), export CSV
+- Google Sheet : 16 colonnes — ID, Prénom, Nom, Email, Formation, Niveau, Date, Score %, Score FR, Score CG, Score EN, Score Pro, Score Total, Durée, Statut, Détail des réponses
 - Import `shared.css`
 
 ### 2. Prévisionnel apprentissage (`previsionnel/`)
@@ -144,3 +150,4 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Harmonisation charte graphique sur tous les outils (favicon, logo réel, icônes SVG, header teal uniforme)
 - **2026-04** : Prévisionnel — contrat pro supprimé, carte synthèse, tableau multi-années, PDF Blob avec auto-print
 - **2026-04** : Test d'entrée — tâche HubSpot automatique à J+2 via API Engagements v1 (tâche "Appeler" avec score et formation)
+- **2026-04** : Test d'entrée — tableau de bord cross-poste via Google Sheets (doGet GAS), sync statut, archivage, recherche, actions rapides, impression PDF
