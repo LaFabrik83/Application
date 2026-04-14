@@ -162,6 +162,9 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
       <div class="fi">
         <label>Date de fin du contrat</label>
         <input type="date" id="dend" oninput="compute()">
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;padding:5px 8px;background:var(--bg2);border-radius:5px;border-left:2px solid var(--bdr)">
+          Généralement le <strong>30 juin</strong> de l'année de fin d'études (variable selon le diplôme)
+        </div>
       </div>
       <div class="fi">
         <label>Effectif entreprise</label>
@@ -414,7 +417,11 @@ function compute() {
   var g          = getGenre(genre);
 
   if (!dob || !niveau || !ds) {
-    el.innerHTML = '<div class="empty">Renseignez la date de naissance, le niveau et la date de debut.</div>';
+    el.innerHTML = '<div class="empty">Renseignez la date de naissance, le niveau et la date de début.</div>';
+    return;
+  }
+  if (de && new Date(de) <= new Date(ds)) {
+    el.innerHTML = '<div class="empty" style="color:var(--danger)">⚠️ La date de fin doit être postérieure à la date de début.</div>';
     return;
   }
 
@@ -452,7 +459,7 @@ function compute() {
   var tChg = tFin && tFin !== tDeb;
 
   var nlbl = {'3':'Niveau 3 - CAP/BEP','4':'Niveau 4 - Bac','5':'Niveau 5 - BTS/BUT','6':'Niveau 6 - Licence','7':'Niveau 7 - Master/Ingenieur'}[niveau] || niveau;
-  var albl = annee === 1 ? '1ere annee' : (annee === 2 ? '2eme annee' : '3eme annee');
+  var albl = annee === 1 ? '1ère année' : (annee === 2 ? '2ème année' : '3ème année');
   var rent = new Date(ds).getFullYear();
   var tlbl = tc === 'apprentissage' ? "Contrat d'apprentissage" : 'Contrat de professionnalisation';
   var elbl = eff === 'small' ? 'Moins de 250 salaries' : '250 salaries et plus';
@@ -520,6 +527,23 @@ function compute() {
   var html = '';
 
   // Section 1 - Profil
+  // Carte synthèse
+  var niveauOk = niveau && brut > 0;
+  html += '<div style="background:var(--noir);border-radius:10px;padding:18px 20px;margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">';
+  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Salaire net apprenti</div>';
+  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:var(--teal);letter-spacing:.03em">' + fmt(net) + '</div>';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">/ mois · ' + taux + '% du SMIC</div></div>';
+  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Coût employeur brut</div>';
+  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:white;letter-spacing:.03em">≈ ' + fmtR(cmMin) + ' – ' + fmtR(cmMax) + '</div>';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">/ mois · salaire + charges</div></div>';
+  html += '<div style="flex:1;min-width:130px;background:rgba(46,179,175,.2);border:1px solid rgba(46,179,175,.4);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Coût net après aide</div>';
+  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:var(--teal);letter-spacing:.03em">≈ ' + fmtR(cmNMin) + ' – ' + fmtR(cmNMax) + '</div>';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:2px">/ mois · aide ' + fmtR(aideMens) + ' €/mois</div></div>';
+  html += '</div>';
+
   html += '<div class="sl2">1. Profil ' + g.cand + (cand ? ' - ' + cand : '') + '</div>';
   html += '<div class="tw"><table>';
   if (cand) html += '<tr><td class="lc">' + (g.cand.charAt(0).toUpperCase() + g.cand.slice(1)) + '</td><td><strong>' + cand + '</strong></td></tr>';
