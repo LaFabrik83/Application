@@ -54,6 +54,10 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
 .btn-p{background:var(--teal);color:#fff}
 .empty{color:var(--muted);font-size:13px;text-align:center;padding:2rem 1rem}
 .fn{font-size:10px;color:var(--muted);margin-top:10px;padding-top:9px;border-top:1px solid var(--bdr);line-height:1.7}
+.synthese-card{background:var(--noir);border-radius:10px;padding:18px 20px;margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap}
+.sc-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.sc-val{letter-spacing:.03em;margin-bottom:2px}
+.sc-sub{font-size:10px;color:rgba(255,255,255,.4)}
 
 @media print {
   @page{size:A4;margin:13mm 14mm 13mm 14mm}
@@ -178,6 +182,13 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
         <input type="text" id="entreprise" placeholder="ex. Agence Immo Sud" oninput="compute()">
       </div>
     </div>
+  </div>
+
+  <div style="text-align:right;margin-bottom:12px;">
+    <button onclick="copyLink()" style="background:white;border:1.5px solid var(--bdr);color:var(--teal);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:7px 16px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-lt)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background='white'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Générer le lien partageable
+    </button>
   </div>
 
   <div id="results">
@@ -529,19 +540,19 @@ function compute() {
   // Section 1 - Profil
   // Carte synthèse
   var niveauOk = niveau && brut > 0;
-  html += '<div style="background:var(--noir);border-radius:10px;padding:18px 20px;margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">';
-  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;">';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Salaire net apprenti</div>';
-  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:var(--teal);letter-spacing:.03em">' + fmt(net) + '</div>';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">/ mois · ' + taux + '% du SMIC</div></div>';
-  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;">';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Coût employeur brut</div>';
-  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:white;letter-spacing:.03em">≈ ' + fmtR(cmMin) + ' – ' + fmtR(cmMax) + '</div>';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">/ mois · salaire + charges</div></div>';
-  html += '<div style="flex:1;min-width:130px;background:rgba(46,179,175,.2);border:1px solid rgba(46,179,175,.4);border-radius:8px;padding:12px 14px;">';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Coût net après aide</div>';
-  html += '<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;color:var(--teal);letter-spacing:.03em">≈ ' + fmtR(cmNMin) + ' – ' + fmtR(cmNMax) + '</div>';
-  html += '<div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:2px">/ mois · aide ' + fmtR(aideMens) + ' €/mois</div></div>';
+  html += '<div class="synthese-card">';
+  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.08);border-radius:8px;padding:12px 14px;">';
+  html += '<div class="sc-lbl">Salaire net apprenti</div>';
+  html += '<div class="sc-val" style="color:#2EB3AF;font-family:\'Bebas Neue\',sans-serif;font-size:22px;">' + fmt(net) + '</div>';
+  html += '<div class="sc-sub">/ mois · ' + taux + '% du SMIC</div></div>';
+  html += '<div style="flex:1;min-width:130px;background:rgba(255,255,255,.08);border-radius:8px;padding:12px 14px;">';
+  html += '<div class="sc-lbl">Coût employeur brut</div>';
+  html += '<div class="sc-val" style="color:white;font-family:\'Bebas Neue\',sans-serif;font-size:22px;">≈ ' + fmtR(cmMin) + ' – ' + fmtR(cmMax) + '</div>';
+  html += '<div class="sc-sub">/ mois · salaire + charges</div></div>';
+  html += '<div style="flex:1;min-width:130px;background:rgba(46,179,175,.25);border:1px solid #2EB3AF;border-radius:8px;padding:12px 14px;">';
+  html += '<div class="sc-lbl" style="color:rgba(255,255,255,.75)">Coût net après aide</div>';
+  html += '<div class="sc-val" style="color:#2EB3AF;font-family:\'Bebas Neue\',sans-serif;font-size:22px;">≈ ' + fmtR(cmNMin) + ' – ' + fmtR(cmNMax) + '</div>';
+  html += '<div class="sc-sub" style="color:rgba(255,255,255,.6)">/ mois · aide ' + fmtR(aideMens) + ' €/mois</div></div>';
   html += '</div>';
 
   html += '<div class="sl2">1. Profil ' + g.cand + (cand ? ' - ' + cand : '') + '</div>';
@@ -653,6 +664,12 @@ function genPDF() {
   var pdfHTML = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Tableau previsionnel</title>'
     + '<style>'
     + '@page{size:A4;margin:13mm 14mm 13mm 14mm}'
+    + ':root{--noir:#232121;--teal:#2EB3AF;--teal-lt:#E6F7F7;--teal-dk:#1A8A86;--gold:#B19500;--muted:#64706A;--bdr:#D8E4E2;--bg:#F2FAFA;--bg2:#F5F8F8;--danger:#C0392B;--amber:#FAEEDA;--amber-dk:#633806}'
+    + '.synthese-card{background:#232121!important;border-radius:8pt;padding:12pt 14pt;margin-bottom:10pt;display:flex;gap:8pt;flex-wrap:wrap;page-break-inside:avoid}'
+    + '.synthese-card>div{flex:1;min-width:90pt;border-radius:6pt;padding:8pt 10pt}'
+    + '.synthese-card .sc-lbl{font-size:6pt;color:#8A9A9A;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3pt}'
+    + '.synthese-card .sc-val{font-size:14pt;font-weight:700;letter-spacing:.02em;margin-bottom:1pt}'
+    + '.synthese-card .sc-sub{font-size:6pt;color:#8A9A9A}'
     + '*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'
     + 'body{font-family:Arial,Helvetica,sans-serif;font-size:8pt;color:#1E2830;line-height:1.4;background:white}'
     + '.ph{text-align:center;margin-bottom:12pt;padding-bottom:10pt;border-bottom:1.5pt solid #2EB3AF}'
@@ -694,15 +711,70 @@ function genPDF() {
   setTimeout(function() { win.print(); }, 800);
 }
 
+function copyLink() {
+  var p = {
+    cand:  document.getElementById('candidat').value,
+    genre: document.getElementById('genre').value,
+    dob:   document.getElementById('dob').value,
+    form:  document.getElementById('formation').value,
+    niv:   document.getElementById('niveau').value,
+    an:    document.getElementById('annee').value,
+    ds:    document.getElementById('dstart').value,
+    de:    document.getElementById('dend').value,
+    eff:   document.getElementById('effectif').value,
+    entr:  document.getElementById('entreprise').value
+  };
+  var q = [];
+  for (var k in p) { if (p[k]) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(p[k])); }
+  var url = window.location.origin + window.location.pathname + '?' + q.join('&');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() { showToast('✓ Lien copié dans le presse-papiers'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ Lien copié dans le presse-papiers');
+  }
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--noir);color:white;font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;white-space:nowrap';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(12px)'; }, 2500);
+}
+
+function initFromURL() {
+  var p = new URLSearchParams(window.location.search);
+  if (!p.has('niv') && !p.has('dob')) return false;
+  var map = {cand:'candidat', genre:'genre', dob:'dob', form:'formation', niv:'niveau', an:'annee', ds:'dstart', de:'dend', eff:'effectif', entr:'entreprise'};
+  for (var k in map) {
+    if (p.has(k)) { document.getElementById(map[k]).value = p.get(k); }
+  }
+  return true;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('dob').value       = '2007-10-04';
-  document.getElementById('formation').value = 'BTS Communication';
-  document.getElementById('niveau').value    = '5';
-  document.getElementById('annee').value     = '2';
-  document.getElementById('genre').value     = 'f';
-  var t = new Date();
-  document.getElementById('dstart').value = new Date(t.getFullYear(), 8, 1).toISOString().split('T')[0];
-  document.getElementById('dend').value   = new Date(t.getFullYear() + 1, 6, 31).toISOString().split('T')[0];
+  if (!initFromURL()) {
+    document.getElementById('dob').value       = '2007-10-04';
+    document.getElementById('formation').value = 'BTS Communication';
+    document.getElementById('niveau').value    = '5';
+    document.getElementById('annee').value     = '2';
+    document.getElementById('genre').value     = 'f';
+    var t = new Date();
+    document.getElementById('dstart').value = new Date(t.getFullYear(), 8, 1).toISOString().split('T')[0];
+    document.getElementById('dend').value   = new Date(t.getFullYear() + 1, 6, 31).toISOString().split('T')[0];
+  }
   compute();
 });
 </script>
