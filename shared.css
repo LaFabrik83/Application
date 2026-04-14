@@ -37,13 +37,4 @@
   --warn-lt:    #F5F0D0;
   --danger:     #C0392B;
   --danger-lt:  #FDECEA;
-
-  /* Aliases fiche-entreprise (rétrocompatibilité) */
-  --primary:    #232121;
-  --teal-dark:  #1A8A86;
-  --teal-light: #E6F7F7;
-  --surface2:   #F2FAFA;
-  --border:     #D4E8E8;
-  --text:       #232121;
-  --radius:     12px;
 }
