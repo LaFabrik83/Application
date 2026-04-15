@@ -87,10 +87,22 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 │   └── index.html          ← Test d'entrée candidats (35 questions, 19 formations)
 ├── previsionnel/
 │   └── index.html          ← Prévisionnel financier contrat d'apprentissage (grille 2026)
+├── login.html              ← Page de connexion (mot de passe unique, auth localStorage)
 └── fiche-entreprise/
     ├── index.html          ← Fiche entreprise partenaire (formulaire multi-étapes)
+    ├── historique.html     ← Historique des fiches soumises (tableau de bord protégé)
     └── grille-data.js      ← Grilles de compétences RNCP par formation
 ```
+
+---
+
+## Sécurité / Authentification
+
+- `login.html` : page de connexion avec mot de passe unique (`Fabrik2026`)
+- Auth stockée en `localStorage` : clé `lafabrik_auth = "true"`
+- Pages **protégées** (redirigent vers `login.html` si non connecté) : `index.html`, `previsionnel/index.html`, `fiche-entreprise/historique.html`
+- Pages **libres** (partagées avec l'extérieur) : `test-entree/index.html`, `fiche-entreprise/index.html`
+- Bouton "Déconnexion" dans le header des pages protégées
 
 ---
 
@@ -133,9 +145,9 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Encart d'intro grille : explication des niveaux ★★★/★★/★ visible par l'entreprise avant le tableau
 - **Sauvegarde automatique brouillon** : `localStorage` — sauvegarde à chaque étape, restauration au rechargement avec bannière + bouton "Effacer et recommencer"
 - À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
-- Webhook GAS actuel : `AKfycbzoJOyBiLwz0FJYqrLNYX_vB3gw7D00SuKWGucmD2kkxaRUy-WiBwKdEY4M9qHxx8ITbQ`
+- Webhook GAS actuel : `AKfycbyoAgfsxlwhT81iD9Jc_JLerCIy_hAHcENsVCtfglwvf0_4Hpbr9VdS0LVwwWAQsFSRVw`
 - Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
-- Google Sheet — 20 colonnes : Date, Apprenti, Formation, Debut, Fin, Entreprise, SIRET, Adresse, Dirigeant, Tel Dirigeant, Tel Entreprise, Email Entreprise, Saisie CERFA, OPCO, Convention, Maitre, Email MA, Tel MA, Signataire, Grille
+- Google Sheet — 32 colonnes : Date, Apprenti, Formation, Debut, Fin, Entreprise, SIRET, Adresse, Code APE, Effectif, Dirigeant, Tel Dirigeant, Tel Entreprise, Email Entreprise, Saisie CERFA, OPCO, Convention, IDCC, Caisse Retraite, Nb Contrats, Maitre, DN MA, Tel MA, Tel Fixe MA, Email MA, Emploi MA, Experience MA, Diplome MA, Lieu MA, SMS MA, Signataire, Grille
 - Email : 2 fichiers HTML joints — `Fiche_NomEnt_NomApp.html` et `Grille_NomForm_NomEnt.html` + signature PNG — ouvrir dans navigateur + Cmd+P pour PDF
 - GAS : `construireFiche()` + `construireGrille()` — grille style Word avec logo, rowspans, cases cochées ☑/☐, certifications, zone signature Doriane JURAD
 - 3 PDFs disponibles (étape 6 + écran succès) : PDF Entreprise, PDF École, **PDF Grille signée**
@@ -175,3 +187,6 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Fiche entreprise — `tel_entreprise` ajouté au payload et au Sheet (colonne manquante corrigée)
 - **2026-04** : Fiche entreprise — validation grille obligatoire avant signature (`validerGrille()`)
 - **2026-04** : Fiche entreprise — sauvegarde brouillon localStorage avec restauration automatique et bannière
+- **2026-04** : Sécurisation espace collaborateurs — `login.html` + auth localStorage (index + prévisionnel + historique protégés ; test + fiche libres)
+- **2026-04** : Fiche entreprise — `historique.html` : tableau de bord des fiches soumises (stats, recherche, modal détail, export CSV) via GAS `doGet`
+- **2026-04** : GAS fiche entreprise — ajout `doGet` pour exposer les données du Sheet en JSON

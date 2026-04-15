@@ -14,6 +14,41 @@ function doPost(e) {
   return ContentService.createTextOutput("OK");
 }
 
+function doGet(e) {
+  try {
+    var sh = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var rows = sh.getDataRange().getValues();
+    var result = [];
+    for(var i = 1; i < rows.length; i++) {
+      var r = rows[i];
+      if(!r[0]) continue;
+      var dateStr = "";
+      try { dateStr = Utilities.formatDate(new Date(r[0]), "Europe/Paris", "dd/MM/yyyy HH:mm"); }
+      catch(ex) { dateStr = r[0].toString(); }
+      result.push({
+        date: dateStr,
+        apprenti: r[1]||"", formation: r[2]||"", debut: r[3]||"", fin: r[4]||"",
+        entreprise: r[5]||"", siret: r[6]||"", adresse: r[7]||"",
+        code_ape: r[8]||"", effectif: r[9]||"",
+        dirigeant: r[10]||"", tel_dirigeant: r[11]||"",
+        tel_entreprise: r[12]||"", email_entreprise: r[13]||"",
+        saisie: r[14]||"", opco: r[15]||"", convention: r[16]||"",
+        idcc: r[17]||"", caisse_retraite: r[18]||"", nb_contrats: r[19]||"",
+        maitre: r[20]||"", dn_ma: r[21]||"", tel_ma: r[22]||"",
+        tel_fixe_ma: r[23]||"", email_ma: r[24]||"", emploi_ma: r[25]||"",
+        experience_ma: r[26]||"", diplome_ma: r[27]||"",
+        lieu_ma: r[28]||"", sms_ma: r[29]||"",
+        signataire: r[30]||"", grille: r[31]||""
+      });
+    }
+    return ContentService.createTextOutput(JSON.stringify({ok: true, data: result}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ok: false, error: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 function enregistrerSheet(p) {
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
   sh.appendRow([
