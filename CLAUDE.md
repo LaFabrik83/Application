@@ -123,15 +123,21 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Import `shared.css`
 
 ### 3. Fiche entreprise (`fiche-entreprise/`)
-- Formulaire 6 étapes : entreprise → apprenti → maître d'apprentissage → grille d'adéquation → signature → récapitulatif
+- Formulaire 6 étapes : apprenti → entreprise → maître d'apprentissage → grille d'adéquation → signature → récapitulatif
 - Auto-complétion SIRET via API entreprise
 - Lien partageable pré-rempli (apprenti, formation, dates)
 - **Formation OBLIGATOIRE** (étape 1 — champ requis avec validation)
 - **Grille d'adéquation OBLIGATOIRE** (étape 4 — secteur + toutes compétences notées + 3 questions certification) — décision légale : sans grille, pas de contrat
+- `validerGrille()` : vérifie que chaque compétence a un niveau ★ avant de passer à l'étape 5 — alerte avec liste des compétences manquantes
 - `goToAdequation()` : si pas de formation → alerte + retour étape 1 ; sinon toujours afficher la grille (jamais de saut vers étape 6)
+- Encart d'intro grille : explication des niveaux ★★★/★★/★ visible par l'entreprise avant le tableau
+- **Sauvegarde automatique brouillon** : `localStorage` — sauvegarde à chaque étape, restauration au rechargement avec bannière + bouton "Effacer et recommencer"
 - À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
 - Webhook GAS actuel : `AKfycbza3uWmTK76WZQfPgAedqLsMHQlboDkm2ldHY4S7Q_w3OLAGpkNeYVIBWOwWaNb7Ajbjg`
 - Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
+- Google Sheet — 20 colonnes : Date, Apprenti, Formation, Debut, Fin, Entreprise, SIRET, Adresse, Dirigeant, Tel Dirigeant, Tel Entreprise, Email Entreprise, Saisie CERFA, OPCO, Convention, Maitre, Email MA, Tel MA, Signataire, Grille
+- Email : 2 fichiers HTML joints — `Fiche_NomEnt_NomApp.html` et `Grille_NomForm_NomEnt.html` + signature PNG — ouvrir dans navigateur + Cmd+P pour PDF
+- GAS : `construireFiche()` + `construireGrille()` — grille style Word avec logo, rowspans, cases cochées ☑/☐, certifications, zone signature Doriane JURAD
 - 3 PDFs disponibles (étape 6 + écran succès) : PDF Entreprise, PDF École, **PDF Grille signée**
 - `printVersion()` : Blob URL + auto-print + vraie signature injectée (remplace les cases vides)
 - `printGrille()` : PDF autonome avec secteurs, tableau compétences (étoiles colorées), attestations OUI/NON, signature réelle
@@ -165,3 +171,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Fiche entreprise — `printGrille()` ajouté : PDF grille remplie + signature réelle (Blob URL)
 - **2026-04** : Fiche entreprise — `printVersion()` converti en Blob URL, signature injectée dans les PDFs
 - **2026-04** : Fiche entreprise — bouton "Modifier" étape 6 corrigé (redirige vers étape 1, pas étape 3)
+- **2026-04** : Fiche entreprise — GAS 2 fichiers HTML joints (fiche + grille) via `Utilities.newBlob` (pas de DocumentApp)
+- **2026-04** : Fiche entreprise — `tel_entreprise` ajouté au payload et au Sheet (colonne manquante corrigée)
+- **2026-04** : Fiche entreprise — validation grille obligatoire avant signature (`validerGrille()`)
+- **2026-04** : Fiche entreprise — sauvegarde brouillon localStorage avec restauration automatique et bannière
