@@ -70,6 +70,25 @@ function envoyerEmail(p) {
     sujet, corps,
     { attachments: attachments, name: "CFA La Fabrik" }
   );
+
+  // Accusé de réception vers l'entreprise
+  if (p.email_entreprise) {
+    var corpEntreprise = "Bonjour,\n\n"
+      + "Nous avons bien reçu la fiche d'information de votre entreprise pour le contrat d'apprentissage"
+      + (p.apprenti ? " de " + p.apprenti : "") + ".\n\n"
+      + "Formation      : " + (p.formation||"-") + "\n"
+      + "Apprenti(e)    : " + (p.apprenti||"-") + "\n"
+      + "Entreprise     : " + (p.entreprise||"-") + "\n"
+      + "Grille d'adequation : " + (p.grille ? "Transmise" : "Non jointe") + "\n\n"
+      + "Un membre de notre equipe vous recontactera sous 48h ouvrees pour finaliser le dossier.\n\n"
+      + "Cordialement,\n"
+      + "L'equipe CFA La Fabrik\n"
+      + "153 rue Andre Citroen, ZI La Palud, 83600 Frejus\n"
+      + "04 22 54 26 03 - contrat@fabrikfrejus.fr";
+    try {
+      MailApp.sendEmail(p.email_entreprise, "Votre fiche entreprise a bien ete recue — CFA La Fabrik", corpEntreprise, { name: "CFA La Fabrik" });
+    } catch(ex) {}
+  }
 }
 
 // ─── FICHIER 1 : FICHE ENTREPRISE ────────────────────────────────────────────

@@ -126,6 +126,33 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
 .cert-complement textarea{width:100%;padding:6px 10px;border:1.5px solid var(--bdr);border-radius:6px;font-size:12px;font-family:'Open Sans',sans-serif;resize:vertical;min-height:60px;outline:none;}
 /* Signature */
 #signatureCanvas{background:#fafafa;}
+/* ── MOBILE ── */
+@media(max-width:540px){
+  .app-header{padding:0 12px;}
+  .app-header a[href="../"]{display:none;}
+  .container{padding:1rem 0.75rem 4rem;}
+  .card{padding:1.2rem;}
+  .step-dot-label{display:none;}
+  .step-dot-circle{width:26px;height:26px;font-size:11px;}
+  .step-line{margin-bottom:0;}
+  .nav-bar{padding:1rem 0 0;}
+  .btn{padding:0.7rem 1.1rem;font-size:13px;}
+  .diploma-grid{grid-template-columns:1fr;}
+}
+
+/* Grille mobile — cartes */
+.grille-bloc-m{margin-bottom:1.2rem;}
+.grille-bloc-titre-m{background:var(--teal);color:white;font-weight:700;font-size:12px;padding:8px 12px;border-radius:8px 8px 0 0;letter-spacing:.02em;}
+.grille-card-m{border:1px solid var(--bdr);border-top:none;padding:12px;background:white;}
+.grille-card-m:last-child{border-radius:0 0 8px 8px;}
+.grille-comp-label-m{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:6px;line-height:1.4;}
+.grille-rating-m{display:flex;flex-direction:column;gap:6px;margin:10px 0 8px;}
+.grille-rate-m{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:13px;line-height:1;}
+.grille-rate-m input[type=radio]{accent-color:var(--teal);width:16px;height:16px;flex-shrink:0;}
+.grille-rate-m.checked{border-color:var(--teal);background:var(--teal-lt);}
+.grille-cmt-m{width:100%;padding:8px 10px;border:1.5px solid var(--bdr);border-radius:8px;font-size:12px;font-family:'Open Sans',sans-serif;outline:none;box-sizing:border-box;margin-top:4px;}
+.grille-cmt-m:focus{border-color:var(--teal);}
+
 /* Print */
 @media print {
   .app-header,.nav-bar,.btn,.step-indicator,#dot1,#dot2,#dot3,#dot4,#dot5,#dot6{display:none!important;}
@@ -1383,44 +1410,69 @@ function buildGrille(fid) {
     secEl.innerHTML = html;
   }
   
-  // Tableau compétences
+  // Tableau compétences — table desktop / cartes mobile
   var compEl = g('grille-competences');
   if (compEl) {
-    var tbl = '<table class="grille-table"><thead><tr>';
-    tbl += '<th style="width:90px">Bloc</th>';
-    tbl += '<th>Compétence / Tâches</th>';
-    tbl += '<th style="width:40px;text-align:center">★★★</th>';
-    tbl += '<th style="width:40px;text-align:center">★★</th>';
-    tbl += '<th style="width:40px;text-align:center">★</th>';
-    tbl += '<th style="width:140px">Commentaire</th>';
-    tbl += '</tr></thead><tbody>';
-    
-    var rowIdx = 0;
-    gr.blocs.forEach(function(bloc, bi) {
-      var nbComp = bloc.competences.length;
-      bloc.competences.forEach(function(comp, ci) {
-        var rid = 'comp_' + bi + '_' + ci;
-        tbl += '<tr>';
-        if (ci === 0) {
-          tbl += '<td class="bloc-cell" rowspan="' + nbComp + '">' + bloc.label + '</td>';
-        }
-        tbl += '<td><strong style="font-size:12px">' + comp.label + '</strong>';
-        if (comp.taches && comp.taches.length) {
-          tbl += '<ul class="taches-list">';
-          comp.taches.forEach(function(t) { tbl += '<li>' + t + '</li>'; });
-          tbl += '</ul>';
-        }
-        tbl += '</td>';
-        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="***"></td>';
-        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="**"></td>';
-        tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="*"></td>';
-        tbl += '<td><input type="text" style="width:100%;padding:4px 6px;border:1px solid var(--bdr);border-radius:4px;font-size:11px;" placeholder="..." id="comment_' + bi + '_' + ci + '"></td>';
-        tbl += '</tr>';
-        rowIdx++;
+    if (window.innerWidth < 640) {
+      // ── CARTES MOBILE ──
+      var cards = '';
+      gr.blocs.forEach(function(bloc, bi) {
+        cards += '<div class="grille-bloc-m"><div class="grille-bloc-titre-m">' + bloc.label + '</div>';
+        bloc.competences.forEach(function(comp, ci) {
+          var rid = 'comp_' + bi + '_' + ci;
+          cards += '<div class="grille-card-m">';
+          cards += '<div class="grille-comp-label-m">' + comp.label + '</div>';
+          if (comp.taches && comp.taches.length) {
+            cards += '<ul class="taches-list">';
+            comp.taches.forEach(function(t) { cards += '<li>' + t + '</li>'; });
+            cards += '</ul>';
+          }
+          cards += '<div class="grille-rating-m">';
+          cards += '<label class="grille-rate-m" onclick="this.className=\'grille-rate-m checked\';this.parentNode.querySelectorAll(\'.grille-rate-m\').forEach(function(x){if(x!==this)x.className=\'grille-rate-m\';}.bind(this))"><input type="radio" name="' + rid + '" value="***"> <span>&#9733;&#9733;&#9733;&nbsp; Missions directes</span></label>';
+          cards += '<label class="grille-rate-m" onclick="this.className=\'grille-rate-m checked\';this.parentNode.querySelectorAll(\'.grille-rate-m\').forEach(function(x){if(x!==this)x.className=\'grille-rate-m\';}.bind(this))"><input type="radio" name="' + rid + '" value="**"> <span>&#9733;&#9733;&nbsp; Activit\u00e9s ponctuelles</span></label>';
+          cards += '<label class="grille-rate-m" onclick="this.className=\'grille-rate-m checked\';this.parentNode.querySelectorAll(\'.grille-rate-m\').forEach(function(x){if(x!==this)x.className=\'grille-rate-m\';}.bind(this))"><input type="radio" name="' + rid + '" value="*"> <span>&#9733;&nbsp; Non d\u00e9velopp\u00e9</span></label>';
+          cards += '</div>';
+          cards += '<input type="text" class="grille-cmt-m" id="comment_' + bi + '_' + ci + '" placeholder="Commentaire (optionnel)">';
+          cards += '</div>';
+        });
+        cards += '</div>';
       });
-    });
-    tbl += '</tbody></table>';
-    compEl.innerHTML = tbl;
+      compEl.innerHTML = cards;
+    } else {
+      // ── TABLEAU DESKTOP ──
+      var tbl = '<table class="grille-table"><thead><tr>';
+      tbl += '<th style="width:90px">Bloc</th>';
+      tbl += '<th>Comp\u00e9tence / T\u00e2ches</th>';
+      tbl += '<th style="width:40px;text-align:center">&#9733;&#9733;&#9733;</th>';
+      tbl += '<th style="width:40px;text-align:center">&#9733;&#9733;</th>';
+      tbl += '<th style="width:40px;text-align:center">&#9733;</th>';
+      tbl += '<th style="width:140px">Commentaire</th>';
+      tbl += '</tr></thead><tbody>';
+      gr.blocs.forEach(function(bloc, bi) {
+        var nbComp = bloc.competences.length;
+        bloc.competences.forEach(function(comp, ci) {
+          var rid = 'comp_' + bi + '_' + ci;
+          tbl += '<tr>';
+          if (ci === 0) {
+            tbl += '<td class="bloc-cell" rowspan="' + nbComp + '">' + bloc.label + '</td>';
+          }
+          tbl += '<td><strong style="font-size:12px">' + comp.label + '</strong>';
+          if (comp.taches && comp.taches.length) {
+            tbl += '<ul class="taches-list">';
+            comp.taches.forEach(function(t) { tbl += '<li>' + t + '</li>'; });
+            tbl += '</ul>';
+          }
+          tbl += '</td>';
+          tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="***"></td>';
+          tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="**"></td>';
+          tbl += '<td class="rating-cell"><input type="radio" name="' + rid + '" value="*"></td>';
+          tbl += '<td><input type="text" style="width:100%;padding:4px 6px;border:1px solid var(--bdr);border-radius:4px;font-size:11px;" placeholder="..." id="comment_' + bi + '_' + ci + '"></td>';
+          tbl += '</tr>';
+        });
+      });
+      tbl += '</tbody></table>';
+      compEl.innerHTML = tbl;
+    }
   }
   
   // Certification

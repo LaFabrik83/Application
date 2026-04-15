@@ -92,6 +92,19 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
 }
 .ph{display:none}
 .src{display:none}
+
+/* MOBILE */
+@media(max-width:600px){
+  .app-header{padding:0 12px;}
+  .app-header a[href="../"]{display:none;}
+  .app{padding:14px 12px;}
+  .fg{grid-template-columns:1fr!important;}
+  .brow{flex-direction:column;}
+  .brow .btn{flex:none;width:100%;}
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .metrics{grid-template-columns:1fr 1fr!important;}
+  .synthese-card{gap:8px;}
+}
 </style>
 </head>
 <body>
