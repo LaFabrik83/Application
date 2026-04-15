@@ -27,7 +27,7 @@ Benjamin est **responsable admissions au CFA La Fabrik** à Fréjus. Il est novi
 |---|---|
 | Hébergement | Netlify (déploiement auto depuis GitHub, < 1 min) |
 | Source | GitHub — repo : `LaFabrik83/Application` |
-| URL production | `application-lafabrik.netlify.app` |
+| URL production | `lafabrik.netlify.app` |
 | CRM | HubSpot |
 | Tableur | Google Sheets |
 | Backend léger | Google Apps Script (webhooks) |
@@ -190,3 +190,26 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Sécurisation espace collaborateurs — `login.html` + auth localStorage (index + prévisionnel + historique protégés ; test + fiche libres)
 - **2026-04** : Fiche entreprise — `historique.html` : tableau de bord des fiches soumises (stats, recherche, modal détail, export CSV) via GAS `doGet`
 - **2026-04** : GAS fiche entreprise — ajout `doGet` pour exposer les données du Sheet en JSON
+- **2026-04** : Déploiement Netlify pro — nouveau compte `lafabrik.netlify.app` connecté à `LaFabrik83/Application`
+
+---
+
+## Résumé session 2026-04-15 — À lire en priorité
+
+### Ce qui a été fait
+- GAS fiche entreprise redéployé (nouveau webhook) + `doGet` ajouté pour l'historique
+- `login.html` créé : mot de passe `Fabrik2026`, auth `localStorage`
+- Auth activée sur : `index.html`, `previsionnel/`, `fiche-entreprise/historique.html`
+- Pas d'auth sur : `test-entree/` (candidats) et `fiche-entreprise/` (employeurs)
+- `fiche-entreprise/historique.html` créé : stats, recherche, tableau, modal détail 32 champs, export CSV
+- Section "Administration" ajoutée sur l'accueil avec carte Historique
+- Nouveau compte Netlify pro créé → `lafabrik.netlify.app` (connecté à GitHub, auto-deploy actif)
+- `git push` effectué — tout est en production
+
+### Ce qui reste à faire (URGENT)
+1. **Supprimer le token GitHub** `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` — partagé en session, à révoquer sur github.com → Settings → Developer settings → Jetons (classiques)
+2. **Token HubSpot** dans `gas-fiche-entreprise.gs` : remplacer `TON_TOKEN_ICI` par le vrai token (sinon les notes HubSpot ne se créent pas)
+
+### Ce qui peut attendre
+- Supprimer l'ancien compte Netlify test quand Benjamin est prêt
+- `fiche-entreprise/index.html` très volumineux (~350 Ko) — dette technique basse priorité
