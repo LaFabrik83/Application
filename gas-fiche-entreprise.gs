@@ -19,9 +19,10 @@ function enregistrerSheet(p) {
   sh.appendRow([
     new Date(), p.apprenti||"", p.formation||"", p.debut||"", p.fin||"",
     p.entreprise||"", p.siret||"", p.adresse||"", p.dirigeant||"",
-    p.tel_dirigeant||"", p.email_entreprise||"", p.saisie||"",
-    p.opco||"", p.convention||"", p.maitre||"", p.email_ma||"",
-    p.tel_ma||"", p.signataire||"", p.grille ? "Oui" : "Non"
+    p.tel_dirigeant||"", p.tel_entreprise||"", p.email_entreprise||"",
+    p.saisie||"", p.opco||"", p.convention||"",
+    p.maitre||"", p.email_ma||"", p.tel_ma||"",
+    p.signataire||"", p.grille ? "Oui" : "Non"
   ]);
 }
 

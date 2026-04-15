@@ -149,6 +149,10 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
 </div>
 
 <div class="container">
+  <div id="brouillon-banner" style="display:none;background:#fff8e6;border:1px solid #ffd166;border-radius:8px;padding:10px 16px;margin-bottom:1rem;font-size:12px;color:#7a5200;align-items:center;justify-content:space-between;gap:10px;">
+    <span>&#128393; Saisie en cours restaurée — vos données ont été récupérées automatiquement.</span>
+    <button type="button" onclick="effacerBrouillon()" style="background:none;border:none;font-size:12px;color:#7a5200;cursor:pointer;text-decoration:underline;padding:0;">Effacer et recommencer</button>
+  </div>
   <div class="step-indicator">
     <div class="step-dot active" id="dot1"><div class="step-dot-circle">1</div><div class="step-dot-label">Entreprise</div></div>
     <div class="step-line" id="line12"></div>
@@ -483,6 +487,15 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
       <div class="card-title"><div class="card-title-icon">📋</div> Grille de contrôle de l'adéquation</div>
       <div class="card-subtitle" id="grille-subtitle">Vérifiez l'adéquation des activités de votre entreprise avec le référentiel de formation</div>
 
+      <div class="info-box" style="margin-bottom:1.2rem;">
+        <strong>Comment remplir cette grille ?</strong><br>
+        Pour chaque compétence du référentiel, indiquez le niveau d'exposition de l'apprenti dans votre entreprise :<br>
+        <strong>★★★</strong> Les missions confiées permettront de développer cette compétence au quotidien<br>
+        <strong>★★</strong> Des activités spécifiques pourront être organisées ponctuellement pour y travailler<br>
+        <strong>★</strong> Cette compétence ne pourra pas être développée dans votre structure<br><br>
+        Cette grille est exigée par les textes réglementaires pour établir le contrat d'apprentissage. Toutes les compétences doivent être évaluées.
+      </div>
+
       <!-- SECTEUR D'ACTIVITÉ -->
       <div style="margin-bottom:1.5rem;">
         <div style="font-size:13px;font-weight:600;color:var(--noir);margin-bottom:0.75rem;padding-bottom:6px;border-bottom:2px solid var(--teal);">1er contrôle — Secteur d'activité <span style="font-weight:400;color:var(--muted)">(cochez le secteur correspondant)</span></div>
@@ -504,7 +517,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
     </div>
     <div class="nav-bar">
       <button class="btn btn-ghost" onclick="goTo(3)">&#x2190; Précédent</button>
-      <button class="btn btn-primary" onclick="goTo(5)">Suivant — Signature &#x2192;</button>
+      <button class="btn btn-primary" onclick="validerGrille()">Suivant — Signature &#x2192;</button>
     </div>
   </div>
 
@@ -641,6 +654,7 @@ var curStep = 1;
 var selSaisie = "";
 var selSms = "";
 var selDiplome = "";
+var modeRestauration = false;
 readURLParams();
 var siretTimer = null;
 
@@ -981,8 +995,9 @@ function validateStep(step) {
 }
 
 function goTo(step) {
-  if (step > curStep && !validateStep(curStep)) return;
+  if (!modeRestauration && step > curStep && !validateStep(curStep)) return;
   curStep = step;
+  if (step < 7) sauvegarderBrouillon();
   document.querySelectorAll(".step-content").forEach(function(s) { s.classList.remove("active"); });
   var el = g("step" + step);
   if (el) { el.classList.add("active"); window.scrollTo({top:0,behavior:"smooth"}); }
@@ -1286,6 +1301,7 @@ function submitForm() {
   var d = getData();
   var now = new Date();
   var ds = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
+  var gd = getGrilleData();
   var payload = {
     date: ds,
     entreprise: d.ent.rs,
@@ -1293,6 +1309,7 @@ function submitForm() {
     adresse: d.ent.adr + ", " + d.ent.cp + " " + d.ent.ville,
     dirigeant: d.ent.dirigeant,
     tel_dirigeant: d.ent.telDir,
+    tel_entreprise: d.ent.tel || "",
     email_entreprise: d.ent.email || "",
     apprenti: d.app.nom || "",
     formation: d.app.formation || "",
@@ -1306,10 +1323,11 @@ function submitForm() {
     tel_ma: d.ma.telP || d.ma.telF || "",
     signature: getSignatureData(),
     signataire: v('signataire'),
-    grille: getGrilleData() ? JSON.stringify(getGrilleData()) : ''
+    grille: gd ? JSON.stringify(gd) : ''
   };
 
   // Afficher l'écran succès immédiatement
+  localStorage.removeItem('fiche_brouillon');
   goTo(7);
 
   // Envoi au webhook en arrière-plan
@@ -1581,6 +1599,151 @@ function goToAdequation() {
   buildGrille(fid);
   goTo(4);
 }
+
+// ========= VALIDATION GRILLE =========
+
+function validerGrille() {
+  var fid = v('formation');
+  if (!fid || !GRILLES[fid]) { goTo(5); return; }
+  var gr = GRILLES[fid];
+  var manquantes = [];
+  gr.blocs.forEach(function(bloc, bi) {
+    bloc.competences.forEach(function(comp, ci) {
+      var rid = 'comp_' + bi + '_' + ci;
+      var chk = document.querySelector('input[name="' + rid + '"]:checked');
+      if (!chk) manquantes.push(comp.label);
+    });
+  });
+  if (manquantes.length > 0) {
+    alert('Veuillez noter toutes les comp\u00e9tences avant de continuer.\n\n' + manquantes.length + ' comp\u00e9tence(s) sans niveau :\n\u2022 ' + manquantes.slice(0,5).join('\n\u2022 ') + (manquantes.length > 5 ? '\n\u2022 ... et ' + (manquantes.length - 5) + ' autre(s)' : ''));
+    return;
+  }
+  goTo(5);
+}
+
+// ========= BROUILLON (localStorage) =========
+
+var SAVE_IDS = [
+  'nomApprenti','formation','dateDebut','dateFin',
+  'siret','raisonSociale','adresse','codePostal','ville',
+  'codeAPE','effectif','telEntreprise','emailEntreprise',
+  'nomDirigeant','telDirigeant','caisseRetraite',
+  'opco','conventionCollective','idcc','nbContrats',
+  'numDossier','numDGEFP',
+  'nomMA','dnMA','telMA','fixeMA','emailMA',
+  'emploiMA','experienceMA','lieuTravail','signataire'
+];
+
+function sauvegarderBrouillon() {
+  var data = { _step: curStep, _selSaisie: selSaisie, _selSms: selSms, _selDiplome: selDiplome };
+  SAVE_IDS.forEach(function(id) {
+    var el = g(id);
+    if (el) data[id] = el.value;
+  });
+  var fid = v('formation');
+  if (fid && GRILLES[fid]) {
+    var gr = GRILLES[fid];
+    var gs = {};
+    gr.blocs.forEach(function(bloc, bi) {
+      bloc.competences.forEach(function(comp, ci) {
+        var rid = 'comp_' + bi + '_' + ci;
+        var chk = document.querySelector('input[name="' + rid + '"]:checked');
+        if (chk) gs[rid] = chk.value;
+        var cmt = g('comment_' + bi + '_' + ci);
+        if (cmt && cmt.value) gs['cmt_' + bi + '_' + ci] = cmt.value;
+      });
+    });
+    gr.secteurs.forEach(function(s, i) {
+      var cb = g('sec_' + i);
+      if (cb && cb.checked) gs['sec_' + i] = true;
+      var lb = g('sec_libre_' + i);
+      if (lb && lb.value) gs['secl_' + i] = lb.value;
+    });
+    ['q1','q2','q3'].forEach(function(q) {
+      var r = document.querySelector('input[name="cert_' + q + '"]:checked');
+      if (r) gs['cert_' + q] = r.value;
+    });
+    var c3 = g('cert_complement_q3');
+    if (c3 && c3.value) gs['cert_q3_complement'] = c3.value;
+    data._grille = gs;
+  }
+  try { localStorage.setItem('fiche_brouillon', JSON.stringify(data)); } catch(e) {}
+}
+
+function restaurerBrouillon() {
+  var raw;
+  try { raw = localStorage.getItem('fiche_brouillon'); } catch(e) { return; }
+  if (!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e) { return; }
+  if (!data || !data._step || data._step < 2) return;
+
+  SAVE_IDS.forEach(function(id) {
+    if (data[id] !== undefined) {
+      var el = g(id);
+      if (el) el.value = data[id];
+    }
+  });
+  if (data._selSaisie) selectSaisie(data._selSaisie);
+  if (data._selSms) selectSms(data._selSms);
+  if (data._selDiplome) {
+    var dips = ['CAP / BEP','Bac / Bac Pro / BP','BTS / DUT / DEUG','Licence / BUT / Maitrise','Master / Ingenieur / DESS','Doctorat / HDR'];
+    var idx = dips.indexOf(data._selDiplome);
+    if (idx >= 0) selectDiploma(idx, data._selDiplome);
+  }
+  if (data.formation) onFormationChange();
+  if (data.formation && GRILLES[data.formation]) {
+    buildGrille(data.formation);
+    if (data._grille) {
+      var gr = GRILLES[data.formation];
+      var gs = data._grille;
+      gr.blocs.forEach(function(bloc, bi) {
+        bloc.competences.forEach(function(comp, ci) {
+          var rid = 'comp_' + bi + '_' + ci;
+          if (gs[rid]) {
+            var r = document.querySelector('input[name="' + rid + '"][value="' + gs[rid] + '"]');
+            if (r) r.checked = true;
+          }
+          if (gs['cmt_' + bi + '_' + ci]) {
+            var cmt = g('comment_' + bi + '_' + ci);
+            if (cmt) cmt.value = gs['cmt_' + bi + '_' + ci];
+          }
+        });
+      });
+      gr.secteurs.forEach(function(s, i) {
+        var cb = g('sec_' + i);
+        if (cb && gs['sec_' + i]) cb.checked = true;
+        var lb = g('sec_libre_' + i);
+        if (lb && gs['secl_' + i]) lb.value = gs['secl_' + i];
+      });
+      ['q1','q2','q3'].forEach(function(q) {
+        if (gs['cert_' + q]) {
+          var r = document.querySelector('input[name="cert_' + q + '"][value="' + gs['cert_' + q] + '"]');
+          if (r) r.checked = true;
+        }
+      });
+      var c3 = g('cert_complement_q3');
+      if (c3 && gs['cert_q3_complement']) c3.value = gs['cert_q3_complement'];
+    }
+  }
+  var savedStep = data._step;
+  if (savedStep > 1 && savedStep < 7) {
+    modeRestauration = true;
+    goTo(savedStep);
+    modeRestauration = false;
+  }
+  var banner = g('brouillon-banner');
+  if (banner) banner.style.display = 'flex';
+}
+
+function effacerBrouillon() {
+  try { localStorage.removeItem('fiche_brouillon'); } catch(e) {}
+  var banner = g('brouillon-banner');
+  if (banner) banner.style.display = 'none';
+  resetForm();
+}
+
+window.onload = function() { restaurerBrouillon(); };
 
 </script>
 </body>
