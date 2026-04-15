@@ -829,7 +829,7 @@ var OPCO_CAISSE = {
   "EP":"AGIRC-ARRCO (regime general)"
 };
 
-var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbza3uWmTK76WZQfPgAedqLsMHQlboDkm2ldHY4S7Q_w3OLAGpkNeYVIBWOwWaNb7Ajbjg/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzoJOyBiLwz0FJYqrLNYX_vB3gw7D00SuKWGucmD2kkxaRUy-WiBwKdEY4M9qHxx8ITbQ/exec';
 
 function g(id) { return document.getElementById(id); }
 function v(id) { var el = g(id); return el ? el.value || "" : ""; }
@@ -1331,23 +1331,37 @@ function submitForm() {
   var gd = getGrilleData();
   var payload = {
     date: ds,
-    entreprise: d.ent.rs,
-    siret: d.ent.siret,
-    adresse: d.ent.adr + ", " + d.ent.cp + " " + d.ent.ville,
-    dirigeant: d.ent.dirigeant,
-    tel_dirigeant: d.ent.telDir,
-    tel_entreprise: d.ent.tel || "",
-    email_entreprise: d.ent.email || "",
     apprenti: d.app.nom || "",
     formation: d.app.formation || "",
     debut: d.app.debut,
     fin: d.app.fin,
+    entreprise: d.ent.rs,
+    siret: d.ent.siret,
+    adresse: d.ent.adr + ", " + d.ent.cp + " " + d.ent.ville,
+    code_ape: d.ent.ape || "",
+    effectif: d.ent.eff || "",
+    tel_entreprise: d.ent.tel || "",
+    email_entreprise: d.ent.email || "",
+    dirigeant: d.ent.dirigeant,
+    tel_dirigeant: d.ent.telDir,
     saisie: d.ctr.saisie === "CFA" ? "Deleguee au CFA La Fabrik" : "Prise en charge entreprise",
     opco: d.ctr.opco || "",
     convention: d.ctr.conv || "",
+    idcc: d.ctr.idcc || "",
+    caisse_retraite: d.ctr.caisse || "",
+    nb_contrats: d.ctr.nbc || "0",
+    num_dossier: d.ctr.numDossier || "",
+    num_dgefp: d.ctr.numDGEFP || "",
     maitre: d.ma.nom || "",
+    dn_ma: d.ma.dn || "",
+    tel_ma: d.ma.telP || "",
+    tel_fixe_ma: d.ma.telF || "",
     email_ma: d.ma.email || "",
-    tel_ma: d.ma.telP || d.ma.telF || "",
+    emploi_ma: d.ma.emploi || "",
+    experience_ma: d.ma.exp || "",
+    diplome_ma: d.ma.diplome || "",
+    lieu_ma: d.ma.lieu || "",
+    sms_ma: d.ma.sms || "",
     signature: getSignatureData(),
     signataire: v('signataire'),
     grille: gd ? JSON.stringify(gd) : ''

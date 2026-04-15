@@ -10,6 +10,7 @@
 <title>Prévisionnel Apprentissage — CFA La Fabrik</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../shared.css">
+<script>if(localStorage.getItem('lafabrik_auth')!=='true'){window.location.href='../login.html';}</script>
 <style>
 :root{--amber:#FAEEDA;--amber-dk:#633806;}
 body{font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.5}
@@ -117,6 +118,7 @@ td.hc{background:var(--teal-lt)!important;color:var(--teal-dk)!important;font-we
     <p>Contrat d'apprentissage — CFA La Fabrik</p>
   </div>
   <a href="../" style="margin-left:auto;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;background:rgba(255,255,255,.12);padding:5px 12px;border-radius:20px;white-space:nowrap">← Accueil</a>
+  <button onclick="localStorage.removeItem('lafabrik_auth');window.location.href='../login.html'" style="cursor:pointer;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.12);border:none;padding:5px 12px;border-radius:20px;white-space:nowrap;font-family:'Open Sans',sans-serif">⎋ Déconnexion</button>
 </div>
 
 <div class="app">

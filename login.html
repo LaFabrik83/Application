@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — La Fabrik</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Open Sans',Helvetica,Arial,sans-serif;background:var(--noir);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+
+.login-card{background:white;border-radius:18px;border:1px solid var(--bdr);box-shadow:0 24px 64px rgba(0,0,0,.35);width:100%;max-width:400px;overflow:hidden}
+
+.login-top{background:var(--teal);padding:32px 32px 28px;display:flex;align-items:center;gap:16px}
+.logo-wrap{width:48px;height:48px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;padding:2px}
+.logo-wrap img{width:100%;height:100%;object-fit:contain}
+.brand h1{font-family:'Bebas Neue',sans-serif;font-size:24px;color:white;letter-spacing:.06em;line-height:1}
+.brand p{font-size:10px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.12em;margin-top:2px}
+
+.login-body{padding:32px}
+.login-body h2{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--noir);letter-spacing:.04em;margin-bottom:6px}
+.login-body p{font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+
+.input-wrap{position:relative}
+.input-wrap input{width:100%;padding:12px 44px 12px 14px;border:2px solid var(--bdr);border-radius:10px;font-size:14px;font-family:'Open Sans',sans-serif;color:var(--noir);background:var(--bg);outline:none;box-sizing:border-box;transition:border-color .2s}
+.input-wrap input:focus{border-color:var(--teal)}
+.toggle-pwd{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:0}
+
+.btn-login{width:100%;margin-top:20px;padding:14px;background:var(--teal);color:white;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.08em;cursor:pointer;transition:background .2s}
+.btn-login:hover{background:var(--teal-dk)}
+
+.msg-erreur{margin-top:14px;padding:10px 14px;background:#FEE;border:1px solid #FCC;border-radius:8px;font-size:12px;color:#C00;display:none;text-align:center}
+.msg-erreur.visible{display:block}
+
+footer{margin-top:32px;font-size:11px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:.04em}
+footer span{color:var(--teal)}
+
+@media(max-width:480px){
+  .login-body{padding:24px 20px}
+  .login-top{padding:24px 20px 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-top">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="La Fabrik"/>
+    </div>
+    <div class="brand">
+      <h1>La Fabrik</h1>
+      <p>Des Leaders de Demain</p>
+    </div>
+  </div>
+  <div class="login-body">
+    <h2>Espace Collaborateurs</h2>
+    <p>Accès réservé aux équipes CFA La Fabrik. Saisissez le mot de passe pour continuer.</p>
+    <label for="pwd">Mot de passe</label>
+    <div class="input-wrap">
+      <input type="password" id="pwd" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')seConnecter()"/>
+      <button class="toggle-pwd" type="button" onclick="togglePwd()" title="Afficher / masquer">👁</button>
+    </div>
+    <button class="btn-login" onclick="seConnecter()">Accéder à l'espace</button>
+    <div class="msg-erreur" id="erreur">Mot de passe incorrect. Veuillez réessayer.</div>
+  </div>
+</div>
+
+<footer>CFA <span>La Fabrik</span> — Fréjus</footer>
+
+<script>
+// Déjà connecté ? On redirige directement
+if(localStorage.getItem('lafabrik_auth') === 'true'){
+  window.location.href = './index.html';
+}
+
+function seConnecter(){
+  var pwd = document.getElementById('pwd').value;
+  if(pwd === 'Fabrik2026'){
+    localStorage.setItem('lafabrik_auth', 'true');
+    window.location.href = './index.html';
+  } else {
+    var e = document.getElementById('erreur');
+    e.classList.add('visible');
+    document.getElementById('pwd').value = '';
+    document.getElementById('pwd').focus();
+  }
+}
+
+function togglePwd(){
+  var inp = document.getElementById('pwd');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+</script>
+
+</body>
+</html>

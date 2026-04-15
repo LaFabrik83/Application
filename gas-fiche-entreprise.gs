@@ -18,10 +18,11 @@ function enregistrerSheet(p) {
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
   sh.appendRow([
     new Date(), p.apprenti||"", p.formation||"", p.debut||"", p.fin||"",
-    p.entreprise||"", p.siret||"", p.adresse||"", p.dirigeant||"",
-    p.tel_dirigeant||"", p.tel_entreprise||"", p.email_entreprise||"",
-    p.saisie||"", p.opco||"", p.convention||"",
-    p.maitre||"", p.email_ma||"", p.tel_ma||"",
+    p.entreprise||"", p.siret||"", p.adresse||"", p.code_ape||"", p.effectif||"",
+    p.dirigeant||"", p.tel_dirigeant||"", p.tel_entreprise||"", p.email_entreprise||"",
+    p.saisie||"", p.opco||"", p.convention||"", p.idcc||"", p.caisse_retraite||"", p.nb_contrats||"",
+    p.maitre||"", p.dn_ma||"", p.tel_ma||"", p.tel_fixe_ma||"", p.email_ma||"",
+    p.emploi_ma||"", p.experience_ma||"", p.diplome_ma||"", p.lieu_ma||"", p.sms_ma||"",
     p.signataire||"", p.grille ? "Oui" : "Non"
   ]);
 }
@@ -119,19 +120,30 @@ function construireFiche(p, date) {
   h += "</div>";
 
   h += "<div class=\"sec\">Apprenti(e) et Formation</div>";
-  h += rl("Nom et prenom", p.apprenti) + rl("Formation", p.formation) + rl("Debut de contrat", p.debut) + rl("Fin de contrat", p.fin);
+  h += rl("Nom et prenom", p.apprenti) + rl("Formation", p.formation);
+  h += rl("Debut de contrat", p.debut) + rl("Fin de contrat", p.fin);
 
   h += "<div class=\"sec\">Entreprise</div>";
-  h += rl("Raison sociale", p.entreprise) + rl("SIRET", p.siret) + rl("Adresse", p.adresse);
+  h += rl("Raison sociale", p.entreprise) + rl("SIRET", p.siret);
+  h += rl("Adresse", p.adresse);
+  h += rl("Code APE", p.code_ape) + rl("Effectif salarie", p.effectif);
   h += rl("Telephone", p.tel_entreprise) + rl("Email", p.email_entreprise);
   h += rl("Dirigeant", p.dirigeant) + rl("Tel. dirigeant", p.tel_dirigeant);
 
   h += "<div class=\"sec\">Contrat et OPCO</div>";
-  h += rl("Saisie du contrat", p.saisie) + rl("OPCO", p.opco) + rl("Convention collective", p.convention);
+  h += rl("Saisie du contrat", p.saisie) + rl("OPCO", p.opco);
+  h += rl("Convention collective", p.convention) + rl("IDCC", p.idcc);
+  h += rl("Caisse de retraite", p.caisse_retraite) + rl("Contrats alternance en cours", p.nb_contrats);
+  if (p.num_dossier) h += rl("N° dossier OPCO", p.num_dossier);
+  if (p.num_dgefp) h += rl("N° DGEFP", p.num_dgefp);
 
   h += "<div class=\"sec\">Maitre d'apprentissage</div>";
-  h += rl("Nom et prenom", p.maitre) + rl("Email", p.email_ma);
-  h += rl("Telephone", p.tel_ma) + rl("Signataire", p.signataire);
+  h += rl("Nom et prenom", p.maitre) + rl("Date de naissance", p.dn_ma);
+  h += rl("Tel. portable", p.tel_ma) + rl("Tel. fixe", p.tel_fixe_ma);
+  h += rl("Email", p.email_ma) + rl("Emploi occupe", p.emploi_ma);
+  h += rl("Experience sur le poste", p.experience_ma) + rl("Niveau diplome", p.diplome_ma);
+  h += rl("Lieu de travail", p.lieu_ma || "Meme adresse que le siege");
+  h += rl("Accepte SMS absences", p.sms_ma) + rl("Signataire", p.signataire);
 
   if (p.signature && p.signature.indexOf("base64,") > -1) {
     h += "<div class=\"sec\">Signature</div>";

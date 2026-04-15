@@ -10,6 +10,7 @@
 <title>La Fabrik — Espace Collaborateurs</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="shared.css">
+<script>if(localStorage.getItem('lafabrik_auth')!=='true'){window.location.href='./login.html';}</script>
 <style>
 body{font-family:'Open Sans',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column}
 
@@ -81,7 +82,10 @@ footer span{color:var(--teal)}
     <h1>La Fabrik</h1>
     <p>Des Leaders de Demain</p>
   </div>
-  <div class="header-right">Espace collaborateurs — 2026</div>
+  <div class="header-right" style="display:flex;align-items:center;gap:12px">
+    <span>Espace collaborateurs — 2026</span>
+    <button onclick="localStorage.removeItem('lafabrik_auth');window.location.href='./login.html'" style="cursor:pointer;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.12);border:none;padding:5px 12px;border-radius:20px;white-space:nowrap;font-family:'Open Sans',sans-serif">⎋ Déconnexion</button>
+  </div>
 </header>
 
 <div class="hero">

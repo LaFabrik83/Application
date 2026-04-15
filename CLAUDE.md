@@ -133,7 +133,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Encart d'intro grille : explication des niveaux ★★★/★★/★ visible par l'entreprise avant le tableau
 - **Sauvegarde automatique brouillon** : `localStorage` — sauvegarde à chaque étape, restauration au rechargement avec bannière + bouton "Effacer et recommencer"
 - À la soumission : enregistrement Google Sheets + email récapitulatif vers contrat@fabrikfrejus.fr et info@fabrikfrejus.fr + note HubSpot sur la fiche du maître d'apprentissage
-- Webhook GAS actuel : `AKfycbza3uWmTK76WZQfPgAedqLsMHQlboDkm2ldHY4S7Q_w3OLAGpkNeYVIBWOwWaNb7Ajbjg`
+- Webhook GAS actuel : `AKfycbzoJOyBiLwz0FJYqrLNYX_vB3gw7D00SuKWGucmD2kkxaRUy-WiBwKdEY4M9qHxx8ITbQ`
 - Google Sheet dédié : `1b-JPcMWXhHh1IsMCW0hHTNYKL1TaBsbEzW6iMegVdPk`
 - Google Sheet — 20 colonnes : Date, Apprenti, Formation, Debut, Fin, Entreprise, SIRET, Adresse, Dirigeant, Tel Dirigeant, Tel Entreprise, Email Entreprise, Saisie CERFA, OPCO, Convention, Maitre, Email MA, Tel MA, Signataire, Grille
 - Email : 2 fichiers HTML joints — `Fiche_NomEnt_NomApp.html` et `Grille_NomForm_NomEnt.html` + signature PNG — ouvrir dans navigateur + Cmd+P pour PDF
