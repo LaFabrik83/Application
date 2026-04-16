@@ -88,6 +88,8 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 ├── previsionnel/
 │   └── index.html          ← Prévisionnel financier contrat d'apprentissage (grille 2026)
 ├── login.html              ← Page de connexion (mot de passe unique, auth localStorage)
+├── cours-ouverts/
+│   └── index.html          ← Inscription aux cours ouverts (portes ouvertes) + dashboard staff
 └── fiche-entreprise/
     ├── index.html          ← Fiche entreprise partenaire (formulaire multi-étapes)
     ├── historique.html     ← Historique des fiches soumises (tableau de bord protégé)
@@ -101,12 +103,12 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - `login.html` : page de connexion avec mot de passe unique (`Fabrik2026`)
 - Auth stockée en `localStorage` : clé `lafabrik_auth = "true"`
 - Pages **protégées** (redirigent vers `login.html` si non connecté) : `index.html`, `previsionnel/index.html`, `fiche-entreprise/historique.html`
-- Pages **libres** (partagées avec l'extérieur) : `test-entree/index.html`, `fiche-entreprise/index.html`
+- Pages **libres** (partagées avec l'extérieur) : `test-entree/index.html`, `fiche-entreprise/index.html`, `cours-ouverts/index.html`
 - Bouton "Déconnexion" dans le header des pages protégées
 
 ---
 
-## Les 3 outils — état et fonctionnalités
+## Les 4 outils — état et fonctionnalités
 
 ### 1. Test d'entrée (`test-entree/`)
 - 35 questions adaptées à 19 formations (niveaux 3 à 7) — structure : 10 FR + 10 CG + 10 EN + 5 Pro
@@ -161,6 +163,19 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - ⚠️ `grille-data.js` doit toujours être commité avec `index.html`
 - ⚠️ Fichier très volumineux (~350 Ko) — modifier via sed/Bash ou Edit avec chaînes précises
 
+### 4. Cours Ouverts (`cours-ouverts/`)
+- Page publique d'inscription aux portes ouvertes (cours ouverts, avril 2026)
+- 11 cours regroupés par date avec sélection multiple
+- Formulaire : prénom, nom, email (validé), téléphone, situation, source
+- Validation anti-doublon : un même email ne peut pas s'inscrire deux fois au même cours
+- Données stockées en `localStorage` uniquement (outil éphémère — pas de GAS ni Google Sheets)
+- Dashboard staff : accessible via bouton "🔒 Accès staff" → vérifie `lafabrik_auth` (même système que le reste de l'app)
+- Dashboard staff : stats (inscrits, cours représentés, total inscriptions, moy. cours/personne), recherche, filtre par cours, export CSV
+- Vue "Par cours" : liste des inscrits par cours avec formateur et date
+- Suppression individuelle d'une inscription possible depuis le dashboard
+- Sécurité : toutes les données utilisateur échappées via `esc()` avant injection HTML (protection XSS)
+- Page libre (pas de login requis pour s'inscrire)
+
 ---
 
 ## Dette technique connue
@@ -188,6 +203,10 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Test d'entrée — modal détail simplifié : email résultats (mailto:), PDF, archiver
 - **2026-04** : Fiche entreprise — GAS complet créé (Sheets + emails automatiques + HubSpot)
 - **2026-04** : Fiche entreprise — grille d'adéquation rendue obligatoire (légalement requise pour établir le contrat)
+- **2026-04** : Fiche entreprise — grille d'adéquation rendue optionnelle via paramètre URL `&grille=0/1` dans le lien partagé (renouvellement / grille déjà en possession)
+- **2026-04** : Cours Ouverts — nouvel outil `cours-ouverts/` intégré (inscription publique + dashboard staff protégé par `lafabrik_auth`)
+- **2026-04** : Audit complet de l'application — correction XSS cours-ouverts, bug onglet actif, validation email, anti-doublon, regroupement par date
+- **2026-04** : Push définitif Netlify — application complète déployée sur `lafabrik.netlify.app`
 - **2026-04** : Fiche entreprise — `printGrille()` ajouté : PDF grille remplie + signature réelle (Blob URL)
 - **2026-04** : Fiche entreprise — `printVersion()` converti en Blob URL, signature injectée dans les PDFs
 - **2026-04** : Fiche entreprise — bouton "Modifier" étape 6 corrigé (redirige vers étape 1, pas étape 3)
@@ -202,25 +221,22 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 
 ---
 
-## Résumé session 2026-04-16 — À lire en priorité
+## Résumé session 2026-04-16 (2) — À lire en priorité
 
 ### Ce qui a été fait
-- Test d'entrée — bugs corrigés (timer, guards null, questions dupliquées niv5)
-- Test d'entrée — lien candidat à distance avec page d'accueil personnalisée
-- Test d'entrée — tableau de bord Kanban (3 colonnes)
-- Test d'entrée — vue Archives dédiée (tableau + restauration)
-- Test d'entrée — modal détail simplifié (3 boutons : email résultats, PDF, archiver)
-- Test d'entrée — GAS entièrement réécrit et redéployé (nouveau webhook mis à jour dans le code)
-- Test d'entrée — note HubSpot enrichie avec pictogrammes + lien Google Sheets
-- Test d'entrée — token HubSpot ajouté dans le GAS ✅
-- 5 commits en attente de push vers Netlify (branche main)
+- Fiche entreprise — grille d'adéquation rendue optionnelle (paramètre `&grille=0/1` dans le lien)
+- Cours Ouverts — nouvel outil intégré depuis fichier HTML existant (adapté aux conventions du projet)
+- Cours Ouverts — audit et corrections : XSS, bug onglet actif, validation email, anti-doublon, regroupement par date, scroll auto
+- Audit complet de toute l'application (test-entree, previsionnel, fiche-entreprise, historique, hub, login, cours-ouverts)
+- **Push Netlify effectué** — application complète en ligne sur `lafabrik.netlify.app` ✅
 
-### Ce qui reste à faire (PRIORITÉ 1)
-1. **Push vers Netlify** — `git push origin main` — déclenche le déploiement auto
-2. **Valider les scores multi-postes** — tester sur un second appareil via `lafabrik.netlify.app`
+### État de l'application
+- **Tout est en production** — 0 commit en attente
+- Application auditée et validée avant push
 
 ### Ce qui peut attendre
-- Configurer SSH pour ne plus avoir besoin de token GitHub
+- Configurer SSH pour ne plus avoir besoin de token GitHub à chaque push
 - Supprimer l'ancien compte Netlify test
-- `fiche-entreprise/index.html` très volumineux (~350 Ko) — dette technique basse priorité
+- `fiche-entreprise/index.html` très volumineux (~225 Ko) — dette technique basse priorité
 - **Token HubSpot** dans `gas-fiche-entreprise.gs` : vérifier si `TON_TOKEN_ICI` a bien été remplacé (notes HubSpot fiche entreprise)
+- `cours-ouverts/` : outil éphémère pour avril 2026 — penser à archiver ou mettre à jour pour la prochaine édition
