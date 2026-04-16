@@ -569,7 +569,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
       <p style="font-size:11px;color:var(--muted);margin-top:0.5rem;">En signant ce document, vous certifiez l'exactitude des informations renseignées dans la grille d'adéquation ci-dessus, conformément aux exigences Qualiopi.</p>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-ghost" onclick="goTo(4)">&#x2190; Précédent</button>
+      <button class="btn btn-ghost" onclick="goTo(grilleRequise ? 4 : 3)">&#x2190; Pr&eacute;c&eacute;dent</button>
       <button class="btn btn-primary" onclick="goTo(6)">Vérifier &amp; Valider &#x2192;</button>
     </div>
   </div>
@@ -631,7 +631,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           PDF &Eacute;cole
         </button>
-        <button class="btn btn-outline" onclick="printGrille()">
+        <button id="btn-pdf-grille-6" class="btn btn-outline" onclick="printGrille()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
           PDF Grille sign&eacute;e
         </button>
@@ -663,7 +663,7 @@ input.autofilled,select.autofilled{background:var(--teal-lt);border-color:var(--
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             PDF &Eacute;cole
           </button>
-          <button class="btn btn-outline" onclick="printGrille()">
+          <button id="btn-pdf-grille-7" class="btn btn-outline" onclick="printGrille()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             PDF Grille sign&eacute;e
           </button>
@@ -830,6 +830,7 @@ var OPCO_CAISSE = {
 };
 
 var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyoAgfsxlwhT81iD9Jc_JLerCIy_hAHcENsVCtfglwvf0_4Hpbr9VdS0LVwwWAQsFSRVw/exec';
+var grilleRequise = true;
 
 function g(id) { return document.getElementById(id); }
 function v(id) { var el = g(id); return el ? el.value || "" : ""; }
@@ -1364,7 +1365,7 @@ function submitForm() {
     sms_ma: d.ma.sms || "",
     signature: getSignatureData(),
     signataire: v('signataire'),
-    grille: gd ? JSON.stringify(gd) : ''
+    grille: (!grilleRequise) ? 'Non applicable' : (gd ? JSON.stringify(gd) : '')
   };
 
   // Afficher l'écran succès immédiatement
@@ -1610,16 +1611,27 @@ function getSignatureData() {
 function copyEntrepriseLink() {
   var fid = v('formation');
   var apprenti = v('nomApprenti');
-  var debut = v('dateDebut');
-  var fin = v('dateFin');
   if (!fid || !apprenti) {
-    alert("Remplissez le nom de l'apprenti et selectionnez la formation.");
+    alert("Remplissez le nom de l\'apprenti et s\u00e9lectionnez la formation.");
     return;
   }
-  var params = new URLSearchParams({ apprenti: apprenti, formation: fid, debut: debut, fin: fin, mode: 'entreprise' });
+  g('modal-grille-choix').style.display = 'flex';
+}
+
+function fermerModalGrilleChoix() {
+  g('modal-grille-choix').style.display = 'none';
+}
+
+function confirmerLienGrille(avecGrille) {
+  fermerModalGrilleChoix();
+  var fid = v('formation');
+  var apprenti = v('nomApprenti');
+  var debut = v('dateDebut');
+  var fin = v('dateFin');
+  var params = new URLSearchParams({ apprenti: apprenti, formation: fid, debut: debut, fin: fin, mode: 'entreprise', grille: avecGrille });
   var url = window.location.href.split('?')[0] + '?' + params.toString();
   navigator.clipboard.writeText(url).then(function() {
-    alert("Lien copié ! Envoyez-le à l'entreprise.");
+    alert(avecGrille ? "Lien copi\u00e9 \u2014 avec grille d\'ad\u00e9quation." : "Lien copi\u00e9 \u2014 sans grille (renouvellement).");
   }).catch(function() {
     prompt('Copiez ce lien :', url);
   });
@@ -1627,6 +1639,20 @@ function copyEntrepriseLink() {
 
 function readURLParams() {
   var params = new URLSearchParams(window.location.search);
+  if (params.get('grille') === '0') {
+    grilleRequise = false;
+    var d4 = g('dot4');
+    if (d4) {
+      d4.style.opacity = '0.3';
+      d4.title = 'Grille non requise pour ce dossier';
+      var lbl4 = d4.querySelector('.step-dot-label');
+      if (lbl4) lbl4.textContent = 'N/A';
+    }
+    var btnPdfGrille6 = g('btn-pdf-grille-6');
+    var btnPdfGrille7 = g('btn-pdf-grille-7');
+    if (btnPdfGrille6) btnPdfGrille6.style.display = 'none';
+    if (btnPdfGrille7) btnPdfGrille7.style.display = 'none';
+  }
   if (params.get('mode') === 'entreprise') {
     var apprenti = params.get('apprenti');
     var fid = params.get('formation');
@@ -1658,8 +1684,12 @@ function readURLParams() {
 function goToAdequation() {
   var fid = v('formation');
   if (!fid) {
-    alert('Veuillez s\u00e9lectionner une formation \u00e0 l\u00e9tape 1.');
+    alert('Veuillez s\u00e9lectionner une formation \u00e0 l\'\u00e9tape 1.');
     goTo(1);
+    return;
+  }
+  if (!grilleRequise) {
+    goTo(5);
     return;
   }
   buildGrille(fid);
@@ -1812,5 +1842,23 @@ function effacerBrouillon() {
 window.onload = function() { restaurerBrouillon(); };
 
 </script>
+
+<!-- MODAL CHOIX GRILLE -->
+<div id="modal-grille-choix" style="display:none;position:fixed;inset:0;background:rgba(35,33,33,.55);backdrop-filter:blur(3px);z-index:300;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:white;border-radius:16px;padding:28px 24px;max-width:420px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--teal);margin-bottom:6px;letter-spacing:.04em;">Grille d'ad&eacute;quation</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Ce dossier n&eacute;cessite-t-il de remplir la grille d'ad&eacute;quation ?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <button onclick="confirmerLienGrille(1)" style="padding:14px 16px;border:2px solid var(--teal);border-radius:10px;background:var(--teal-lt);color:var(--teal-dk);font-size:13px;font-weight:600;cursor:pointer;text-align:left;font-family:'Open Sans',sans-serif;line-height:1.5;">
+        &#x2705; <strong>Avec grille</strong><br><span style="font-weight:400;font-size:12px;color:var(--muted);">Premier contrat avec cette entreprise</span>
+      </button>
+      <button onclick="confirmerLienGrille(0)" style="padding:14px 16px;border:2px solid var(--bdr);border-radius:10px;background:white;color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;text-align:left;font-family:'Open Sans',sans-serif;line-height:1.5;">
+        &#x23ED;&#xFE0F; <strong>Sans grille</strong><br><span style="font-weight:400;font-size:12px;color:var(--muted);">Renouvellement ou grille d&eacute;j&agrave; en ma possession</span>
+      </button>
+    </div>
+    <button onclick="fermerModalGrilleChoix()" style="width:100%;padding:9px;border:none;border-radius:8px;background:var(--bg);color:var(--muted);font-size:12px;cursor:pointer;font-family:'Open Sans',sans-serif;">Annuler</button>
+  </div>
+</div>
+
 </body>
 </html>
