@@ -207,7 +207,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - `git push` effectué — tout est en production
 
 ### Ce qui reste à faire (URGENT)
-1. **Supprimer le token GitHub** `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` — partagé en session, à révoquer sur github.com → Settings → Developer settings → Jetons (classiques)
+1. **Supprimer le token GitHub** utilisé en session — à révoquer sur github.com → Settings → Developer settings → Jetons (classiques) → `Netlify push` → Delete
 2. **Token HubSpot** dans `gas-fiche-entreprise.gs` : remplacer `TON_TOKEN_ICI` par le vrai token (sinon les notes HubSpot ne se créent pas)
 
 ### Ce qui peut attendre
