@@ -295,6 +295,35 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     </div>
   </div>
 
+  <div id="screen-candidat" style="display:none">
+    <div class="intro-hero">
+      <h2 id="cand-titre">Bonjour !</h2>
+      <p id="cand-intro-txt">Tu vas passer le test d'entrée du CFA La Fabrik. Prends un moment pour te concentrer — tu as <strong>15 minutes</strong> pour répondre à <strong>35 questions</strong>.</p>
+      <div class="intro-stats">
+        <div class="intro-stat"><div class="sv">35</div><div class="sl">Questions</div></div>
+        <div class="intro-stat"><div class="sv">15</div><div class="sl">Minutes</div></div>
+        <div class="intro-stat"><div class="sv" id="cand-niveau-badge">—</div><div class="sl">Niveau</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Ta formation
+      </div>
+      <div id="cand-formation-display" style="background:var(--teal-lt);border:2px solid var(--teal);border-radius:10px;padding:14px 18px;margin-bottom:16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--teal-dk);letter-spacing:.04em" id="cand-fm-label">—</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px" id="cand-fm-niveau">—</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8;padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:4px">
+        <strong style="color:var(--txt)">Comment ça marche ?</strong><br>
+        📚 10 questions de Français &nbsp;·&nbsp; 🌍 10 de Culture Générale<br>
+        🇬🇧 10 questions d'Anglais &nbsp;·&nbsp; 📌 5 questions Professionnelles<br>
+        Le test se soumet automatiquement à la fin du temps imparti.
+      </div>
+      <div class="nav-btns"><div></div><button class="btn btn-primary" style="height:44px;font-size:13px;padding:0 28px" onclick="goToQuestions()">Commencer le test →</button></div>
+    </div>
+  </div>
+
   <div id="screen-formation" style="display:none">
     <div class="card">
       <div class="card-title"><span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span> Sélectionnez votre formation</div>
@@ -302,8 +331,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
       <div id="niveau-grid"></div>
       <div class="nav-btns">
         <button class="btn" onclick="showScreen('intro')">← Retour</button>
-        <button class="btn" onclick="copyLinkFormationOnly()" style="color:var(--teal);border-color:var(--teal)">📋 Lien test à distance</button>
-        <button class="btn" onclick="copyFormationLink()" style="color:var(--gold);border-color:var(--gold)">🔗 Lien pré-rempli</button>
+        <button class="btn btn-gold" onclick="copyLienCandidat()">📤 Envoyer le test au candidat</button>
         <button class="btn btn-primary" onclick="goToQuestions()">Commencer →</button>
       </div>
     </div>
@@ -405,6 +433,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyLZYGOGMUOtmbdV3sYvFwiAxHlGBxw8gsZ7JlJfIXvhze5ccZtesuqL4Yasq--tBWHGA/exec';
 var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Oa29bZXQAfOvPHJq8IOD7SHzrXl-DxzB2La5cYRB_FM/edit';
 var STORAGE_KEY = 'lafabrik_tests_2026';
+var SHARE_BASE_URL = 'https://lafabrik.netlify.app/test-entree/';
 
 // ─── NIVEAUX & FORMATIONS ───────────────────────────────────────
 var NIVEAUX = [
@@ -1006,7 +1035,7 @@ function showTab(t) {
   if (t === 'dashboard') { loadFromSheet(); renderDashboard(); }
 }
 function showScreen(s) {
-  ['intro','formation','questions','success'].forEach(function(id) {
+  ['intro','candidat','formation','questions','success'].forEach(function(id) {
     document.getElementById('screen-' + id).style.display = (id === s) ? 'block' : 'none';
   });
 }
@@ -1374,21 +1403,14 @@ function copyToClipboard(url, msg) {
     showToast(msg);
   }
 }
-function copyLinkFormationOnly() {
-  if (!S.formation) { showToast('⚠️ Veuillez sélectionner une formation.'); return; }
-  var base = window.location.href.split('?')[0];
-  var url = base + '?formation=' + S.formation;
-  copyToClipboard(url, '📋 Lien test copié — le candidat remplira ses informations.');
-}
-function copyFormationLink() {
+function copyLienCandidat() {
   if (!S.formation) { showToast('⚠️ Veuillez sélectionner une formation.'); return; }
   var nom = document.getElementById('f-nom').value.trim();
   var prenom = document.getElementById('f-prenom').value.trim();
   var email = document.getElementById('f-email').value.trim();
-  if (!nom || !prenom || !email) { showToast('⚠️ Remplissez les infos candidat pour ce lien (ou utilisez "Lien test à distance").'); return; }
-  var base = window.location.href.split('?')[0];
-  var params = new URLSearchParams({nom:nom, prenom:prenom, email:email, formation:S.formation});
-  copyToClipboard(base + '?' + params.toString(), '🔗 Lien pré-rempli copié !');
+  if (!nom || !prenom || !email) { showToast('⚠️ Remplissez les informations du candidat (étape précédente).'); return; }
+  var params = new URLSearchParams({nom:nom, prenom:prenom, email:email, formation:S.formation, direct:'1'});
+  copyToClipboard(SHARE_BASE_URL + '?' + params.toString(), '📤 Lien copié — envoyez-le au candidat !');
 }
 function copyTestLink() {
   var db = getMergedDB();
@@ -1414,28 +1436,45 @@ function showToast(msg) {
 function readURLParams() {
   if (!window.location.search) return;
   var params = new URLSearchParams(window.location.search);
-  var nom = params.get('nom') || '';
-  var prenom = params.get('prenom') || '';
-  var email = params.get('email') || '';
-  var formation = params.get('formation') || '';
-  if (nom) document.getElementById('f-nom').value = nom;
+  var nom      = params.get('nom')      || '';
+  var prenom   = params.get('prenom')   || '';
+  var email    = params.get('email')    || '';
+  var formation= params.get('formation')|| '';
+  var direct   = params.get('direct')   === '1';
+  // Mode candidat distant : tout est fourni + direct=1 → page d'accueil candidat
+  if (direct && formation && FM[formation] && nom && prenom && email) {
+    S.candidat  = {nom:nom, prenom:prenom, email:email};
+    S.formation = formation;
+    S.niveauId  = FM[formation].niveau;
+    S.fromLink  = true;
+    // Masquer les onglets (pas d'accès tableau de bord pour le candidat)
+    var tabBar = document.querySelector('.tab-bar');
+    if (tabBar) tabBar.style.display = 'none';
+    // Remplir la page d'accueil candidat
+    var fm = FM[formation];
+    document.getElementById('cand-titre').textContent = 'Bonjour ' + prenom + ' !';
+    document.getElementById('cand-fm-label').textContent = fm.label;
+    document.getElementById('cand-fm-niveau').textContent = fm.niveauLabel;
+    document.getElementById('cand-niveau-badge').textContent = fm.niveauLabel.replace('Niveau ','').split(' ')[0] || fm.niveauLabel;
+    showScreen('candidat');
+    return;
+  }
+  // Mode normal / lien partiel : pré-remplir les champs
+  if (nom)    document.getElementById('f-nom').value    = nom;
   if (prenom) document.getElementById('f-prenom').value = prenom;
-  if (email) document.getElementById('f-email').value = email;
+  if (email)  document.getElementById('f-email').value  = email;
   if (formation && FM[formation]) {
     S.formation = formation;
-    S.niveauId = FM[formation].niveau;
-    S.fromLink = true;
-    // Badge formation visible sur l'écran intro
+    S.niveauId  = FM[formation].niveau;
+    S.fromLink  = true;
     var badge = document.getElementById('url-formation-badge');
     var badgeLabel = document.getElementById('url-formation-label');
     if (badge && badgeLabel) {
       badgeLabel.textContent = FM[formation].label + ' — ' + FM[formation].niveauLabel;
       badge.style.display = 'flex';
     }
-    // Modifier le bouton pour indiquer qu'on va directement au test
     var btnGo = document.getElementById('btn-go-formation');
     if (btnGo) btnGo.textContent = 'Commencer le test →';
-    // Préparer la grille formation (pour le lien pré-rempli complet si besoin)
     buildNiveauGrid();
     var fc = document.querySelector('.fc[data-id="' + formation + '"]');
     if (fc) {
@@ -1444,8 +1483,6 @@ function readURLParams() {
       var fSec  = fc.closest('.niveau-section');
       if (fBody && fSec) { var hdr = fSec.querySelector('.niveau-header'); if (hdr) { hdr.classList.add('open'); fBody.classList.add('open'); } }
     }
-    // Lien pré-rempli complet (nom+prénom+email+formation) → aller directement à l'écran formation
-    if (nom && prenom && email) showScreen('formation');
   }
 }
 
