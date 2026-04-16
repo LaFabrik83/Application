@@ -194,7 +194,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 
 ---
 
-## Résumé session 2026-04-15 — À lire en priorité
+## Résumé session 2026-04-15/16 — À lire en priorité
 
 ### Ce qui a été fait
 - GAS fiche entreprise redéployé (nouveau webhook) + `doGet` ajouté pour l'historique
@@ -203,13 +203,16 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Pas d'auth sur : `test-entree/` (candidats) et `fiche-entreprise/` (employeurs)
 - `fiche-entreprise/historique.html` créé : stats, recherche, tableau, modal détail 32 champs, export CSV
 - Section "Administration" ajoutée sur l'accueil avec carte Historique
-- Nouveau compte Netlify pro créé → `lafabrik.netlify.app` (connecté à GitHub, auto-deploy actif)
-- `git push` effectué — tout est en production
+- Nouveau compte Netlify pro → `lafabrik.netlify.app` connecté à GitHub, auto-deploy actif
+- Tout déployé en production sur `lafabrik.netlify.app`
 
 ### Ce qui reste à faire (URGENT)
-1. **Supprimer le token GitHub** utilisé en session — à révoquer sur github.com → Settings → Developer settings → Jetons (classiques) → `Netlify push` → Delete
-2. **Token HubSpot** dans `gas-fiche-entreprise.gs` : remplacer `TON_TOKEN_ICI` par le vrai token (sinon les notes HubSpot ne se créent pas)
+1. **Supprimer le token GitHub `Claude push`** — github.com → Settings → Developer settings → Jetons (classiques) → Delete
+2. **Token HubSpot** dans `gas-fiche-entreprise.gs` : remplacer `TON_TOKEN_ICI` par le vrai token (sinon les notes HubSpot ne se créent pas sur la fiche entreprise)
+
+### À faire en début de prochaine session
+- Configurer SSH pour ne plus jamais avoir besoin de token GitHub (`ssh-keygen` + ajout clé sur github.com)
 
 ### Ce qui peut attendre
-- Supprimer l'ancien compte Netlify test quand Benjamin est prêt
+- Supprimer l'ancien compte Netlify test
 - `fiche-entreprise/index.html` très volumineux (~350 Ko) — dette technique basse priorité
