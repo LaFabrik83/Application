@@ -114,7 +114,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Écran de fin candidat : message bienveillant "Bravo, c'est dans la boîte !" avec mention 48h
 - À la soumission : enregistrement localStorage + envoi webhook GAS
 - GAS enregistre dans Google Sheets (16 colonnes), crée une note HubSpot et une tâche "Appeler" J+2 à 9h
-- Webhook GAS actuel : `AKfycbyLZYGOGMUOtmbdV3sYvFwiAxHlGBxw8gsZ7JlJfIXvhze5ccZtesuqL4Yasq--tBWHGA`
+- Webhook GAS actuel : `AKfycbx8VlKbgeZib6lFESH6xxaDYUACWUsZg8iZrkPfE63o3HKwXBfXphg_VU-s1z5mMKjvxg`
 - ⚠️ La tâche HubSpot utilise l'API Engagements v1 (pas v3 tasks — scope non disponible sur ce plan)
 - Lien candidat partageable avec formation et infos pré-remplies
 - Tableau de bord cross-poste : données lues depuis Google Sheets au chargement (visible sur tous les postes)
