@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cours Ouverts — La Fabrik</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+
+/* ─── HEADER ─── */
+.app-header{background:var(--teal);padding:0 24px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 3px 12px rgba(46,179,175,.3)}
+.app-header .logo-wrap{width:38px;height:38px;border-radius:8px;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2px}
+.app-header .logo-wrap img{width:100%;height:100%;object-fit:contain}
+.app-header .brand{flex:1;min-width:0}
+.app-header .brand h1{color:white;font-size:18px;font-weight:400;line-height:1;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em}
+.app-header .brand p{color:rgba(255,255,255,.7);font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.hdr-btn{cursor:pointer;color:rgba(255,255,255,.8);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;background:rgba(255,255,255,.12);border:none;padding:5px 12px;border-radius:20px;white-space:nowrap;font-family:'Open Sans',sans-serif;transition:background .2s}
+.hdr-btn:hover{background:rgba(255,255,255,.22)}
+
+/* ─── HERO ─── */
+.hero{background:var(--noir);padding:40px 24px 44px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:var(--teal);opacity:.08;border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-60px;left:-40px;width:200px;height:200px;background:var(--gold);opacity:.07;border-radius:50%}
+.hero-tag{display:inline-block;background:rgba(46,179,175,.2);border:1px solid rgba(46,179,175,.4);color:var(--teal);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase;position:relative}
+.hero h2{font-family:'Bebas Neue',sans-serif;font-size:36px;color:white;letter-spacing:.06em;margin-bottom:8px;position:relative}
+.hero h2 span{color:var(--teal)}
+.hero p{font-size:13px;color:rgba(255,255,255,.6);max-width:460px;margin:0 auto;line-height:1.7;position:relative}
+
+/* ─── TABS ─── */
+.tabs{background:white;border-bottom:2px solid var(--bdr);display:flex;padding:0 24px}
+.tab-btn{padding:12px 18px;border:none;border-bottom:3px solid transparent;background:none;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:-2px}
+.tab-btn:hover{color:var(--teal)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
+.staff-btn{margin-left:auto;padding:12px 18px;border:none;background:none;font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;letter-spacing:.05em;display:flex;align-items:center;gap:6px;transition:color .2s;text-transform:uppercase}
+.staff-btn:hover{color:var(--gold)}
+
+/* ─── PAGE ─── */
+.page{max-width:960px;margin:0 auto;padding:32px 24px 60px}
+
+/* ─── SECTION LABEL ─── */
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;color:var(--noir);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,var(--teal),transparent)}
+
+/* ─── GRILLE COURS ─── */
+.date-group-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.1em;color:white;background:var(--noir);padding:8px 16px;border-left:4px solid var(--teal);border-radius:4px;margin-bottom:12px;margin-top:4px}
+.cours-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:24px}
+.cours-card{background:white;border:2px solid var(--bdr);border-top:4px solid var(--accent,var(--teal));padding:16px 18px;cursor:pointer;transition:all .18s;position:relative;border-radius:2px}
+.cours-card:hover{border-color:var(--accent,var(--teal));box-shadow:0 4px 18px rgba(0,0,0,.1);transform:translateY(-2px)}
+.cours-card.selected{border-color:var(--accent,var(--teal));background:var(--teal-lt)}
+.cours-check{position:absolute;top:12px;right:12px;width:22px;height:22px;background:var(--accent,var(--teal));color:white;display:none;align-items:center;justify-content:center;font-size:12px;border-radius:4px}
+.cours-card.selected .cours-check{display:flex}
+.cours-date{font-size:11px;font-weight:700;color:var(--accent,var(--teal));text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.cours-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.06em;color:var(--noir);line-height:1.2;margin-bottom:4px}
+.cours-prof{font-size:12px;color:var(--muted)}
+.cours-badge{display:inline-block;background:var(--noir);color:white;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;border-radius:3px}
+
+/* ─── FORMULAIRE ─── */
+.form-wrap{background:white;border:2px solid var(--bdr);border-top:4px solid var(--gold);padding:24px;border-radius:2px}
+.selection-recap{background:var(--noir);color:white;padding:14px 18px;margin-bottom:20px;border-radius:2px;display:flex;flex-direction:column;gap:8px}
+.recap-title{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:14px;color:var(--teal)}
+.recap-tags{display:flex;flex-wrap:wrap;gap:6px}
+.recap-tag{background:var(--teal);color:white;font-size:11px;font-weight:600;padding:3px 10px;letter-spacing:.04em;border-radius:3px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.form-group input,.form-group select{padding:10px 14px;border:1.5px solid var(--bdr);background:var(--bg);font-family:'Open Sans',sans-serif;font-size:13px;color:var(--txt);outline:none;transition:border-color .2s;border-radius:0}
+.form-group input:focus,.form-group select:focus{border-color:var(--teal);background:white}
+.btn-inscrire{width:100%;padding:14px;background:var(--teal);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.2em;cursor:pointer;transition:background .18s;margin-top:10px}
+.btn-inscrire:hover{background:var(--teal-dk)}
+
+/* ─── CONFIRMATION ─── */
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(35,33,33,.85);z-index:200;align-items:center;justify-content:center;padding:16px}
+.confirm-overlay.show{display:flex}
+.confirm-box{background:white;max-width:480px;width:100%;padding:36px 28px;text-align:center;animation:popIn .25s ease;border-radius:4px}
+@keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.confirm-icon{width:60px;height:60px;background:var(--teal);color:white;font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;border-radius:50%}
+.confirm-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.1em;color:var(--noir);margin-bottom:8px}
+.confirm-title span{color:var(--teal)}
+.confirm-text{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.confirm-cours-list{background:var(--bg);border-left:3px solid var(--teal);padding:10px 14px;text-align:left;margin-bottom:18px;border-radius:0 4px 4px 0}
+.confirm-cours-list p{font-size:11px;color:var(--noir);font-weight:700;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase}
+.confirm-cours-list ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+.confirm-cours-list li{font-size:12px;color:var(--muted)}
+.confirm-cours-list li::before{content:'&#8594; ';color:var(--teal);font-weight:700}
+.btn-close-confirm{background:var(--noir);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.15em;padding:12px 28px;cursor:pointer;transition:background .18s;border-radius:2px}
+.btn-close-confirm:hover{background:var(--teal)}
+
+/* ─── DASHBOARD ─── */
+.staff-bar{background:var(--noir);display:flex;align-items:center;justify-content:space-between;padding:10px 18px;margin-bottom:20px;border-radius:4px}
+.staff-bar span{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;color:var(--gold);font-size:14px}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.7);font-size:11px;font-weight:700;padding:4px 12px;cursor:pointer;letter-spacing:.05em;transition:all .18s;font-family:'Open Sans',sans-serif}
+.btn-logout:hover{border-color:#e84545;color:#e84545}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:white;border:1px solid var(--bdr);border-top:3px solid var(--teal);padding:16px;text-align:center;border-radius:4px}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.04em;color:var(--teal);line-height:1}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filter-row input,.filter-row select{flex:1;min-width:160px;padding:9px 14px;border:1.5px solid var(--bdr);font-size:12px;font-family:'Open Sans',sans-serif;border-radius:4px;outline:none;color:var(--txt);background:white}
+.filter-row input:focus,.filter-row select:focus{border-color:var(--teal)}
+.btn-export{padding:9px 16px;background:var(--gold);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.1em;cursor:pointer;white-space:nowrap;transition:background .18s;border-radius:4px}
+.btn-export:hover{background:var(--gold-dk)}
+.table-wrap{background:white;border-radius:10px;border:1px solid var(--bdr);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{background:var(--noir);color:white}
+th{padding:10px 14px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.75)}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--teal-lt)}
+.badge-cours{display:inline-block;background:var(--teal);color:white;font-size:10px;font-weight:700;padding:2px 7px;margin:1px;border-radius:3px}
+.btn-del{background:none;border:none;cursor:pointer;color:#e84545;font-size:14px;padding:4px;line-height:1}
+.btn-del:hover{opacity:.7}
+
+/* ─── PAR COURS ─── */
+.cours-group{background:white;border:1px solid var(--bdr);margin-bottom:16px;border-radius:8px;overflow:hidden}
+.cours-group-header{padding:12px 16px;background:var(--noir);color:white;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:center;border-left:4px solid var(--accent,var(--teal))}
+.gh-meta{font-family:'Open Sans',sans-serif;font-size:11px;opacity:.65;font-weight:400}
+.empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-state .icon{font-size:36px;margin-bottom:10px}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:24px;right:24px;background:#e84545;color:white;padding:12px 18px;font-weight:600;font-size:13px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;max-width:300px;border-radius:8px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ─── SECTION DISPLAY ─── */
+.section{display:none}
+.section.active{display:block}
+
+@media(max-width:600px){
+  .app-header{padding:0 14px}
+  .page{padding:20px 14px 48px}
+  thead{display:none}
+  tr{display:block;border-bottom:2px solid var(--bdr);padding:6px 0}
+  td{display:flex;justify-content:space-between;border:none;padding:4px 14px;font-size:11px}
+  td::before{content:attr(data-label);font-weight:700;color:var(--muted);text-transform:uppercase;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo-wrap"><img src="../logo.png" alt="La Fabrik"/></div>
+  <div class="brand">
+    <h1>Cours Ouverts</h1>
+    <p>Portes ouvertes &mdash; Avril 2026</p>
+  </div>
+  <a href="../" class="hdr-btn">&#8592; Accueil</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Portes ouvertes</div>
+  <h2>COURS <span>OUVERTS</span></h2>
+  <p>Ouvert &agrave; toutes et &agrave; tous les curieux &mdash; Venez d&eacute;couvrir nos formations en vrai, avec nos formateurs.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-btn-inscription" onclick="switchTab('inscription', this)">S'inscrire</button>
+  <button class="staff-btn" onclick="ouvrirAccesStaff()">&#x1F512; Acc&egrave;s staff</button>
+</div>
+
+<!-- INSCRIPTION -->
+<div id="tab-inscription" class="section active">
+  <div class="page">
+    <div class="section-label">Choisissez vos cours</div>
+    <div id="coursGrid"></div>
+    <div id="formWrap" style="display:none">
+      <div class="section-label">Vos informations</div>
+      <div class="form-wrap">
+        <div class="selection-recap">
+          <div class="recap-title">&#128203; Cours s&eacute;lectionn&eacute;s</div>
+          <div class="recap-tags" id="recapTags"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pr&eacute;nom <span style="color:var(--teal)">*</span></label>
+            <input type="text" id="prenom" placeholder="Marie">
+          </div>
+          <div class="form-group">
+            <label>Nom <span style="color:var(--teal)">*</span></label>
+            <input type="text" id="nom" placeholder="Dupont">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>E-mail <span style="color:var(--teal)">*</span></label>
+            <input type="email" id="email" placeholder="marie@exemple.fr">
+          </div>
+          <div class="form-group">
+            <label>T&eacute;l&eacute;phone</label>
+            <input type="tel" id="tel" placeholder="06 XX XX XX XX">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Situation actuelle</label>
+            <select id="situation">
+              <option value="">&#8212; S&eacute;lectionner &#8212;</option>
+              <option>Lyc&eacute;en(ne)</option>
+              <option>&#201;tudiant(e)</option>
+              <option>En reconversion</option>
+              <option>Salari&eacute;(e)</option>
+              <option>Demandeur d'emploi</option>
+              <option>Parent / Accompagnant</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Comment nous avez-vous connu ?</label>
+            <select id="source">
+              <option value="">&#8212; S&eacute;lectionner &#8212;</option>
+              <option>R&eacute;seaux sociaux</option>
+              <option>Bouche &agrave; oreille</option>
+              <option>Affiche / Flyer</option>
+              <option>Site internet</option>
+              <option>&#201;cole / Professeur</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-inscrire" onclick="inscrire()">CONFIRMER MON INSCRIPTION</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD STAFF -->
+<div id="tab-dashboard" class="section">
+  <div class="page">
+    <div class="staff-bar">
+      <span>&#x1F6E1; ESPACE STAFF &#8212; TABLEAU DE BORD</span>
+      <button class="btn-logout" onclick="logout()">D&Eacute;CONNEXION</button>
+    </div>
+    <div class="stats-row" id="statsRow"></div>
+    <div class="filter-row">
+      <input type="text" id="searchInput" placeholder="&#x1F50D; Nom, email..." oninput="renderTable()">
+      <select id="filterCours" onchange="renderTable()"><option value="">Tous les cours</option></select>
+      <button class="btn-export" onclick="exportCSV()">&#8595; CSV</button>
+    </div>
+    <div class="table-wrap">
+      <div id="tableContainer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAR COURS STAFF -->
+<div id="tab-parcours" class="section">
+  <div class="page">
+    <div class="staff-bar">
+      <span>&#x1F6E1; ESPACE STAFF &#8212; PAR COURS</span>
+      <button class="btn-logout" onclick="logout()">D&Eacute;CONNEXION</button>
+    </div>
+    <div id="parcoursContainer"></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMATION -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon">&#10003;</div>
+    <div class="confirm-title">INSCRIPTION <span>CONFIRM&Eacute;E</span></div>
+    <p class="confirm-text" id="confirmText"></p>
+    <div class="confirm-cours-list" id="confirmCoursList"></div>
+    <p class="confirm-text" style="font-size:11px;margin-bottom:18px">Nous vous attendons ! En cas de question, contactez-nous directement au CFA La Fabrik.</p>
+    <button class="btn-close-confirm" onclick="fermerConfirm()">PARFAIT, MERCI !</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+var COURS = [
+  { id:'c01', date:'Merc. 8 avril',  heure:'13h\u201315h',  titre:'Bachelor Banque et Assurance',                prof:'Maxime',        color:'#8F8016' },
+  { id:'c02', date:'Lundi 20 avril', heure:'10h\u201312h',  titre:'BTS Communication',                          prof:'David-Olivier',  color:'#2EB3AF' },
+  { id:'c03', date:'Lundi 20 avril', heure:'10h\u201312h',  titre:'BTS Communication (session 2)',               prof:'David-Olivier',  color:'#2EB3AF' },
+  { id:'c04', date:'Lundi 20 avril', heure:'Titre Pro',     titre:'Titre Pro',                                   prof:'Maxime',         color:'#229490' },
+  { id:'c05', date:'Lundi 20 avril', heure:'13h\u201315h',  titre:'BTS NDRC',                                    prof:'Maxime',         color:'#1A8A86' },
+  { id:'c06', date:'Mardi 21 avril', heure:'10h\u201312h',  titre:'BTS MCO',                                     prof:'Samira',         color:'#B19500' },
+  { id:'c07', date:'Mardi 21 avril', heure:'10h\u201312h',  titre:'Bac Pro / CAP / BP Coiffure',                 prof:'Ana\u00efs',     color:'#8F8016' },
+  { id:'c08', date:'Jeudi 23 avril', heure:'10h\u201312h',  titre:'Master\u00e8 Management & Strat\u00e9gie',   prof:'Xavier',         color:'#2EB3AF' },
+  { id:'c09', date:'Vend. 24 avril', heure:'10h\u201312h',  titre:'Bac Pro Commerce / Vente',                    prof:'Olivier',        color:'#229490' },
+  { id:'c10', date:'Vend. 24 avril', heure:'10h\u201312h',  titre:'Master\u00e8 Management Affaire',             prof:'Samira',         color:'#B19500' },
+  { id:'c11', date:'Vend. 24 avril', heure:'10h\u201312h',  titre:'CAP AEPE (petite enfance)',                   prof:'Karima',         color:'#8F8016' }
+];
+
+var inscrits = [];
+try { inscrits = JSON.parse(localStorage.getItem('fabrik_cours_ouverts') || '[]'); } catch(e) { inscrits = []; }
+var selectedCours = [];
+var staffConnecte = false;
+
+function esc(str) {
+  return (str || '').toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function sauvegarder() {
+  try { localStorage.setItem('fabrik_cours_ouverts', JSON.stringify(inscrits)); } catch(e) {}
+}
+
+function getCours(id) {
+  for (var i = 0; i < COURS.length; i++) {
+    if (COURS[i].id === id) return COURS[i];
+  }
+  return null;
+}
+
+function compterInscrits(id) {
+  var n = 0;
+  for (var i = 0; i < inscrits.length; i++) {
+    if (inscrits[i].cours.indexOf(id) > -1) n++;
+  }
+  return n;
+}
+
+/* ─── RENDU CARTES (group\u00e9es par date) ─── */
+function renderCards() {
+  var dates = [];
+  for (var i = 0; i < COURS.length; i++) {
+    if (dates.indexOf(COURS[i].date) === -1) dates.push(COURS[i].date);
+  }
+  var html = '';
+  for (var d = 0; d < dates.length; d++) {
+    html += '<div class="date-group-label">' + dates[d] + '</div>';
+    html += '<div class="cours-grid">';
+    for (var i = 0; i < COURS.length; i++) {
+      var c = COURS[i];
+      if (c.date !== dates[d]) continue;
+      var count = compterInscrits(c.id);
+      var estSelec = selectedCours.indexOf(c.id) > -1;
+      html += '<div class="cours-card' + (estSelec ? ' selected' : '') + '" id="card-' + c.id + '" onclick="toggleCours(\'' + c.id + '\')" style="--accent:' + c.color + '">';
+      html += '<div class="cours-check">&#10003;</div>';
+      html += '<div class="cours-date">' + c.heure + '</div>';
+      html += '<div class="cours-title">' + c.titre + '</div>';
+      html += '<div class="cours-prof">&#128100; ' + c.prof;
+      if (count > 0) html += ' <span class="cours-badge">' + count + ' inscrit' + (count > 1 ? 's' : '') + '</span>';
+      html += '</div></div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('coursGrid').innerHTML = html;
+}
+
+/* ─── TOGGLE S&Eacute;LECTION ─── */
+function toggleCours(id) {
+  var idx = selectedCours.indexOf(id);
+  if (idx === -1) selectedCours.push(id);
+  else selectedCours.splice(idx, 1);
+  renderCards();
+  var formWrap = document.getElementById('formWrap');
+  formWrap.style.display = selectedCours.length ? 'block' : 'none';
+  var tagsHtml = '';
+  for (var i = 0; i < selectedCours.length; i++) {
+    var c = getCours(selectedCours[i]);
+    if (c) tagsHtml += '<span class="recap-tag">' + c.titre + '</span>';
+  }
+  document.getElementById('recapTags').innerHTML = tagsHtml;
+  if (selectedCours.length > 0) {
+    var fw = document.getElementById('formWrap');
+    setTimeout(function() { fw.scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+  }
+}
+
+/* ─── INSCRIPTION ─── */
+function inscrire() {
+  var prenom = document.getElementById('prenom').value.trim();
+  var nom    = document.getElementById('nom').value.trim();
+  var email  = document.getElementById('email').value.trim();
+  if (!prenom || !nom || !email) { showToast('Veuillez remplir pr\u00e9nom, nom et e-mail.'); return; }
+  if (!selectedCours.length)    { showToast('S\u00e9lectionnez au moins un cours.'); return; }
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) { showToast('Veuillez saisir une adresse e-mail valide.'); return; }
+  for (var di = 0; di < inscrits.length; di++) {
+    if (inscrits[di].email.toLowerCase() === email.toLowerCase()) {
+      for (var dj = 0; dj < selectedCours.length; dj++) {
+        if (inscrits[di].cours.indexOf(selectedCours[dj]) > -1) {
+          var dc = getCours(selectedCours[dj]);
+          showToast('Cet e-mail est d\u00e9j\u00e0 inscrit au cours "' + (dc ? dc.titre : '') + '".');
+          return;
+        }
+      }
+    }
+  }
+  var now = new Date();
+  var entry = {
+    id: now.getTime(),
+    prenom: prenom,
+    nom: nom,
+    email: email,
+    tel: document.getElementById('tel').value.trim(),
+    situation: document.getElementById('situation').value,
+    source: document.getElementById('source').value,
+    cours: selectedCours.slice(),
+    date_inscription: now.toLocaleDateString('fr-FR') + ' \u00e0 ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})
+  };
+  inscrits.push(entry);
+  sauvegarder();
+  afficherConfirm(entry);
+  selectedCours = [];
+  document.getElementById('prenom').value = '';
+  document.getElementById('nom').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('tel').value = '';
+  document.getElementById('situation').value = '';
+  document.getElementById('source').value = '';
+  document.getElementById('formWrap').style.display = 'none';
+  renderCards();
+}
+
+/* ─── CONFIRMATION ─── */
+function afficherConfirm(entry) {
+  var liHtml = '';
+  for (var i = 0; i < entry.cours.length; i++) {
+    var c = getCours(entry.cours[i]);
+    if (c) liHtml += '<li>' + c.titre + ' \u2014 ' + c.date + ', ' + c.heure + ' (' + c.prof + ')</li>';
+  }
+  document.getElementById('confirmText').innerHTML = 'Bonjour <strong>' + esc(entry.prenom) + ' ' + esc(entry.nom) + '</strong> &#x1F44B;<br>Votre inscription est bien enregistr\u00e9e pour les cours suivants\u00a0:';
+  document.getElementById('confirmCoursList').innerHTML = '<p>Vos cours</p><ul>' + liHtml + '</ul>';
+  document.getElementById('confirmOverlay').className = 'confirm-overlay show';
+}
+
+function fermerConfirm() {
+  document.getElementById('confirmOverlay').className = 'confirm-overlay';
+}
+
+/* ─── AUTH STAFF ─── */
+function ouvrirAccesStaff() {
+  if (localStorage.getItem('lafabrik_auth') === 'true') {
+    staffConnecte = true;
+    ajouterOngletStaff();
+    switchTab('dashboard', document.getElementById('tab-btn-dashboard'));
+  } else {
+    window.location.href = '../login.html';
+  }
+}
+
+function ajouterOngletStaff() {
+  if (!document.getElementById('tab-btn-dashboard')) {
+    var tabsEl = document.querySelector('.tabs');
+    var staffBtn = tabsEl.querySelector('.staff-btn');
+    var btnD = document.createElement('button');
+    btnD.className = 'tab-btn';
+    btnD.id = 'tab-btn-dashboard';
+    btnD.innerHTML = 'Tableau de bord';
+    btnD.onclick = function() { switchTab('dashboard', btnD); };
+    tabsEl.insertBefore(btnD, staffBtn);
+    var btnP = document.createElement('button');
+    btnP.className = 'tab-btn';
+    btnP.id = 'tab-btn-parcours';
+    btnP.innerHTML = 'Par cours';
+    btnP.onclick = function() { switchTab('parcours', btnP); };
+    tabsEl.insertBefore(btnP, staffBtn);
+  }
+}
+
+function logout() {
+  staffConnecte = false;
+  var btnD = document.getElementById('tab-btn-dashboard');
+  var btnP = document.getElementById('tab-btn-parcours');
+  if (btnD) btnD.parentNode.removeChild(btnD);
+  if (btnP) btnP.parentNode.removeChild(btnP);
+  switchTab('inscription', document.getElementById('tab-btn-inscription'));
+}
+
+/* ─── SWITCH ONGLET ─── */
+function switchTab(tab, btnEl) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'parcours')  renderParcours();
+}
+
+/* ─── DASHBOARD ─── */
+function renderDashboard() {
+  var total = inscrits.length;
+  var allIds = [];
+  for (var i = 0; i < inscrits.length; i++) {
+    for (var j = 0; j < inscrits[i].cours.length; j++) {
+      allIds.push(inscrits[i].cours[j]);
+    }
+  }
+  var uniqIds = [];
+  for (var i = 0; i < allIds.length; i++) {
+    if (uniqIds.indexOf(allIds[i]) === -1) uniqIds.push(allIds[i]);
+  }
+  var moy = total ? Math.round(allIds.length / total * 10) / 10 : 0;
+  document.getElementById('statsRow').innerHTML =
+    '<div class="stat-card"><div class="stat-num">' + total + '</div><div class="stat-label">Personnes inscrites</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + uniqIds.length + '</div><div class="stat-label">Cours repr\u00e9sent\u00e9s</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + allIds.length + '</div><div class="stat-label">Inscriptions totales</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + moy + '</div><div class="stat-label">Cours / personne</div></div>';
+  var sel = document.getElementById('filterCours');
+  var prev = sel.value;
+  var optHtml = '<option value="">Tous les cours</option>';
+  for (var i = 0; i < COURS.length; i++) {
+    optHtml += '<option value="' + COURS[i].id + '">' + COURS[i].titre + ' (' + COURS[i].date + ')</option>';
+  }
+  sel.innerHTML = optHtml;
+  sel.value = prev;
+  renderTable();
+}
+
+function renderTable() {
+  var q = (document.getElementById('searchInput').value || '').toLowerCase();
+  var f = document.getElementById('filterCours').value;
+  var data = [];
+  for (var i = 0; i < inscrits.length; i++) {
+    var entry = inscrits[i];
+    var hay = (entry.prenom + ' ' + entry.nom + ' ' + entry.email).toLowerCase();
+    if (q && hay.indexOf(q) === -1) continue;
+    if (f && entry.cours.indexOf(f) === -1) continue;
+    data.push(entry);
+  }
+  var container = document.getElementById('tableContainer');
+  if (!data.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">&#128203;</div><p>Aucune inscription trouv\u00e9e.</p></div>';
+    return;
+  }
+  var rows = '';
+  for (var i = 0; i < data.length; i++) {
+    var d = data[i];
+    var badges = '';
+    for (var j = 0; j < d.cours.length; j++) {
+      var c = getCours(d.cours[j]);
+      if (c) badges += '<span class="badge-cours" style="background:' + c.color + '">' + c.titre + '</span>';
+    }
+    rows += '<tr>';
+    rows += '<td data-label="Nom"><strong>' + esc(d.prenom) + ' ' + esc(d.nom) + '</strong></td>';
+    rows += '<td data-label="Email">' + esc(d.email) + '</td>';
+    rows += '<td data-label="T\u00e9l">' + esc(d.tel || '\u2014') + '</td>';
+    rows += '<td data-label="Cours">' + badges + '</td>';
+    rows += '<td data-label="Situation">' + esc(d.situation || '\u2014') + '</td>';
+    rows += '<td data-label="Date">' + esc(d.date_inscription) + '</td>';
+    rows += '<td><button class="btn-del" onclick="supprimerEntry(' + d.id + ')" title="Supprimer">&#128465;</button></td>';
+    rows += '</tr>';
+  }
+  container.innerHTML = '<table><thead><tr><th>Nom</th><th>Email</th><th>T\u00e9l</th><th>Cours</th><th>Situation</th><th>Inscrit le</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+/* ─── PAR COURS ─── */
+function renderParcours() {
+  var html = '';
+  for (var i = 0; i < COURS.length; i++) {
+    var c = COURS[i];
+    var list = [];
+    for (var j = 0; j < inscrits.length; j++) {
+      if (inscrits[j].cours.indexOf(c.id) > -1) list.push(inscrits[j]);
+    }
+    if (!list.length) continue;
+    var rows = '';
+    for (var k = 0; k < list.length; k++) {
+      var p = list[k];
+      rows += '<tr>';
+      rows += '<td data-label="Pr\u00e9nom">' + esc(p.prenom) + '</td>';
+      rows += '<td data-label="Nom">' + esc(p.nom) + '</td>';
+      rows += '<td data-label="Email">' + esc(p.email) + '</td>';
+      rows += '<td data-label="T\u00e9l">' + esc(p.tel || '\u2014') + '</td>';
+      rows += '<td data-label="Situation">' + esc(p.situation || '\u2014') + '</td>';
+      rows += '</tr>';
+    }
+    html += '<div class="cours-group">';
+    html += '<div class="cours-group-header" style="--accent:' + c.color + '">';
+    html += '<span>' + c.titre + '</span>';
+    html += '<span class="gh-meta">' + c.date + ' &middot; ' + c.heure + ' \u2014 ' + list.length + ' inscrit' + (list.length > 1 ? 's' : '') + ' &middot; ' + c.prof + '</span>';
+    html += '</div>';
+    html += '<div style="overflow-x:auto"><table><thead><tr><th>Pr\u00e9nom</th><th>Nom</th><th>Email</th><th>T\u00e9l</th><th>Situation</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    html += '</div>';
+  }
+  if (!html) {
+    html = '<div class="empty-state"><div class="icon">&#127891;</div><p>Aucune inscription pour le moment.</p></div>';
+  }
+  document.getElementById('parcoursContainer').innerHTML = html;
+}
+
+/* ─── SUPPRIMER / EXPORT ─── */
+function supprimerEntry(id) {
+  if (!confirm('Supprimer cette inscription ?')) return;
+  var nouveau = [];
+  for (var i = 0; i < inscrits.length; i++) {
+    if (inscrits[i].id !== id) nouveau.push(inscrits[i]);
+  }
+  inscrits = nouveau;
+  sauvegarder();
+  renderDashboard();
+  renderParcours();
+  renderCards();
+}
+
+function exportCSV() {
+  var cols = ['Pr\u00e9nom', 'Nom', 'Email', 'T\u00e9l\u00e9phone', 'Cours', 'Situation', 'Source', 'Date inscription'];
+  var rows = [];
+  for (var i = 0; i < inscrits.length; i++) {
+    var d = inscrits[i];
+    var coursTitres = [];
+    for (var j = 0; j < d.cours.length; j++) {
+      var c = getCours(d.cours[j]);
+      coursTitres.push(c ? c.titre : d.cours[j]);
+    }
+    rows.push([d.prenom, d.nom, d.email, d.tel || '', coursTitres.join(' | '), d.situation || '', d.source || '', d.date_inscription]);
+  }
+  var csv = '';
+  var allRows = [cols].concat(rows);
+  for (var i = 0; i < allRows.length; i++) {
+    var line = [];
+    for (var j = 0; j < allRows[i].length; j++) {
+      var val = (allRows[i][j] || '').toString().replace(/"/g, '""');
+      line.push('"' + val + '"');
+    }
+    csv += line.join(',') + '\n';
+  }
+  var blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'cours_ouverts_fabrik.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ─── TOAST ─── */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  setTimeout(function() { t.className = 'toast'; }, 3500);
+}
+
+// INIT
+renderCards();
+
+// Si on revient de la page de login et qu'on est authentifi\u00e9, on v\u00e9rifie si le staff attendait
+if (localStorage.getItem('lafabrik_auth') === 'true') {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('staff') === '1') {
+    staffConnecte = true;
+    ajouterOngletStaff();
+    switchTab('dashboard', document.getElementById('tab-btn-dashboard'));
+  }
+}
+</script>
+</body>
+</html>
