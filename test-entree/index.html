@@ -284,10 +284,14 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
         <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" id="f-prenom" placeholder="Votre prénom"/></div>
       </div>
       <div class="field"><label>Email <span class="req">*</span></label><input type="email" id="f-email" placeholder="votre.email@exemple.com"/></div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;padding:8px 12px;background:var(--teal-xlt);border-radius:6px;border-left:3px solid var(--teal)">
+      <div id="url-formation-badge" style="display:none;margin-top:12px;padding:10px 14px;background:var(--teal);border-radius:8px;align-items:center;gap:10px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Formation sélectionnée</div><div id="url-formation-label" style="font-size:13px;color:white;font-weight:700;margin-top:2px"></div></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;padding:8px 12px;background:var(--teal-xlt);border-radius:6px;border-left:3px solid var(--teal)">
         Vos informations sont utilisées uniquement dans le cadre du processus d'admission — CFA La Fabrik.
       </div>
-      <div class="nav-btns"><div></div><button class="btn btn-primary" onclick="goToFormation()">Choisir ma formation →</button></div>
+      <div class="nav-btns"><div></div><button class="btn btn-primary" id="btn-go-formation" onclick="goToFormation()">Choisir ma formation →</button></div>
     </div>
   </div>
 
@@ -298,8 +302,9 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
       <div id="niveau-grid"></div>
       <div class="nav-btns">
         <button class="btn" onclick="showScreen('intro')">← Retour</button>
-        <button class="btn" onclick="copyFormationLink()" style="color:var(--teal);border-color:var(--teal)">🔗 Générer le lien candidat</button>
-        <button class="btn btn-primary" onclick="goToQuestions()">Commencer le test →</button>
+        <button class="btn" onclick="copyLinkFormationOnly()" style="color:var(--teal);border-color:var(--teal)">📋 Lien test à distance</button>
+        <button class="btn" onclick="copyFormationLink()" style="color:var(--gold);border-color:var(--gold)">🔗 Lien pré-rempli</button>
+        <button class="btn btn-primary" onclick="goToQuestions()">Commencer →</button>
       </div>
     </div>
   </div>
@@ -456,26 +461,37 @@ function loadFromSheet() {
       if (!data.results) return;
       sheetCache = [];
       data.results.forEach(function(row) {
-        if (!row.id) return;
-        var fmId = FM_BY_LABEL[row.formation_label] || null;
-        var niveauId = NIVEAU_BY_LABEL[row.niveau_label] || null;
-        var scorePct = parseInt(row.score_pct) || 0;
-        var scoreFr  = parseInt(String(row.score_fr  || '0').split('/')[0]) || 0;
-        var scoreCg  = parseInt(String(row.score_cg  || '0').split('/')[0]) || 0;
-        var scoreEn  = parseInt(String(row.score_en  || '0').split('/')[0]) || 0;
-        var scorePro = parseInt(String(row.score_pro || '0').split('/')[0]) || 0;
-        var scoreTotal = parseInt(String(row.score_total || '0').split('/')[0]) || 0;
+        // Normalisation : accepte les clés GAS snake_case ET les en-têtes Excel avec accents/espaces
+        var id         = row.id         || row['ID']          || '';
+        var prenom     = row.prenom     || row['Prénom']       || '';
+        var nom        = row.nom        || row['Nom']          || '';
+        var email      = row.email      || row['Email']        || '';
+        var fmLabel    = row.formation_label || row.formation  || row['Formation'] || '';
+        var nivLabel   = row.niveau_label    || row.niveau     || row['Niveau']    || '';
+        var date       = row.date       || row['Date']         || '';
+        var statut     = row.statut     || row['Statut']       || 'En attente';
+        var rawPct     = row.score_pct  || row['Score %']      || '0';
+        var rawFr      = row.score_fr   || row['Score FR']     || '0';
+        var rawCg      = row.score_cg   || row['Score CG']     || '0';
+        var rawEn      = row.score_en   || row['Score EN']     || '0';
+        var rawPro     = row.score_pro  || row['Score Pro']    || '0';
+        var rawTotal   = row.score_total|| row['Score Total']  || '0';
+        if (!id) return;
+        var fmId    = FM_BY_LABEL[fmLabel]  || null;
+        var niveauId = NIVEAU_BY_LABEL[nivLabel] || null;
+        var scorePct   = parseInt(rawPct)                         || 0;
+        var scoreFr    = parseInt(String(rawFr).split('/')[0])    || 0;
+        var scoreCg    = parseInt(String(rawCg).split('/')[0])    || 0;
+        var scoreEn    = parseInt(String(rawEn).split('/')[0])    || 0;
+        var scorePro   = parseInt(String(rawPro).split('/')[0])   || 0;
+        var scoreTotal = parseInt(String(rawTotal).split('/')[0]) || 0;
         sheetCache.push({
-          id: String(row.id),
-          prenom: row.prenom || '',
-          nom: row.nom || '',
-          email: row.email || '',
-          formation: fmId,
-          formation_label: row.formation_label || '',
-          niveauId: niveauId,
-          date: row.date || '',
+          id: String(id),
+          prenom: prenom, nom: nom, email: email,
+          formation: fmId, formation_label: fmLabel,
+          niveauId: niveauId, date: date,
           scores: {pct:scorePct, fr:scoreFr, cg:scoreCg, en:scoreEn, pro:scorePro, total:scoreTotal},
-          status: row.statut === 'Retenu' ? 'ok' : row.statut === 'Non retenu' ? 'no' : 'new',
+          status: statut === 'Retenu' ? 'ok' : statut === 'Non retenu' ? 'no' : 'new',
           allQ: null, answers: null, fromSheet: true
         });
       });
@@ -849,7 +865,7 @@ MST_ECGP:[
 };
 
 // ─── ÉTAT & STOCKAGE (localStorage pour persistance) ─────────────
-var S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
+var S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[], fromLink:false};
 
 // ─── TIMER ───────────────────────────────────────────────────────────
 var TIMER_DURATION = 15 * 60; // 15 minutes
@@ -1001,6 +1017,8 @@ function goToFormation() {
   if (!n || !p || !e) { alert('Veuillez remplir tous les champs.'); return; }
   if (e.indexOf('@') < 0) { alert('Veuillez saisir un email valide.'); return; }
   S.candidat = {nom:n, prenom:p, email:e};
+  // Si la formation vient d'un lien partagé, on passe directement aux questions
+  if (S.fromLink && S.formation) { goToQuestions(); return; }
   if (!document.getElementById('niveau-grid').children.length) buildNiveauGrid();
   showScreen('formation');
 }
@@ -1118,7 +1136,7 @@ function sendToWebhook(rec) {
 
 function resetTest() {
   stopTimer();
-  S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[]};
+  S = {candidat:{}, formation:null, niveauId:null, step:0, answers:{}, allQ:[], fromLink:false};
   ['f-nom','f-prenom','f-email'].forEach(function(id) { document.getElementById(id).value = ''; });
   document.getElementById('info-q').textContent = '35';
   document.getElementById('hs-result-msg').innerHTML = '';
@@ -1346,23 +1364,31 @@ function exportSingleCSV() {
 }
 
 // ─── LIEN PARTAGEABLE ────────────────────────────────────────────
+function copyToClipboard(url, msg) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() { showToast(msg); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast(msg);
+  }
+}
+function copyLinkFormationOnly() {
+  if (!S.formation) { showToast('⚠️ Veuillez sélectionner une formation.'); return; }
+  var base = window.location.href.split('?')[0];
+  var url = base + '?formation=' + S.formation;
+  copyToClipboard(url, '📋 Lien test copié — le candidat remplira ses informations.');
+}
 function copyFormationLink() {
   if (!S.formation) { showToast('⚠️ Veuillez sélectionner une formation.'); return; }
   var nom = document.getElementById('f-nom').value.trim();
   var prenom = document.getElementById('f-prenom').value.trim();
   var email = document.getElementById('f-email').value.trim();
-  if (!nom || !prenom || !email) { showToast('⚠️ Veuillez remplir les informations candidat.'); return; }
+  if (!nom || !prenom || !email) { showToast('⚠️ Remplissez les infos candidat pour ce lien (ou utilisez "Lien test à distance").'); return; }
   var base = window.location.href.split('?')[0];
   var params = new URLSearchParams({nom:nom, prenom:prenom, email:email, formation:S.formation});
-  var url = base + '?' + params.toString();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(function() { showToast('🔗 Lien copié dans le presse-papier !'); });
-  } else {
-    var ta = document.createElement('textarea');
-    ta.value = url; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    showToast('🔗 Lien copié dans le presse-papier !');
-  }
+  copyToClipboard(base + '?' + params.toString(), '🔗 Lien pré-rempli copié !');
 }
 function copyTestLink() {
   var db = getMergedDB();
@@ -1396,18 +1422,29 @@ function readURLParams() {
   if (prenom) document.getElementById('f-prenom').value = prenom;
   if (email) document.getElementById('f-email').value = email;
   if (formation && FM[formation]) {
-    S.candidat = {nom:nom, prenom:prenom, email:email};
+    S.formation = formation;
+    S.niveauId = FM[formation].niveau;
+    S.fromLink = true;
+    // Badge formation visible sur l'écran intro
+    var badge = document.getElementById('url-formation-badge');
+    var badgeLabel = document.getElementById('url-formation-label');
+    if (badge && badgeLabel) {
+      badgeLabel.textContent = FM[formation].label + ' — ' + FM[formation].niveauLabel;
+      badge.style.display = 'flex';
+    }
+    // Modifier le bouton pour indiquer qu'on va directement au test
+    var btnGo = document.getElementById('btn-go-formation');
+    if (btnGo) btnGo.textContent = 'Commencer le test →';
+    // Préparer la grille formation (pour le lien pré-rempli complet si besoin)
     buildNiveauGrid();
     var fc = document.querySelector('.fc[data-id="' + formation + '"]');
     if (fc) {
       fc.click();
-      var body = fc.closest('.niveau-body');
-      var sec = fc.closest('.niveau-section');
-      if (body && sec) {
-        var hdr = sec.querySelector('.niveau-header');
-        if (hdr) { hdr.classList.add('open'); body.classList.add('open'); }
-      }
+      var fBody = fc.closest('.niveau-body');
+      var fSec  = fc.closest('.niveau-section');
+      if (fBody && fSec) { var hdr = fSec.querySelector('.niveau-header'); if (hdr) { hdr.classList.add('open'); fBody.classList.add('open'); } }
     }
+    // Lien pré-rempli complet (nom+prénom+email+formation) → aller directement à l'écran formation
     if (nom && prenom && email) showScreen('formation');
   }
 }
