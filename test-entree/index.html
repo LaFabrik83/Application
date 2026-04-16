@@ -139,7 +139,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 /* DASHBOARD */
 .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .dash-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--noir);letter-spacing:.05em}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 @media(max-width:540px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
 .stat-card{background:white;border:1px solid var(--bdr);border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(46,179,175,.06)}
 .stat-card .sv{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--txt);letter-spacing:.02em}
@@ -153,12 +153,38 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
 .filter-btn:hover{border-color:var(--teal);color:var(--teal)}
 .filter-btn.active{background:var(--teal-lt);border-color:var(--teal);color:var(--teal-dk)}
 
-.result-row{background:white;border:1px solid var(--bdr);border-radius:10px;padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.result-row:hover{border-color:var(--teal);box-shadow:0 3px 12px rgba(46,179,175,.12)}
+/* KANBAN */
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+@media(max-width:700px){.kanban-board{grid-template-columns:1fr}}
+.kanban-col{background:var(--bg2);border-radius:12px;overflow:hidden;border:1px solid var(--bdr)}
+.kanban-col-hdr{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.07em;color:white}
+.kcol-hdr-new{background:#1E40AF}
+.kcol-hdr-ok{background:var(--teal-dk)}
+.kcol-hdr-no{background:#B91C1C}
+.kcol-count{background:rgba(255,255,255,.25);font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;min-width:24px;text-align:center}
+.kanban-cards{padding:8px;display:flex;flex-direction:column;gap:7px;max-height:62vh;overflow-y:auto}
+.kanban-cards::-webkit-scrollbar{width:4px}
+.kanban-cards::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:4px}
+.k-card{background:white;border-radius:9px;padding:11px 13px;border:1.5px solid var(--bdr);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.k-card:hover{border-color:var(--teal);box-shadow:0 4px 14px rgba(46,179,175,.14);transform:translateY(-1px)}
+.k-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.k-avatar{width:30px;height:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.k-card-info{flex:1;min-width:0}
+.k-card-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}
+.k-card-fm{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid var(--bg2)}
+.k-date{font-size:10px;color:var(--muted)}
+.k-empty{text-align:center;padding:24px 12px;color:var(--muted);font-size:11px;font-style:italic}
+.archives-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:150;overflow-y:auto;padding:24px 20px}
+.archives-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--bdr);flex-wrap:wrap;gap:12px}
+.archives-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.06em;color:var(--txt)}
+.arch-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;border:1px solid var(--bdr)}
+.arch-table th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;background:var(--bg2);border-bottom:2px solid var(--bdr)}
+.arch-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.arch-table tbody tr:last-child td{border-bottom:none}
+.arch-table tbody tr:hover td{background:var(--teal-lt)}
+
 .avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
-.result-info{flex:1;min-width:0}
-.result-info .name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.result-info .meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .score-badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;font-size:13px}
 .score-high{background:var(--teal-lt);color:var(--teal-dk)}
 .score-med{background:var(--warn-lt);color:var(--gold-dk)}
@@ -374,7 +400,7 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
   <div class="dash-header">
     <span class="dash-title">Résultats Candidats</span>
     <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print">
-      <button class="btn btn-sm" id="btn-archives" onclick="toggleArchived(this)">Voir archivés</button>
+      <button class="btn btn-sm" onclick="openArchives()">📦 Archives</button>
       <button class="btn btn-sm btn-gold" onclick="exportCSV()">↓ Export CSV Qualiopi</button>
     </div>
   </div>
@@ -384,9 +410,11 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     <div class="stat-card gold"><div class="sv" id="stat-new">0</div><div class="sl">À traiter</div></div>
     <div class="stat-card green"><div class="sv" id="stat-ok">0</div><div class="sl">Retenus</div></div>
   </div>
-  <div class="search-wrap">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="search-input" placeholder="Rechercher par nom, email, formation..." oninput="renderDashboard()">
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <div class="search-wrap" style="flex:1;min-width:180px;margin-bottom:0">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="Rechercher par nom, email, formation..." oninput="renderDashboard()">
+    </div>
   </div>
   <div class="filter-bar">
     <div class="filter-btn active" onclick="setFilter('all',this)">Tous</div>
@@ -396,7 +424,61 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     <div class="filter-btn" onclick="setFilter('niv6',this)">Niv.6</div>
     <div class="filter-btn" onclick="setFilter('niv7',this)">Mastère Niv.7</div>
   </div>
-  <div id="results-list"></div>
+  <div class="kanban-board">
+    <div class="kanban-col">
+      <div class="kanban-col-hdr kcol-hdr-new">
+        <span>⏳ En attente</span>
+        <span class="kcol-count" id="cnt-new">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-new"><div class="k-empty">Aucun candidat</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-hdr kcol-hdr-ok">
+        <span>✅ Retenus</span>
+        <span class="kcol-count" id="cnt-ok">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-ok"><div class="k-empty">Aucun candidat</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-hdr kcol-hdr-no">
+        <span>❌ Non retenus</span>
+        <span class="kcol-count" id="cnt-no">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-no"><div class="k-empty">Aucun candidat</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="archives-panel" style="display:none" class="archives-overlay">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="archives-hdr">
+      <div>
+        <div class="archives-title">📦 Candidats archivés</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="arch-count">0 candidat</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="search-wrap" style="margin-bottom:0;min-width:220px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="arch-search" placeholder="Rechercher..." oninput="renderArchives()">
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="closeArchives()">← Retour au kanban</button>
+      </div>
+    </div>
+    <table class="arch-table">
+      <thead>
+        <tr>
+          <th>Candidat</th>
+          <th>Formation</th>
+          <th>Score</th>
+          <th>Date</th>
+          <th style="text-align:right">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="arch-tbody">
+        <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Aucun candidat archivé</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <div id="detail-modal" style="display:none" class="modal-overlay" onclick="closeDetailOutside(event)">
@@ -418,10 +500,9 @@ h1,h2,h3,.label-bebas{font-family:'Bebas Neue','Arial Black',sans-serif;letter-s
     </div>
     <div class="modal-body" id="d-body"></div>
     <div class="modal-footer no-print">
-      <button class="btn btn-sm" onclick="copyTestLink()" style="color:var(--teal);border-color:var(--teal)">🔗 Lien candidat</button>
-      <button class="btn btn-sm btn-gold" onclick="exportSingleCSV()">↓ CSV candidat</button>
+      <button class="btn btn-sm" onclick="envoyerResultats()" style="color:var(--teal);border-color:var(--teal)">📧 Envoyer les résultats</button>
       <button class="btn btn-sm btn-dark" onclick="printDetail()">🖨 Imprimer / PDF</button>
-      <button class="btn btn-sm" onclick="archiverCandidat()" style="color:var(--danger);border-color:var(--danger)">Archiver</button>
+      <button class="btn btn-sm" onclick="archiverCandidat()" style="color:var(--danger);border-color:var(--danger)">📦 Archiver</button>
       <button class="btn btn-sm btn-primary" onclick="closeDetail()">Fermer</button>
     </div>
   </div>
@@ -950,7 +1031,7 @@ function saveDB(arr) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   } catch(e) {}
 }
-var currentDetailId = null, currentFilter = 'all', showArchived = false;
+var currentDetailId = null, currentFilter = 'all';
 
 function statusToLabel(s) {
   return s === 'ok' ? 'Retenu' : s === 'no' ? 'Non retenu' : s === 'archived' ? 'Archive' : 'En attente';
@@ -976,12 +1057,61 @@ function quickStatus(id, status) {
   if (r) { r.status = status; saveDB(db); sendStatusUpdate(id, statusToLabel(status)); renderDashboard(); }
 }
 
-function toggleArchived(btn) {
-  showArchived = !showArchived;
-  btn.style.background = showArchived ? 'var(--teal)' : '';
-  btn.style.color = showArchived ? 'white' : '';
-  btn.style.borderColor = showArchived ? 'var(--teal)' : '';
+function openArchives() {
+  renderArchives();
+  document.getElementById('archives-panel').style.display = 'block';
+}
+function closeArchives() {
+  document.getElementById('archives-panel').style.display = 'none';
   renderDashboard();
+}
+function renderArchives() {
+  var db = getMergedDB().filter(function(r) { return r.status === 'archived'; });
+  var search = (document.getElementById('arch-search').value || '').toLowerCase();
+  if (search) {
+    db = db.filter(function(r) {
+      var fm = r.formation ? FM[r.formation] : {label: r.formation_label || ''};
+      return (r.nom + ' ' + r.prenom + ' ' + r.email + ' ' + fm.label).toLowerCase().indexOf(search) >= 0;
+    });
+  }
+  document.getElementById('arch-count').textContent = db.length + ' candidat' + (db.length > 1 ? 's' : '');
+  var tbody = document.getElementById('arch-tbody');
+  if (!db.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Aucun candidat archivé</td></tr>';
+    return;
+  }
+  tbody.innerHTML = db.map(function(r) {
+    var fm = r.formation ? FM[r.formation] : {label: r.formation_label || '—'};
+    var ini = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
+    var scCls = r.scores.pct >= 70 ? 'score-high' : r.scores.pct >= 50 ? 'score-med' : 'score-low';
+    var html = '<tr>';
+    html += '<td><div style="display:flex;align-items:center;gap:10px">';
+    html += '<div class="k-avatar" style="width:34px;height:34px;font-size:12px;flex-shrink:0">' + ini + '</div>';
+    html += '<div><div style="font-weight:600;font-size:13px">' + r.prenom + ' ' + r.nom + '</div>';
+    html += '<div style="font-size:11px;color:var(--muted)">' + r.email + '</div></div></div></td>';
+    html += '<td style="font-size:12px">' + fm.label + '</td>';
+    html += '<td><span class="score-badge ' + scCls + '">' + r.scores.pct + '%</span></td>';
+    html += '<td style="font-size:12px;color:var(--muted)">' + (r.date || '—') + '</td>';
+    html += '<td style="text-align:right;white-space:nowrap">';
+    html += '<button class="btn btn-sm" onclick="restaurerCandidat(\'' + r.id + '\')" style="font-size:11px;margin-right:6px;color:var(--teal);border-color:var(--teal)">↩ Restaurer</button>';
+    html += '<button class="btn btn-sm btn-dark" onclick="voirArchive(\'' + r.id + '\')" style="font-size:11px">Voir</button>';
+    html += '</td></tr>';
+    return html;
+  }).join('');
+}
+function restaurerCandidat(id) {
+  var db = loadDB();
+  var r = db.find(function(x) { return String(x.id) === String(id); });
+  if (!r) {
+    var merged = getMergedDB();
+    r = merged.find(function(x) { return String(x.id) === String(id); });
+    if (r) db.push(r);
+  }
+  if (r) { r.status = 'new'; saveDB(db); sendStatusUpdate(id, 'Nouveau'); showToast('Candidat restaure dans la liste principale.'); renderArchives(); }
+}
+function voirArchive(id) {
+  closeArchives();
+  openDetail(id);
 }
 
 function archiverCandidat() {
@@ -995,6 +1125,35 @@ function archiverCandidat() {
   }
   if (r) { r.status = 'archived'; saveDB(db); sendStatusUpdate(currentDetailId, 'Archive'); }
   closeDetail();
+}
+
+function envoyerResultats() {
+  var db = getMergedDB();
+  var r = db.find(function(x) { return String(x.id) === String(currentDetailId); });
+  if (!r) { showToast('Candidat introuvable.'); return; }
+  var fm = r.formation ? FM[r.formation] : {label: r.formation_label || '—', niveauLabel: ''};
+  var sep = '----------------------------------------';
+  var sujet = 'Tes resultats de test d\'entree - CFA La Fabrik';
+  var corps = 'Bonjour ' + r.prenom + ' !\n\n'
+    + 'Bravo d\'avoir passe ton test d\'entree au CFA La Fabrik.\n'
+    + 'Voici tes resultats pour la formation ' + fm.label + ' :\n\n'
+    + sep + '\n'
+    + '  Score global       : ' + r.scores.pct + ' %\n'
+    + sep + '\n'
+    + '  Francais           : ' + r.scores.fr + ' / 10\n'
+    + '  Culture generale   : ' + r.scores.cg + ' / 10\n'
+    + '  Anglais            : ' + r.scores.en + ' / 10\n'
+    + '  Questions pro      : ' + r.scores.pro + ' / 5\n'
+    + sep + '\n\n'
+    + 'Des questions ? Reponds simplement a cet email, on sera ravis d\'echanger avec toi.\n\n'
+    + 'A tres vite,\n\n'
+    + 'L\'equipe admissions\n'
+    + 'CFA La Fabrik\n'
+    + '153 rue Andre Citron, ZI La Palud — 83600 Frejus\n'
+    + 'contrat@fabrikfrejus.fr';
+  window.location.href = 'mailto:' + r.email
+    + '?subject=' + encodeURIComponent(sujet)
+    + '&body=' + encodeURIComponent(corps);
 }
 
 // ─── BUILD FORMATION UI ──────────────────────────────────────────
@@ -1173,9 +1332,34 @@ function resetTest() {
 }
 
 // ─── DASHBOARD ───────────────────────────────────────────────────
+function renderKanbanCards(arr) {
+  if (!arr.length) return '<div class="k-empty">Aucun candidat</div>';
+  return arr.map(function(r) {
+    var ini = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
+    var sc = r.scores.pct;
+    var fmLabel = r.formation ? FM[r.formation].label : (r.formation_label || '—');
+    var scCls = sc >= 70 ? 'score-high' : sc >= 50 ? 'score-med' : 'score-low';
+    var isOk = r.status === 'ok', isNo = r.status === 'no';
+    var html = '<div class="k-card" onclick="openDetail(\'' + r.id + '\')">';
+    html += '<div class="k-card-top">';
+    html += '<div class="k-avatar">' + ini + '</div>';
+    html += '<div class="k-card-info"><div class="k-card-name">' + r.prenom + ' ' + r.nom + '</div>';
+    html += '<div class="k-card-fm">' + fmLabel + '</div></div>';
+    html += '<span class="score-badge ' + scCls + '" style="font-size:11px;padding:3px 8px">' + sc + '%</span>';
+    html += '</div>';
+    html += '<div class="k-card-bottom">';
+    html += '<span class="k-date">' + (r.date || '—') + '</span>';
+    html += '<div class="quick-actions no-print" onclick="event.stopPropagation()">';
+    html += '<button class="qa-btn ok' + (isOk ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'ok\')" title="Retenu">✓</button>';
+    html += '<button class="qa-btn no' + (isNo ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'no\')" title="Non retenu">✗</button>';
+    html += '</div></div></div>';
+    return html;
+  }).join('');
+}
+
 function renderDashboard() {
   var db = getMergedDB();
-  if (!showArchived) db = db.filter(function(r) { return r.status !== 'archived'; });
+  db = db.filter(function(r) { return r.status !== 'archived'; });
   var searchTerm = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
   var filtered = currentFilter === 'all' ? db : db.filter(function(r) { return r.niveauId === currentFilter; });
   if (searchTerm) {
@@ -1186,37 +1370,23 @@ function renderDashboard() {
         || fmLabel.toLowerCase().indexOf(searchTerm) >= 0;
     });
   }
+  var sorted = filtered.slice().reverse();
+  var colNew = sorted.filter(function(r) { return r.status === 'new'; });
+  var colOk  = sorted.filter(function(r) { return r.status === 'ok'; });
+  var colNo  = sorted.filter(function(r) { return r.status === 'no'; });
+  // Stats
   document.getElementById('stat-total').textContent = filtered.length;
-  document.getElementById('stat-new').textContent = filtered.filter(function(r) { return r.status === 'new'; }).length;
-  document.getElementById('stat-ok').textContent = filtered.filter(function(r) { return r.status === 'ok'; }).length;
+  document.getElementById('stat-new').textContent = colNew.length;
+  document.getElementById('stat-ok').textContent = colOk.length;
   document.getElementById('stat-avg').textContent = filtered.length ? Math.round(filtered.reduce(function(s,r) { return s + r.scores.pct; }, 0) / filtered.length) + '%' : '—';
-  var list = document.getElementById('results-list');
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div>' + (searchTerm ? 'Aucun résultat pour cette recherche.' : 'Aucun résultat pour l\'instant.<br>Les candidats apparaîtront ici après leur test.') + '</div>';
-    return;
-  }
-  var html = '';
-  filtered.slice().reverse().forEach(function(r) {
-    var ini = (r.prenom.charAt(0) + r.nom.charAt(0)).toUpperCase();
-    var sc = r.scores.pct;
-    var fmLabel = r.formation ? FM[r.formation].label : (r.formation_label || '—');
-    var scCls = sc >= 70 ? 'score-high' : sc >= 50 ? 'score-med' : 'score-low';
-    var stCls = r.status === 'new' ? 's-new' : r.status === 'ok' ? 's-ok' : r.status === 'archived' ? '' : 's-no';
-    var stLbl = r.status === 'new' ? 'En attente' : r.status === 'ok' ? 'Retenu' : r.status === 'archived' ? 'Archivé' : 'Non retenu';
-    var isOk = r.status === 'ok', isNo = r.status === 'no';
-    html += '<div class="result-row" onclick="openDetail(\'' + r.id + '\')">';
-    html += '<div class="avatar">' + ini + '</div>';
-    html += '<div class="result-info"><div class="name">' + r.prenom + ' ' + r.nom + '</div>';
-    html += '<div class="meta">' + fmLabel + ' — ' + r.date + '</div></div>';
-    html += '<span class="score-badge ' + scCls + '">' + sc + '%</span>';
-    html += '<span class="status-pill ' + stCls + '">' + stLbl + '</span>';
-    html += '<div class="quick-actions no-print" onclick="event.stopPropagation()">';
-    html += '<button class="qa-btn ok' + (isOk ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'ok\')" title="Retenu">✓</button>';
-    html += '<button class="qa-btn no' + (isNo ? ' active' : '') + '" onclick="quickStatus(\'' + r.id + '\',\'no\')" title="Non retenu">✗</button>';
-    html += '</div>';
-    html += '</div>';
-  });
-  list.innerHTML = html;
+  // Compteurs colonnes
+  document.getElementById('cnt-new').textContent = colNew.length;
+  document.getElementById('cnt-ok').textContent = colOk.length;
+  document.getElementById('cnt-no').textContent = colNo.length;
+  // Cartes kanban
+  document.getElementById('cards-new').innerHTML = renderKanbanCards(colNew);
+  document.getElementById('cards-ok').innerHTML  = renderKanbanCards(colOk);
+  document.getElementById('cards-no').innerHTML  = renderKanbanCards(colNo);
 }
 function setFilter(f, el) {
   currentFilter = f;
