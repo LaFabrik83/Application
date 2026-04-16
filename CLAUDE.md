@@ -117,12 +117,16 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Webhook GAS actuel : `AKfycbx8VlKbgeZib6lFESH6xxaDYUACWUsZg8iZrkPfE63o3HKwXBfXphg_VU-s1z5mMKjvxg`
 - ⚠️ La tâche HubSpot utilise l'API Engagements v1 (pas v3 tasks — scope non disponible sur ce plan)
 - Lien candidat partageable avec formation et infos pré-remplies
-- Tableau de bord cross-poste : données lues depuis Google Sheets au chargement (visible sur tous les postes)
-- Tableau de bord : recherche par nom/email/formation, filtres par niveau, actions rapides ✓/✗ sur chaque ligne
+- Lien test à distance : bouton "📤 Envoyer le test au candidat" génère un lien Netlify pré-rempli (`?nom=&prenom=&email=&formation=&direct=1`)
+- Candidat arrive sur page d'accueil personnalisée (prénom + formation) puis passe directement au test — aucun accès à la plateforme collaborateurs
+- Tableau de bord **Kanban** : 3 colonnes (⏳ En attente / ✅ Retenus / ❌ Non retenus), cartes avec avatar, score coloré, boutons ✓/✗ rapides
+- Tableau de bord : recherche par nom/email/formation, filtres par niveau
 - Tableau de bord : statut synchronisé vers Google Sheets à chaque changement
-- Tableau de bord : archivage candidat (disparaît de la vue principale, reste dans le Sheet), toggle "Voir archivés"
-- Tableau de bord : modal détail, impression PDF complète (Blob URL + auto-print), export CSV
+- **Vue Archives dédiée** : bouton "📦 Archives" ouvre un écran séparé avec tableau (nom, formation, score, date), recherche, ↩ Restaurer, Voir détail
+- Modal détail : 3 boutons — 📧 Envoyer résultats (mailto: chaleureux), 🖨 Imprimer/PDF, 📦 Archiver (archive + ferme)
 - Google Sheet : 16 colonnes — ID, Prénom, Nom, Email, Formation, Niveau, Date, Score %, Score FR, Score CG, Score EN, Score Pro, Score Total, Durée, Statut, Détail des réponses
+- GAS entièrement réécrit : `doPost` (soumission + mise à jour statut), `doGet` (expose données JSON), note HubSpot enrichie (pictogrammes + lien Sheet), tâche "Appeler" J+2 à 9h
+- Correction scores multi-postes : `loadFromSheet()` accepte les deux formats de clés GAS (`score_pct` ET `Score %`, etc.) — **à valider en production après push Netlify**
 - Import `shared.css`
 
 ### 2. Prévisionnel apprentissage (`previsionnel/`)
@@ -178,6 +182,10 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Prévisionnel — contrat pro supprimé, carte synthèse, tableau multi-années, PDF Blob avec auto-print
 - **2026-04** : Test d'entrée — tâche HubSpot automatique à J+2 via API Engagements v1 (tâche "Appeler" avec score et formation)
 - **2026-04** : Test d'entrée — tableau de bord cross-poste via Google Sheets (doGet GAS), sync statut, archivage, recherche, actions rapides, impression PDF
+- **2026-04** : Test d'entrée — refonte tableau de bord en Kanban 3 colonnes + vue Archives dédiée
+- **2026-04** : Test d'entrée — lien candidat à distance avec page d'accueil personnalisée (direct=1)
+- **2026-04** : Test d'entrée — GAS entièrement réécrit (doPost/doGet/statut/note HubSpot enrichie/tâche J+2)
+- **2026-04** : Test d'entrée — modal détail simplifié : email résultats (mailto:), PDF, archiver
 - **2026-04** : Fiche entreprise — GAS complet créé (Sheets + emails automatiques + HubSpot)
 - **2026-04** : Fiche entreprise — grille d'adéquation rendue obligatoire (légalement requise pour établir le contrat)
 - **2026-04** : Fiche entreprise — `printGrille()` ajouté : PDF grille remplie + signature réelle (Blob URL)
@@ -194,25 +202,25 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 
 ---
 
-## Résumé session 2026-04-15/16 — À lire en priorité
+## Résumé session 2026-04-16 — À lire en priorité
 
 ### Ce qui a été fait
-- GAS fiche entreprise redéployé (nouveau webhook) + `doGet` ajouté pour l'historique
-- `login.html` créé : mot de passe `Fabrik2026`, auth `localStorage`
-- Auth activée sur : `index.html`, `previsionnel/`, `fiche-entreprise/historique.html`
-- Pas d'auth sur : `test-entree/` (candidats) et `fiche-entreprise/` (employeurs)
-- `fiche-entreprise/historique.html` créé : stats, recherche, tableau, modal détail 32 champs, export CSV
-- Section "Administration" ajoutée sur l'accueil avec carte Historique
-- Nouveau compte Netlify pro → `lafabrik.netlify.app` connecté à GitHub, auto-deploy actif
-- Tout déployé en production sur `lafabrik.netlify.app`
+- Test d'entrée — bugs corrigés (timer, guards null, questions dupliquées niv5)
+- Test d'entrée — lien candidat à distance avec page d'accueil personnalisée
+- Test d'entrée — tableau de bord Kanban (3 colonnes)
+- Test d'entrée — vue Archives dédiée (tableau + restauration)
+- Test d'entrée — modal détail simplifié (3 boutons : email résultats, PDF, archiver)
+- Test d'entrée — GAS entièrement réécrit et redéployé (nouveau webhook mis à jour dans le code)
+- Test d'entrée — note HubSpot enrichie avec pictogrammes + lien Google Sheets
+- Test d'entrée — token HubSpot ajouté dans le GAS ✅
+- 5 commits en attente de push vers Netlify (branche main)
 
-### Ce qui reste à faire (URGENT)
-1. **Supprimer le token GitHub `Claude push`** — github.com → Settings → Developer settings → Jetons (classiques) → Delete
-2. **Token HubSpot** dans `gas-fiche-entreprise.gs` : remplacer `TON_TOKEN_ICI` par le vrai token (sinon les notes HubSpot ne se créent pas sur la fiche entreprise)
-
-### À faire en début de prochaine session
-- Configurer SSH pour ne plus jamais avoir besoin de token GitHub (`ssh-keygen` + ajout clé sur github.com)
+### Ce qui reste à faire (PRIORITÉ 1)
+1. **Push vers Netlify** — `git push origin main` — déclenche le déploiement auto
+2. **Valider les scores multi-postes** — tester sur un second appareil via `lafabrik.netlify.app`
 
 ### Ce qui peut attendre
+- Configurer SSH pour ne plus avoir besoin de token GitHub
 - Supprimer l'ancien compte Netlify test
 - `fiche-entreprise/index.html` très volumineux (~350 Ko) — dette technique basse priorité
+- **Token HubSpot** dans `gas-fiche-entreprise.gs` : vérifier si `TON_TOKEN_ICI` a bien été remplacé (notes HubSpot fiche entreprise)
