@@ -82,7 +82,11 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 /
 ├── index.html              ← Page d'accueil / hub des outils
 ├── shared.css              ← Styles et variables partagés (charte graphique)
+├── netlify.toml            ← Config Netlify (publish, functions, redirects)
 ├── CLAUDE.md               ← Ce fichier
+├── netlify/
+│   └── functions/
+│       └── ypareo.js       ← Proxy Netlify → API Ypareo (JWT Bearer, normalisation apprenants)
 ├── test-entree/
 │   └── index.html          ← Test d'entrée candidats (35 questions, 19 formations)
 ├── previsionnel/
@@ -90,6 +94,8 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 ├── login.html              ← Page de connexion (mot de passe unique, auth localStorage)
 ├── cours-ouverts/
 │   └── index.html          ← Inscription aux cours ouverts (portes ouvertes) + dashboard staff
+├── permis-points/
+│   └── index.html          ← Permis points apprentis (12 pts, infractions, récupérations, alertes CPE)
 └── fiche-entreprise/
     ├── index.html          ← Fiche entreprise partenaire (formulaire multi-étapes)
     ├── historique.html     ← Historique des fiches soumises (tableau de bord protégé)
@@ -102,7 +108,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 
 - `login.html` : page de connexion avec mot de passe unique (`Fabrik2026`)
 - Auth stockée en `localStorage` : clé `lafabrik_auth = "true"`
-- Pages **protégées** (redirigent vers `login.html` si non connecté) : `index.html`, `previsionnel/index.html`, `fiche-entreprise/historique.html`
+- Pages **protégées** (redirigent vers `login.html` si non connecté) : `index.html`, `previsionnel/index.html`, `fiche-entreprise/historique.html`, `permis-points/index.html`
 - Pages **libres** (partagées avec l'extérieur) : `test-entree/index.html`, `fiche-entreprise/index.html`, `cours-ouverts/index.html`
 - Bouton "Déconnexion" dans le header des pages protégées
 
@@ -163,6 +169,23 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - ⚠️ `grille-data.js` doit toujours être commité avec `index.html`
 - ⚠️ Fichier très volumineux (~350 Ko) — modifier via sed/Bash ou Edit avec chaînes précises
 
+### 5. Permis Points (`permis-points/`)
+- Système de points comportementaux : chaque apprenti démarre à 12 pts
+- Infractions : −1 (retard) à −12 (alcool/drogues) — 9 types
+- Récupérations : +1 à +2 (mois sans faute, projet CFA, implication…)
+- Seuils d'alerte : 9 (rappel oral), 6 (entretien formateur), 3 (avertissement écrit), 0 (conseil de discipline)
+- Synchronisation Ypareo via Netlify Function (`netlify/functions/ypareo.js`) — endpoint `/apprenants`
+- Redirect `netlify.toml` : `/apprenants` → `/.netlify/functions/ypareo`
+- La synchro Ypareo **nécessite Netlify** (pas de serveur local capable d'exécuter les Functions)
+- Données stockées en `localStorage` (clé `fabrik_students`)
+- Alertes email automatiques via EmailJS à chaque franchissement de seuil (destinataire : cpe@fabrikfrejus.fr)
+- Config EmailJS (service_id, template_id, public_key) stockée en `localStorage` (clé `fabrik_email`)
+- Ajout manuel d'apprentis possible (source = "local")
+- Filtre par classe, par niveau d'alerte, recherche nom
+- Export CSV
+- Page protégée (requiert `lafabrik_auth`)
+- Import `shared.css` + bouton retour hub + bouton déconnexion
+
 ### 4. Cours Ouverts (`cours-ouverts/`)
 - Page publique d'inscription aux portes ouvertes (cours ouverts, avril 2026)
 - 11 cours regroupés par date avec sélection multiple
@@ -175,6 +198,22 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - Suppression individuelle d'une inscription possible depuis le dashboard
 - Sécurité : toutes les données utilisateur échappées via `esc()` avant injection HTML (protection XSS)
 - Page libre (pas de login requis pour s'inscrire)
+
+---
+
+## Résumé session 2026-04-24 — Permis Points
+
+### Ce qui a été fait
+- Nouvel outil `permis-points/` intégré comme 5e outil du hub
+- Netlify Function `netlify/functions/ypareo.js` : proxy JWT vers l'API Ypareo (fabriktetedaffiche.ymag.cloud), normalise les apprenants, enrichit avec les groupes/classes
+- `netlify.toml` créé : active les Netlify Functions + redirect `/apprenants`
+- Carte "Permis Points" ajoutée dans `index.html` (hub)
+- Charte graphique La Fabrik respectée (shared.css, header teal, Bebas Neue, conventions JS : var, pas de template literals)
+
+### État après session
+- **Push effectué** — outil en ligne sur `lafabrik.netlify.app/permis-points/`
+- La synchro Ypareo fonctionne uniquement via Netlify (pas en local python)
+- Alertes email : à configurer via la sidebar EmailJS (service_id, template_id, public_key)
 
 ---
 
@@ -207,6 +246,7 @@ Toutes ces valeurs sont centralisées dans `shared.css` en variables CSS (`:root
 - **2026-04** : Cours Ouverts — nouvel outil `cours-ouverts/` intégré (inscription publique + dashboard staff protégé par `lafabrik_auth`)
 - **2026-04** : Audit complet de l'application — correction XSS cours-ouverts, bug onglet actif, validation email, anti-doublon, regroupement par date
 - **2026-04** : Push définitif Netlify — application complète déployée sur `lafabrik.netlify.app`
+- **2026-04** : Permis Points — nouvel outil intégré (points comportementaux, synchro Ypareo via Netlify Function, alertes EmailJS CPE)
 - **2026-04** : Fiche entreprise — `printGrille()` ajouté : PDF grille remplie + signature réelle (Blob URL)
 - **2026-04** : Fiche entreprise — `printVersion()` converti en Blob URL, signature injectée dans les PDFs
 - **2026-04** : Fiche entreprise — bouton "Modifier" étape 6 corrigé (redirige vers étape 1, pas étape 3)
