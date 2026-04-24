@@ -37,10 +37,17 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
 .sync-dot.connected{background:var(--teal);box-shadow:0 0 6px var(--teal)}
 .sync-dot.error{background:var(--danger)}
 .sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
+.sync-dot.loading{background:#888;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .sync-text{flex:1}
 .sync-btn{background:none;border:1px solid #444;color:#888;padding:3px 10px;font-size:10px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all .15s}
 .sync-btn:hover{border-color:var(--teal);color:var(--teal)}
+
+/* SAVE INDICATOR */
+.save-dot{width:7px;height:7px;border-radius:50%;background:#444;flex-shrink:0;transition:background .3s;display:inline-block;margin-right:4px}
+.save-dot.saving{background:var(--gold);animation:pulse .8s infinite}
+.save-dot.saved{background:#27AE60}
+.save-dot.error{background:var(--danger)}
 
 /* LAYOUT */
 .main{max-width:1400px;margin:0 auto;padding:24px;display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;flex:1;width:100%}
@@ -95,7 +102,6 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
 
 /* Student grid */
 .students-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-
 .student-card{background:white;border:1px solid var(--bdr);box-shadow:0 2px 8px rgba(46,179,175,.06);overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer;position:relative;border-radius:10px}
 .student-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(46,179,175,.12)}
 .student-card.alert-9{border-top:3px solid #E67E22}
@@ -120,7 +126,6 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
 .pts-bar-fill{height:100%;transition:width .4s ease;border-radius:2px}
 
 .sc-alert-badge{margin:0 14px 8px;padding:4px 9px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:5px;border-radius:4px}
-
 .sc-actions{padding:8px 14px 12px;display:flex;gap:5px;flex-wrap:wrap}
 .btn-action{padding:4px 8px;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;border:none;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;gap:3px;border-radius:4px}
 .btn-action:hover{opacity:.8}
@@ -202,10 +207,11 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
 </header>
 
 <div class="sync-bar">
-  <div class="sync-dot" id="sync-dot"></div>
-  <span class="sync-text" id="sync-text">Connexion Ypareo&hellip;</span>
-  <button class="sync-btn" onclick="syncYpareo()">&#128260; Synchroniser</button>
-  <button class="sync-btn" onclick="openDebug()">&#128269; Debug</button>
+  <div class="sync-dot loading" id="sync-dot"></div>
+  <span class="sync-text" id="sync-text">Chargement des donn&eacute;es&hellip;</span>
+  <span class="save-dot" id="save-dot" title="Statut sauvegarde"></span>
+  <span id="save-text" style="font-size:10px;color:#666"></span>
+  <button class="sync-btn" onclick="syncYpareo()">&#128260; Synchroniser Ypareo</button>
 </div>
 
 <div class="main">
@@ -223,7 +229,7 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
         <div class="form-group" style="margin-bottom:10px"><label>Public Key</label><input type="text" id="ejs-pubkey" placeholder="xxxxxxxxxxxxxxxxxxxx"></div>
         <button class="btn btn-gold" style="font-size:12px" onclick="saveEmailConfig()">&#128190; Enregistrer</button>
       </div>
-      <p style="font-size:10px;color:#aaa;line-height:1.5">emailjs.com &middot; Variables template :<br><code>&#123;&#123;student_name&#125;&#125;</code> <code>&#123;&#123;points&#125;&#125;</code> <code>&#123;&#123;alert_level&#125;&#125;</code> <code>&#123;&#123;infraction&#125;&#125;</code></p>
+      <p style="font-size:10px;color:#aaa;line-height:1.5">emailjs.com &middot; Variables template :<br><code>&#123;&#123;student_name&#125;&#125;</code> <code>&#123;&#123;points&#125;&#125;</code> <code>&#123;&#123;alert_level&#125;&#125;</code></p>
     </div>
 
     <!-- Ajouter -->
@@ -281,7 +287,7 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
     <div class="students-grid" id="students-grid">
       <div class="empty-state" style="grid-column:1/-1">
         <strong>CHARGEMENT&hellip;</strong>
-        <p>Connexion Ypareo en cours</p>
+        <p>R&eacute;cup&eacute;ration des donn&eacute;es en cours</p>
       </div>
     </div>
   </main>
@@ -304,65 +310,69 @@ header{background:var(--teal);padding:0 32px;min-height:64px;display:flex;align-
 // =====================================================
 // CONFIG
 // =====================================================
-var PROXY_URL = '';
 var SYNC_INTERVAL_MS = 60000;
 
 var INFRACTIONS = [
-  { id:'ret',     name:'Retards r\u00e9p\u00e9t\u00e9s',                              example:'3 retards non justifi\u00e9s dans le mois',   pts:-1  },
-  { id:'abs',     name:'Absence injustifi\u00e9e',                         example:'1 jour sans pr\u00e9venir',                  pts:-2  },
-  { id:'tenue',   name:'Tenue inadapt\u00e9e / non-respect hygi\u00e8ne',  example:'Non-port EPI, tenue n\u00e9glig\u00e9e',     pts:-1  },
-  { id:'irr',     name:'Manque de respect / insolence',                    example:'Envers formateur, camarade, personnel',     pts:-3  },
-  { id:'tel',     name:'T\u00e9l\u00e9phone en cours',                     example:'Usage r\u00e9p\u00e9t\u00e9 malgr\u00e9 rappel',         pts:-1  },
-  { id:'travail', name:'Travail non rendu / non participation',             example:'Devoirs, \u00e9valuations, projets',         pts:-1  },
-  { id:'degrad',  name:'D\u00e9gradation volontaire mat\u00e9riel',        example:'Casse, graffitis\u2026',                     pts:-4  },
-  { id:'danger',  name:'Comportement dangereux / propos discrimin.',       example:'Menace, insulte, attitude agressive',       pts:-6  },
-  { id:'alcool',  name:'Alcool ou produits illicites',                      example:'Dans ou autour du CFA',                    pts:-12 },
+  { id:'ret',     name:'Retards r\u00e9p\u00e9t\u00e9s',                             example:'3 retards non justifi\u00e9s dans le mois', pts:-1  },
+  { id:'abs',     name:'Absence injustifi\u00e9e',                       example:'1 jour sans pr\u00e9venir',                 pts:-2  },
+  { id:'tenue',   name:'Tenue inadapt\u00e9e / non-respect hygi\u00e8ne', example:'Non-port EPI, tenue n\u00e9glig\u00e9e',  pts:-1  },
+  { id:'irr',     name:'Manque de respect / insolence',                  example:'Envers formateur, camarade, personnel',   pts:-3  },
+  { id:'tel',     name:'T\u00e9l\u00e9phone en cours',                   example:'Usage r\u00e9p\u00e9t\u00e9 malgr\u00e9 rappel',       pts:-1  },
+  { id:'travail', name:'Travail non rendu / non participation',           example:'Devoirs, \u00e9valuations, projets',      pts:-1  },
+  { id:'degrad',  name:'D\u00e9gradation volontaire mat\u00e9riel',      example:'Casse, graffitis\u2026',                  pts:-4  },
+  { id:'danger',  name:'Comportement dangereux / propos discrimin.',     example:'Menace, insulte, attitude agressive',     pts:-6  },
+  { id:'alcool',  name:'Alcool ou produits illicites',                   example:'Dans ou autour du CFA',                  pts:-12 },
 ];
 
 var RECUPERATIONS = [
-  { id:'mois',    name:'Mois sans infraction',                             example:'Comportement irr\u00e9prochable',            pts:1 },
-  { id:'projet',  name:'Participation volontaire projet CFA',              example:'Forum, JPO, tutorat\u2026',                 pts:2 },
-  { id:'impl',    name:'Implication exceptionnelle',                       example:'Travail, attitude, entraide',               pts:2 },
-  { id:'excuse',  name:'Excuses et r\u00e9paration d\'un manquement',      example:'Restitution, lettre d\'excuse\u2026',        pts:1 },
+  { id:'mois',    name:'Mois sans infraction',                           example:'Comportement irr\u00e9prochable',         pts:1 },
+  { id:'projet',  name:'Participation volontaire projet CFA',            example:'Forum, JPO, tutorat\u2026',              pts:2 },
+  { id:'impl',    name:'Implication exceptionnelle',                     example:'Travail, attitude, entraide',            pts:2 },
+  { id:'excuse',  name:'Excuses et r\u00e9paration d\'un manquement',   example:'Restitution, lettre d\'excuse\u2026',     pts:1 },
 ];
 
 var SEUILS = [
-  { pts:9, label:'Rappel oral',           color:'#E67E22' },
-  { pts:6, label:'Entretien formateur',   color:'#E74C3C' },
+  { pts:9, label:'Rappel oral',              color:'#E67E22' },
+  { pts:6, label:'Entretien formateur',      color:'#E74C3C' },
   { pts:3, label:'Avertissement \u00e9crit', color:'#8E44AD' },
-  { pts:0, label:'Conseil de discipline', color:'#2C3E50' },
+  { pts:0, label:'Conseil de discipline',    color:'#2C3E50' },
 ];
 
 // =====================================================
 // STATE
 // =====================================================
-var students  = JSON.parse(localStorage.getItem('fabrik_students') || '[]');
-var emailCfg  = JSON.parse(localStorage.getItem('fabrik_email')    || '{}');
+var students  = [];
+var emailCfg  = {};
 var proxyOk   = false;
 var syncTimer = null;
 
 // =====================================================
-// INIT
+// SAUVEGARDE NETLIFY BLOBS
 // =====================================================
-function init() {
-  renderBareme();
-  loadEmailConfig();
-  renderStudents();
-  updateHeaderStats();
-  syncYpareo();
-  syncTimer = setInterval(syncYpareo, SYNC_INTERVAL_MS);
+function setSaveStatus(state, msg) {
+  var dot  = document.getElementById('save-dot');
+  var text = document.getElementById('save-text');
+  dot.className    = 'save-dot ' + state;
+  text.textContent = msg || '';
 }
 
-// =====================================================
-// EMAIL CONFIG
-// =====================================================
-function loadEmailConfig() {
-  if(emailCfg.service)  document.getElementById('ejs-service').value  = emailCfg.service;
-  if(emailCfg.template) document.getElementById('ejs-template').value = emailCfg.template;
-  if(emailCfg.pubkey)   document.getElementById('ejs-pubkey').value   = emailCfg.pubkey;
-  if(emailCfg.pubkey)   emailjs.init(emailCfg.pubkey);
+async function saveStudents() {
+  localStorage.setItem('fabrik_students', JSON.stringify(students));
+  setSaveStatus('saving', 'Sauvegarde\u2026');
+  try {
+    await fetch('/.netlify/functions/saveData', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ key: 'students', data: students })
+    });
+    setSaveStatus('saved', 'Sauvegard\u00e9');
+    setTimeout(function() { setSaveStatus('', ''); }, 2000);
+  } catch(e) {
+    setSaveStatus('error', 'Sauvegarde \u00e9chou\u00e9e');
+  }
 }
-function saveEmailConfig() {
+
+async function saveEmailConfig() {
   emailCfg = {
     service:  document.getElementById('ejs-service').value.trim(),
     template: document.getElementById('ejs-template').value.trim(),
@@ -370,7 +380,62 @@ function saveEmailConfig() {
   };
   localStorage.setItem('fabrik_email', JSON.stringify(emailCfg));
   if(emailCfg.pubkey) emailjs.init(emailCfg.pubkey);
+  try {
+    await fetch('/.netlify/functions/saveData', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ key: 'emailConfig', data: emailCfg })
+    });
+  } catch(e) {}
   showToast('\u2705 Config email enregistr\u00e9e', 'success');
+}
+
+// =====================================================
+// INIT — charge depuis Netlify Blobs
+// =====================================================
+function loadEmailConfig() {
+  if(emailCfg.service)  document.getElementById('ejs-service').value  = emailCfg.service;
+  if(emailCfg.template) document.getElementById('ejs-template').value = emailCfg.template;
+  if(emailCfg.pubkey)   document.getElementById('ejs-pubkey').value   = emailCfg.pubkey;
+  if(emailCfg.pubkey)   emailjs.init(emailCfg.pubkey);
+}
+
+async function init() {
+  renderBareme();
+
+  // Charge les apprenants depuis Netlify Blobs
+  setSyncStatus('loading', 'Chargement des donn\u00e9es\u2026');
+  try {
+    var res  = await fetch('/.netlify/functions/getData?key=students');
+    var json = await res.json();
+    if(json.ok && json.data && json.data.length > 0) {
+      students = json.data;
+    } else {
+      students = JSON.parse(localStorage.getItem('fabrik_students') || '[]');
+    }
+  } catch(e) {
+    students = JSON.parse(localStorage.getItem('fabrik_students') || '[]');
+  }
+
+  // Charge la config email depuis Netlify Blobs
+  try {
+    var res2  = await fetch('/.netlify/functions/getData?key=emailConfig');
+    var json2 = await res2.json();
+    if(json2.ok && json2.data) {
+      emailCfg = json2.data;
+    } else {
+      emailCfg = JSON.parse(localStorage.getItem('fabrik_email') || '{}');
+    }
+  } catch(e) {
+    emailCfg = JSON.parse(localStorage.getItem('fabrik_email') || '{}');
+  }
+  loadEmailConfig();
+
+  renderStudents();
+  updateHeaderStats();
+  populateClasseSelect();
+  syncYpareo();
+  syncTimer = setInterval(syncYpareo, SYNC_INTERVAL_MS);
 }
 
 // =====================================================
@@ -386,11 +451,11 @@ function setSyncStatus(state, msg) {
 async function syncYpareo() {
   setSyncStatus('syncing', 'Synchronisation Ypareo en cours\u2026');
   try {
-    var res  = await fetch(PROXY_URL + '/apprenants', { signal: AbortSignal.timeout(60000) });
+    var res  = await fetch('/apprenants', { signal: AbortSignal.timeout(60000) });
     var data = await res.json();
 
     if(!data.ok) {
-      setSyncStatus('error', 'Proxy connect\u00e9 \u2014 Ypareo : ' + (data.error || 'erreur inconnue'));
+      setSyncStatus('error', 'Ypareo : ' + (data.error || 'erreur inconnue'));
       proxyOk = false;
       return;
     }
@@ -403,7 +468,7 @@ async function syncYpareo() {
     updateHeaderStats();
   } catch(e) {
     proxyOk = false;
-    setSyncStatus('error', 'Service Ypareo non accessible \u2014 v\u00e9rifiez la connexion r\u00e9seau');
+    setSyncStatus('error', 'Ypareo non accessible \u2014 donn\u00e9es locales affich\u00e9es');
   }
 }
 
@@ -438,16 +503,6 @@ function mergeYpareoStudents(ypareoList) {
   saveStudents();
   populateClasseSelect();
   if(added > 0) showToast('\uD83D\uDCE5 ' + added + ' nouvel(s) apprenant(s) import\u00e9(s) depuis Ypareo', 'info');
-}
-
-async function openDebug() {
-  try {
-    var res  = await fetch(PROXY_URL + '/apprenants', { signal: AbortSignal.timeout(10000) });
-    var data = await res.json();
-    alert('=== STATUT CONNEXION YPAREO ===\n\nok: ' + data.ok + '\ncount: ' + (data.count || 0) + (data.error ? '\nerreur: ' + data.error : ''));
-  } catch(e) {
-    alert('Service non accessible.\n' + e.message);
-  }
 }
 
 // =====================================================
@@ -505,9 +560,9 @@ function renderBareme() {
 // =====================================================
 function getAlertLevel(pts) {
   if(pts <= 0) return { level:'0', cls:'alert-0', color:'#2C3E50', label:'\u26ab Conseil de discipline' };
-  if(pts <= 3) return { level:'3', cls:'alert-3', color:'#8E44AD', label:'\uD83D\uDFE3 Avertissement \u00e9crit'   };
-  if(pts <= 6) return { level:'6', cls:'alert-6', color:'#E74C3C', label:'\uD83D\uDD34 Entretien formateur'         };
-  if(pts <= 9) return { level:'9', cls:'alert-9', color:'#E67E22', label:'\uD83D\uDFE0 Rappel oral'                 };
+  if(pts <= 3) return { level:'3', cls:'alert-3', color:'#8E44AD', label:'\uD83D\uDFE3 Avertissement \u00e9crit'  };
+  if(pts <= 6) return { level:'6', cls:'alert-6', color:'#E74C3C', label:'\uD83D\uDD34 Entretien formateur'        };
+  if(pts <= 9) return { level:'9', cls:'alert-9', color:'#E67E22', label:'\uD83D\uDFE0 Rappel oral'                };
   return { level:'ok', cls:'ok', color:'#2EB3AF', label:'' };
 }
 function getBarColor(pts) {
@@ -671,11 +726,11 @@ function openModal(id, tab) {
 function switchTab(tab) {
   var tabs = ['inf', 'rec', 'hist'];
   for(var i = 0; i < tabs.length; i++) {
-    var t = tabs[i];
+    var t   = tabs[i];
     var btn = document.getElementById('mtab-' + t);
-    btn.className       = 'btn ' + (tab === t ? 'btn-primary' : 'btn-gold') + ' btn-sm';
-    btn.style.flex      = '1';
-    btn.style.fontSize  = '11px';
+    btn.className      = 'btn ' + (tab === t ? 'btn-primary' : 'btn-gold') + ' btn-sm';
+    btn.style.flex     = '1';
+    btn.style.fontSize = '11px';
     document.getElementById('mcontent-' + t).style.display = tab === t ? 'block' : 'none';
   }
 }
@@ -690,7 +745,7 @@ function applyAction(studentId, actionId, type) {
   if(!s) return;
 
   var item  = type === 'inf'
-    ? INFRACTIONS.find(function(i)  { return i.id === actionId; })
+    ? INFRACTIONS.find(function(i)   { return i.id === actionId; })
     : RECUPERATIONS.find(function(r) { return r.id === actionId; });
   var delta = item.pts;
   var label = item.name;
@@ -760,8 +815,6 @@ function deleteStudent(id) {
   renderStudents();
   showToast('\uD83D\uDDD1 ' + s.prenom + ' ' + s.nom + ' supprim\u00e9(e)', 'warning');
 }
-
-function saveStudents() { localStorage.setItem('fabrik_students', JSON.stringify(students)); }
 
 function exportCSV() {
   var header = ['Pr\u00e9nom', 'Nom', 'Classe', 'Points', 'Statut', 'Source', 'Derni\u00e8re action'];
